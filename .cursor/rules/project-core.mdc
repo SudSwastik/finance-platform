@@ -1,0 +1,22 @@
+---
+description: Core project standards
+alwaysApply: true
+---
+
+# Project core
+
+Read `AGENTS.md` and `docs/ROADMAP.md` for current phase.
+
+## Order of work
+
+1. Phase 1–2: Angular scaffold + **full mockup** (scoped components, ui-kit).
+2. Phase 3: OpenAPI + Docker seed + Postman.
+3. Phase 4+: Backend **spec then incremental DDD** code.
+4. Phase 6: Cognito.
+
+## Hard rules
+
+- No random HTML mockup; no Material in `features/`.
+- OpenAPI before endpoints; regenerate Postman.
+- Money: decimal strings / BigDecimal — never float.
+- Follow `docs/CONVENTIONS.md`.

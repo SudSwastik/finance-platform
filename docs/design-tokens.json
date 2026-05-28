@@ -1,0 +1,44 @@
+{
+  "color": {
+    "brand": {
+      "primary": "#7C3AED"
+    },
+    "category": {
+      "essentials": "#8B5CF6",
+      "lifestyles": "#22C55E",
+      "occasional": "#F97316",
+      "others": "#EAB308"
+    },
+    "semantic": {
+      "positive": "#16A34A",
+      "negative": "#DC2626"
+    },
+    "surface": {
+      "page": "#F3F4F6",
+      "card": "#FFFFFF"
+    },
+    "text": {
+      "primary": "#111827",
+      "secondary": "#6B7280"
+    },
+    "border": {
+      "subtle": "#E5E7EB"
+    }
+  },
+  "radius": {
+    "card": "12px",
+    "pill": "9999px"
+  },
+  "spacing": {
+    "cardPadding": "24px",
+    "gridGap": "20px",
+    "sidebarWidth": "260px"
+  },
+  "typography": {
+    "fontFamily": "Inter, system-ui, sans-serif",
+    "kpiSize": "28px",
+    "cardTitleSize": "16px",
+    "bodySize": "14px",
+    "metaSize": "12px"
+  }
+}

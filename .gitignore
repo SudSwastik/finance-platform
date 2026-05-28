@@ -1,0 +1,33 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+node_modules/
+dist/
+build/
+target/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+.DS_Store
+
+# Logs & temp
+*.log
+dashboard-preview.png
+
+# Test / coverage
+coverage/
+.nyc_output/
+
+
+# MockUp
+dashboard.webp
+dashboard-preview.png

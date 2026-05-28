@@ -1,0 +1,36 @@
+---
+description: Multi-module spec-first DDD Spring Boot conventions
+globs: backend/**/*
+alwaysApply: false
+---
+
+# Backend (multi-module)
+
+Read `docs/BACKEND_ARCHITECTURE.md` and `docs/adr/0007-modular-backend-services.md`.
+
+## Modules
+
+- One bounded context = one `*-service` Spring Boot module (e.g. `activity-log-service`).
+- `dashboard-bff` composes Overview; no domain aggregates in BFF.
+- Shared: `platform-common`, `platform-security` only.
+
+## Spec-first
+
+- Edit `docs/api/<service>.openapi.yaml` before controllers in that module.
+- No Activity Log controllers in `budget-service` or BFF domain packages.
+
+## DDD (inside each service)
+
+- `domain` → `application` → `infrastructure` → `api`
+- No cross-service domain imports.
+
+## Commands
+
+```bash
+./mvnw -pl activity-log-service test
+./mvnw -pl dashboard-bff spring-boot:run
+```
+
+## Identity
+
+- JWT `sub` only — never body `userId`.
