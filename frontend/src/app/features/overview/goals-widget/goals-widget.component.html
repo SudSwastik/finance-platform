@@ -1,0 +1,35 @@
+<app-dashboard-card>
+  <div class="goals-widget">
+
+    <div class="goals-widget__header">
+      <h2 class="text-card-title">Goals</h2>
+      <button class="goals-widget__see-all text-meta" type="button">See all</button>
+    </div>
+
+    <div class="goals-widget__list">
+      @for (goal of goals; track goal.id) {
+        <div class="goals-widget__row">
+          <div class="goals-widget__icon" aria-hidden="true">{{ goal.icon }}</div>
+          <div class="goals-widget__body">
+            <div class="goals-widget__top-row">
+              <span class="goals-widget__name">{{ goal.name }}</span>
+              <span class="goals-widget__pct text-meta">{{ goal.percent }}%</span>
+            </div>
+            <div class="goals-widget__amounts text-secondary text-meta">
+              {{ fmt(goal.current) }} / {{ fmt(goal.target) }}
+            </div>
+            <div class="goals-widget__bar">
+              <div
+                class="goals-widget__fill"
+                [style.width]="goal.percent + '%'"
+                [style.background-color]="goalColor(goal.colorToken)"
+              ></div>
+            </div>
+          </div>
+          <span class="goals-widget__date text-meta text-secondary">{{ fmtDate(goal.targetDate) }}</span>
+        </div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>

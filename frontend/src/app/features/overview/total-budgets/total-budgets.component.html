@@ -1,0 +1,47 @@
+<app-dashboard-card>
+  <div class="total-budgets">
+
+    <div class="total-budgets__header">
+      <div>
+        <h2 class="total-budgets__title text-card-title">Total Budgets</h2>
+        <span class="total-budgets__kpi text-kpi">{{ fmt(data.totalDisplay) }}</span>
+      </div>
+      <span class="total-budgets__filter text-meta text-secondary">{{ data.filterLabel }} ▾</span>
+    </div>
+
+    <div class="total-budgets__bar" role="img" aria-label="Budget allocation bar">
+      @for (cat of data.categories; track cat.id) {
+        <div
+          class="total-budgets__segment"
+          [style.width]="segmentWidth(cat)"
+          [style.background-color]="categoryColor(cat.colorToken)"
+          [title]="cat.name"
+        ></div>
+      }
+    </div>
+
+    <div class="total-budgets__legend">
+      @for (cat of data.categories; track cat.id) {
+        <div class="total-budgets__row">
+          <div class="total-budgets__row-label">
+            <span class="total-budgets__dot" [style.background-color]="categoryColor(cat.colorToken)"></span>
+            <span class="total-budgets__name">{{ cat.name }}</span>
+          </div>
+          <span class="total-budgets__spent">{{ fmt(cat.spent) }}</span>
+          <div class="total-budgets__progress-wrap">
+            <div class="total-budgets__progress-bar">
+              <div
+                class="total-budgets__progress-fill"
+                [style.width]="cat.percentUsed + '%'"
+                [style.background-color]="categoryColor(cat.colorToken)"
+              ></div>
+            </div>
+            <span class="total-budgets__pct text-meta">{{ cat.percentUsed }}%</span>
+          </div>
+          <span class="total-budgets__cap text-secondary text-meta">{{ fmt(cat.budget) }}</span>
+        </div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>

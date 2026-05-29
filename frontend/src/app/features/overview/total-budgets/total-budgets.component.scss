@@ -1,0 +1,81 @@
+.total-budgets {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  &__title { margin: 0 0 4px; }
+  &__kpi { display: block; }
+  &__filter { cursor: default; align-self: flex-end; }
+
+  &__bar {
+    display: flex;
+    height: 12px;
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    gap: 2px;
+    margin-bottom: 20px;
+    background: var(--color-border-subtle);
+  }
+
+  &__segment { height: 100%; min-width: 2px; }
+
+  &__legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  &__spent {
+    font-weight: 600;
+    font-size: var(--font-size-body);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--color-border-subtle);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  &__pct { min-width: 38px; text-align: right; }
+  &__cap { white-space: nowrap; text-align: right; }
+}

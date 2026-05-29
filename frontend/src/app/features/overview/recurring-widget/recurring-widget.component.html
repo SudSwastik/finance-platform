@@ -1,0 +1,28 @@
+<app-dashboard-card>
+  <div class="recurring-widget">
+
+    <div class="recurring-widget__header">
+      <h2 class="text-card-title">Recurring</h2>
+      <button class="recurring-widget__see-all text-meta" type="button">See all</button>
+    </div>
+
+    <div class="recurring-widget__list">
+      @for (bill of bills; track bill.id) {
+        <div class="recurring-widget__row">
+          <div class="recurring-widget__icon-wrap" aria-hidden="true">
+            <div class="recurring-widget__icon">{{ bill.name[0] }}</div>
+          </div>
+          <div class="recurring-widget__info">
+            <span class="recurring-widget__name">{{ bill.name }}</span>
+            <span class="recurring-widget__frequency text-secondary text-meta">{{ fmtFrequency(bill.frequency) }}</span>
+          </div>
+          <div class="recurring-widget__right">
+            <span class="recurring-widget__amount">{{ fmtAmount(bill.amount) }}</span>
+            <span class="recurring-widget__date text-meta text-secondary">Next {{ fmtDate(bill.nextDate) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>

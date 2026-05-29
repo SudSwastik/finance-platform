@@ -1,0 +1,70 @@
+.transactions-widget {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h2 { margin: 0; }
+  }
+
+  &__see-all {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-brand-primary);
+    cursor: pointer;
+    font-family: inherit;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__merchant { font-weight: 500; }
+
+  &__pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    font-size: var(--font-size-meta);
+    font-weight: 500;
+    align-self: flex-start;
+
+    &--essential  { background: color-mix(in srgb, var(--color-category-essentials) 15%, white); color: var(--color-category-essentials); }
+    &--lifestyle  { background: color-mix(in srgb, var(--color-category-lifestyles) 15%, white); color: var(--color-category-lifestyles); }
+    &--occasional { background: color-mix(in srgb, var(--color-category-occasional) 15%, white); color: var(--color-category-occasional); }
+    &--other      { background: color-mix(in srgb, var(--color-category-others) 15%, white);     color: var(--color-category-others); }
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  &__amount {
+    font-weight: 600;
+    &--negative { color: var(--color-semantic-negative); }
+    &--positive { color: var(--color-semantic-positive); }
+  }
+}
