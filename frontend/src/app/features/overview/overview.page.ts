@@ -1,20 +1,29 @@
 import { Component, inject } from '@angular/core';
-import { OverviewRepository } from '../../data-access/overview/overview.repository';
+import { AsyncPipe } from '@angular/common';
+import { OverviewFacade } from './overview.facade';
+import { TotalBudgetsComponent } from './total-budgets/total-budgets.component';
+import { SpendingThisMonthComponent } from './spending-this-month/spending-this-month.component';
+import { GoalsWidgetComponent } from './goals-widget/goals-widget.component';
+import { TransactionsWidgetComponent } from './transactions-widget/transactions-widget.component';
+import { InvestmentsWidgetComponent } from './investments-widget/investments-widget.component';
+import { RecurringWidgetComponent } from './recurring-widget/recurring-widget.component';
 
 @Component({
   selector: 'app-overview-page',
   standalone: true,
-  imports: [],
-  template: `
-    <div class="overview-page">
-      <h1 class="text-card-title">Overview</h1>
-      <p class="text-secondary">Dashboard widgets — Phase 2</p>
-    </div>
-  `,
-  styles: [`
-    .overview-page { padding: 8px 0; }
-  `],
+  providers: [OverviewFacade],
+  imports: [
+    AsyncPipe,
+    TotalBudgetsComponent,
+    SpendingThisMonthComponent,
+    GoalsWidgetComponent,
+    TransactionsWidgetComponent,
+    InvestmentsWidgetComponent,
+    RecurringWidgetComponent,
+  ],
+  templateUrl: './overview.page.html',
+  styleUrl: './overview.page.scss',
 })
 export class OverviewPageComponent {
-  protected readonly overview$ = inject(OverviewRepository).getOverview();
+  protected readonly facade = inject(OverviewFacade);
 }

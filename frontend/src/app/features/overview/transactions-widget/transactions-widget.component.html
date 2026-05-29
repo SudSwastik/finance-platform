@@ -1,0 +1,29 @@
+<app-dashboard-card>
+  <div class="transactions-widget">
+
+    <div class="transactions-widget__header">
+      <h2 class="text-card-title">Transactions</h2>
+      <button class="transactions-widget__see-all text-meta" type="button">See all</button>
+    </div>
+
+    <div class="transactions-widget__list">
+      @for (tx of transactions; track tx.id) {
+        <div class="transactions-widget__row">
+          <div class="transactions-widget__info">
+            <span class="transactions-widget__merchant">{{ tx.merchant }}</span>
+            <span class="transactions-widget__pill transactions-widget__pill--{{ tx.category }}">
+              {{ pillLabel(tx.category) }}
+            </span>
+          </div>
+          <div class="transactions-widget__right">
+            <span class="transactions-widget__amount transactions-widget__amount--negative">
+              {{ fmtAmount(tx.amount) }}
+            </span>
+            <span class="transactions-widget__date text-meta text-secondary">{{ fmtDate(tx.date) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>

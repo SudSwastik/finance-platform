@@ -1,0 +1,74 @@
+.investments-widget {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    h2 { margin: 0; }
+  }
+
+  &__see-all {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--color-brand-primary);
+    cursor: pointer;
+    font-family: inherit;
+
+    &:hover { text-decoration: underline; }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__ticker-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-meta);
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+  }
+
+  &__symbol { font-weight: 600; }
+
+  &__nums {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  &__change {
+    font-weight: 600;
+    font-size: var(--font-size-body);
+
+    &--positive { color: var(--color-semantic-positive); }
+    &--negative { color: var(--color-semantic-negative); }
+  }
+
+  &__value { font-weight: 600; }
+  &__basis { }
+}
