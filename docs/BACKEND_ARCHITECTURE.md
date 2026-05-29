@@ -13,7 +13,7 @@ Shared: **OpenAPI-first**, **Docker seed**, **Postman**, **Cognito JWT** (Phase 
 | **One context = one service module** | e.g. Activity Log only in `activity-log-service` |
 | **Spec before code** | Per-service OpenAPI under `docs/api/` before controllers |
 | **Incremental delivery** | Add a new `*-service` module when that nav/feature starts |
-| **DDD inside each module** | `domain` → `application` → `infrastructure` → `api` per service |
+| **DDD inside each module** | `domain` → `application` → `infrastructure` → `web` per service |
 | **No cross-domain imports** | Service A does not depend on Service B’s `domain` package |
 | **BFF for UI** | `dashboard-bff` composes Overview; Angular talks primarily to BFF |
 | **Postman** | Folder per service + merged collection |
@@ -63,7 +63,7 @@ activity-log-service/src/main/java/com/finance/platform/activitylog/
 │   └── persistence/
 │       ├── ActivityEntryJpaEntity.java
 │       └── ActivityLogRepositoryAdapter.java
-└── api/
+└── web/
     └── ActivityLogController.java
 ```
 
@@ -76,7 +76,7 @@ activity-log-service/src/main/java/com/finance/platform/activitylog/
 | `domain` | domain, `platform-common` types | Spring, JPA, other services |
 | `application` | domain, common | JPA entities, HTTP |
 | `infrastructure` | domain, application ports | Controllers |
-| `api` | application, dto | Other services’ repositories |
+| `web` | application, dto | Other services’ repositories |
 
 ---
 

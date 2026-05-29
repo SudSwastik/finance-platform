@@ -1,0 +1,63 @@
+.app-modal {
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  &__panel {
+    background: var(--color-surface-card);
+    border-radius: var(--radius-card);
+    padding: var(--spacing-card-padding);
+    min-width: 400px;
+    max-width: 560px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-size-card-title);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--color-text-secondary);
+    padding: 4px 8px;
+    border-radius: 4px;
+
+    &:hover { background: var(--color-surface-page); }
+  }
+
+  &__body {
+    padding: 8px 0 24px;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-body);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+}

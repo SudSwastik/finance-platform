@@ -1,0 +1,20 @@
+:host { display: block; height: 100%; }
+
+.app-shell {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-grid-gap);
+  }
+}

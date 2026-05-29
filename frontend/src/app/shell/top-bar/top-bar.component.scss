@@ -1,0 +1,29 @@
+:host { display: block; }
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--color-surface-card);
+  border-bottom: 1px solid var(--color-border-subtle);
+  height: 56px;
+
+  &__search-input {
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: var(--font-size-body);
+    outline: none;
+    width: 280px;
+    background: var(--color-surface-page);
+    color: var(--color-text-primary);
+
+    &:focus { border-color: var(--color-brand-primary); }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 8px;
+  }
+}

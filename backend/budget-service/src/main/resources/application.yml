@@ -1,0 +1,30 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: budget-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finance_dashboard?currentSchema=budget
+    username: finance
+    password: finance
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: budget
+    open-in-view: false
+  flyway:
+    enabled: true
+    schemas: budget
+    default-schema: budget
+    locations: classpath:db/migration
+
+platform:
+  security:
+    dev-user-sub-enabled: true
+
+logging:
+  level:
+    org.springframework.security: INFO
