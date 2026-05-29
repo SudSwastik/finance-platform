@@ -1,0 +1,33 @@
+<nav class="fixed-nav" aria-label="Main navigation">
+  <div class="fixed-nav__logo">
+    <span class="fixed-nav__brand">FinancePlatform</span>
+  </div>
+
+  <ul class="fixed-nav__list" role="list">
+    @for (item of navItems; track item.route) {
+      <li>
+        <a
+          class="fixed-nav__link"
+          [routerLink]="item.route"
+          routerLinkActive="fixed-nav__link--active"
+          [attr.aria-current]="undefined"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
+        >
+          @if (item.icon) {
+            <span class="fixed-nav__icon" aria-hidden="true">{{ item.icon }}</span>
+          }
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="fixed-nav__footer">
+    <a class="fixed-nav__footer-link" routerLink="/settings">Settings</a>
+    <div class="fixed-nav__profile">
+      <div class="fixed-nav__avatar" aria-hidden="true">{{ userInitials }}</div>
+      <span class="fixed-nav__username">{{ userName }}</span>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,19 @@
+:host {
+  display: inline-flex;
+}
+
+button[mat-flat-button] {
+  background-color: var(--color-brand-primary);
+  color: #fff;
+  border-radius: 8px;
+}
+
+button[mat-stroked-button] {
+  border-color: var(--color-border-subtle);
+  border-radius: 8px;
+}
+
+button[mat-button] {
+  border-radius: 8px;
+  color: var(--color-text-secondary);
+}

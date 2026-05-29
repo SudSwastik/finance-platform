@@ -1,0 +1,42 @@
+// Generated from docs/design-tokens.json — do not edit manually
+:root {
+  // Brand
+  --color-brand-primary: #7C3AED;
+
+  // Categories
+  --color-category-essentials: #8B5CF6;
+  --color-category-lifestyles: #22C55E;
+  --color-category-occasional: #F97316;
+  --color-category-others: #EAB308;
+
+  // Semantic
+  --color-semantic-positive: #16A34A;
+  --color-semantic-negative: #DC2626;
+
+  // Surfaces
+  --color-surface-page: #F3F4F6;
+  --color-surface-card: #FFFFFF;
+
+  // Text
+  --color-text-primary: #111827;
+  --color-text-secondary: #6B7280;
+
+  // Borders
+  --color-border-subtle: #E5E7EB;
+
+  // Shape
+  --radius-card: 12px;
+  --radius-pill: 9999px;
+
+  // Spacing
+  --spacing-card-padding: 24px;
+  --spacing-grid-gap: 20px;
+  --sidebar-width: 260px;
+
+  // Typography
+  --font-family: Inter, system-ui, sans-serif;
+  --font-size-kpi: 28px;
+  --font-size-card-title: 16px;
+  --font-size-body: 14px;
+  --font-size-meta: 12px;
+}

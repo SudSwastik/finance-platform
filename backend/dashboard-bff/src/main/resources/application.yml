@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dashboard-bff
+
+platform:
+  security:
+    dev-user-sub-enabled: true
+  services:
+    budget: http://localhost:8081
+
+logging:
+  level:
+    com.finance.platform: DEBUG

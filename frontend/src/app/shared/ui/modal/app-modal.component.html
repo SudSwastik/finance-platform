@@ -1,0 +1,24 @@
+@let modalState = (state$ | async);
+@if (modalState?.open && modalState?.config) {
+  <div class="app-modal__backdrop" (click)="modalService.cancel()">
+    <div class="app-modal__panel" role="dialog" [attr.aria-label]="modalState!.config!.title" (click)="$event.stopPropagation()">
+      <header class="app-modal__header">
+        <h2 class="app-modal__title">{{ modalState!.config!.title }}</h2>
+        <button class="app-modal__close" aria-label="Close" (click)="modalService.cancel()">✕</button>
+      </header>
+
+      <div class="app-modal__body">
+        <ng-content />
+      </div>
+
+      <footer class="app-modal__footer">
+        <app-button variant="text" (clicked)="modalService.cancel()">
+          {{ modalState!.config!.cancelLabel ?? 'Cancel' }}
+        </app-button>
+        <app-button variant="primary" (clicked)="modalService.confirm()">
+          {{ modalState!.config!.confirmLabel ?? 'Confirm' }}
+        </app-button>
+      </footer>
+    </div>
+  </div>
+}

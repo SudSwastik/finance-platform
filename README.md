@@ -2,7 +2,7 @@
 
 Personal finance dashboard from [dashboard.webp](dashboard.webp). **Angular** mockup first · **Multi-module Spring Boot** (separate service per area, e.g. Activity Log) · **Docker** · **Postman** · **Cognito** (later).
 
-**Status:** Documentation complete (stack **accepted**) — ready for Phase 1 scaffold.
+**Status:** Backend Phase 4a–4d scaffolded (multi-module, tests passing). Angular mockup not started.
 
 ## Design
 
@@ -36,6 +36,17 @@ finance-platform/
 └── dashboard.webp
 ```
 
+## Run backend
+
+```bash
+docker compose up -d
+cd backend && mvn test
+mvn -pl budget-service spring-boot:run   # :8081
+mvn -pl dashboard-bff spring-boot:run    # :8080
+```
+
+Details: [backend/README.md](backend/README.md)
+
 ## Next step
 
-Start [ROADMAP.md](docs/ROADMAP.md) **Phase 1** (Angular production scaffold).
+[docs/ROADMAP.md](docs/ROADMAP.md) **Phase 1–2** — Angular full mockup.
