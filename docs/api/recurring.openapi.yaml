@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  title: Recurring Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8086
+tags:
+  - name: Recurring
+paths:
+  /api/v1/recurring:
+    get:
+      tags: [Recurring]
+      summary: List recurring items for current user
+      operationId: listRecurringItems
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      responses:
+        '200':
+          description: Recurring items list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecurringItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+  responses:
+    Unauthorized:
+      description: Unauthorized
+  schemas:
+    Money:
+      type: string
+      pattern: '^-?\d+(\.\d{1,2})?$'
+      example: '10.99'
+    RecurringItem:
+      type: object
+      required: [id, name, frequency, amount, nextDate]
+      properties:
+        id:        { type: string, format: uuid }
+        name:      { type: string }
+        frequency:
+          type: string
+          enum: [monthly, yearly, weekly]
+        amount:    { $ref: '#/components/schemas/Money' }
+        nextDate:  { type: string, format: date }

@@ -1,165 +1,89 @@
 # Roadmap
 
-Phased, **scoped** delivery: production-grade **Angular full mockup** first, then **spec-first DDD backend** with **Docker seed data** and **Postman** collection. Details: [FRONTEND_ARCHITECTURE.md](FRONTEND_ARCHITECTURE.md), [BACKEND_ARCHITECTURE.md](BACKEND_ARCHITECTURE.md).
+---
+
+## Done ✅
+
+### Phase 0 — Docs + ADRs
+Design spec, stack, ADR-0002 through ADR-0007, conventions.
+
+### Phase 1 — Angular scaffold
+Shell (`FixedNavigationComponent`, `TopBarComponent`, `AppShellComponent`), `app-button`, `app-modal`, `app-dashboard-card`, ui-kit Material adapter, mock data pattern, placeholder routes.
+
+### Phase 2 — Auth pages
+`/login`, `/register`, onboarding shell (`AuthShellComponent`), `AuthFacade` stub, `authGuard` stub, password strength bar, cross-nav links.
+
+### Phase 3 — Overview mockup
+Overview page: `total-budgets`, `investments-widget`, `recurring-widget`. Nav: Overview, Wallets & Banks, Subscriptions, Portfolio.
+
+### Phase 4 — Initial backend scaffold
+`platform-common`, `platform-security`, `dashboard-bff`, `budget-service`, `activity-log-service`, `goals-service`, `ledger-service`, `portfolio-service`, `recurring-service`. Docker Compose + LocalStack Cognito + Flyway seed. OpenAPI specs. `X-Dev-User-Sub` local auth.
 
 ---
 
-## Phase 0 — Documentation
+## Upcoming
 
-- [x] Design spec, stack, Cognito ADR, conventions, Cursor rules
-- [x] Frontend + backend architecture docs, UI-kit + DDD ADRs
-- [x] **Stack accepted** — ADR-0001 through ADR-0006 (see [TECH_STACK.md](TECH_STACK.md))
-
----
-
-## Phase 1 — Angular foundation (production scaffold)
-
-**Goal:** Empty but **correct** structure — no feature mockup yet.
+### Phase 5 — Backend architecture refactor
+**Goal:** Replace initial scaffold with multi-tenant accounts-first data model.
 
 | Deliverable | Notes |
-|-------------|--------|
-| Angular CLI workspace | Strict TS, standalone, `src/styles/` global tokens only |
-| `shell/` | `FixedNavigationComponent`, `TopBarComponent`, `AppShellComponent` — **separate** components |
-| Design system | `app-button`, `app-modal`, `app-dashboard-card` in `shared/ui/` |
-| UI kit module | Material adapter in `shared/ui-kit/material/`; swap point documented |
-| `ModalService` | Single modal API; footer uses `app-button` only |
-| Data-access pattern | Repository interfaces + `environment.useMockData` flag |
-| Lint / format | ESLint, Prettier, `stylelint` optional for SCSS BEM-like sections |
-| Placeholder routes | Shell + empty `router-outlet` |
+|-------------|-------|
+| `identity-service` :8079 | `identity` schema: `tenants`, `users`, `user_relationships` |
+| `finance-service` :8084 | `finance` schema: `accounts`, `transactions`, `investment_transactions`, `assets`. Absorbs `ledger-service` + `recurring-service` |
+| Delete `ledger-service`, `recurring-service` | Replaced by `finance-service` |
+| `tenant_id` migration | Add to all existing schemas (`budget`, `goals`, `activity_log`, `portfolio`) |
+| `platform-security` update | `QueryContext` with scope-aware filtering: `finance:own`, `finance:tenant`, `finance:platform` |
+| OpenAPI update | Add `finance.openapi.yaml`; remove `ledger.openapi.yaml`, `recurring.openapi.yaml` |
+| BFF update | Wire `identity-service` and `finance-service` clients |
+| Postman regenerate | Reflect new service map |
 
-**Exit criteria:** `ng build` passes; shell renders; opening a test modal uses standard layout; **no** overview widgets yet.
+**Exit criteria:** `docker compose up`; unified `/finance/transactions` returns bank + card + stock + crypto filtered by `user_sub`; two seed users isolated; `./mvnw verify` passes.
 
 ---
 
-## Phase 2 — Full dashboard mockup (Angular only)
-
-**Goal:** Pixel-faithful **full mockup** matching [DESIGN.md](DESIGN.md) / `dashboard.webp` using **only components** — **no random HTML**, no backend.
-
+### Phase 6 — Wire Angular to API
 | Deliverable | Notes |
-|-------------|--------|
-| `features/overview/` | Page container + six **scoped** section components (see below) |
-| **Total budgets** | `total-budgets/` — SCSS root `.total-budgets { }` only |
-| **Spending this month** | `spending-this-month/` — chart + scoped `.spending-this-month` |
-| **Goals** | `goals-widget/` — scoped `.goals-widget` |
-| **Transactions** | `transactions-widget/` — scoped `.transactions-widget` |
-| **Investments** | `investments-widget/` — scoped `.investments-widget` |
-| **Recurring** | `recurring-widget/` — scoped `.recurring-widget` |
-| Mock repositories | `overview-mock.repository.ts` + `*.mock.ts` data from DESIGN samples |
-| `OverviewFacade` | Page uses facade + `async` pipe — **no** inline mock arrays in templates |
-| Nav stubs | Other sidebar routes → `PlaceholderPageComponent` |
-| Sidebar data | `FixedNavigationComponent` receives `navItems` config — no hardcoded nav in overview |
+|-------------|-------|
+| `overview-http.repository.ts` | HTTP impl, same interface as mock |
+| `providers.ts` | `useMockData: false` in `environment.prod` |
+| Loading + error states | Facade exposes `loading$`, `error$` |
+| `proxy.conf.json` | CORS proxy for local dev |
 
-**Rules (enforced):**
-
-- No Material/Prime imports in `features/` or `shell/`.
-- No feature-specific rules in `src/styles/` except tokens/utilities.
-- `ViewEncapsulation.Emulated` (default) on all section components.
-
-**Exit criteria:** `ng serve` shows complete dashboard mockup; toggling `useMockData` still works; modal demo uses `AppModalComponent`; styles from one section do not break another (visual + selector review).
+**Exit criteria:** Overview identical visually; data from Docker seed via API.
 
 ---
 
-## Phase 3 — API specification & Docker mock data
-
-**Goal:** Contract and database ready **before** backend Java code.
-
+### Phase 7 — Cognito auth + multi-tenant
 | Deliverable | Notes |
-|-------------|--------|
-| `docs/api/openapi.yaml` | All Phase-4 endpoints: health, me, dashboard/overview, later CRUD stubs |
-| `docs/api/seed-users.md` | Test `user_sub` values matching seed SQL |
-| `docker-compose.yml` | Postgres 16 |
-| `docker/postgres/init/` | Schema baseline |
-| `docker/postgres/seed/` | Mock data aligned with DESIGN + multi-user `user_sub` |
-| Postman | Generate `docs/api/postman/finance-platform.postman_collection.json` + local environment |
-| README section | `docker compose up`, import Postman, hit health |
+|-------------|-------|
+| `authGuard` real impl | Redirects unauthenticated to `/login` |
+| `authInterceptor` | Attaches Bearer token; handles token refresh |
+| `AuthFacade` real impl | Cognito PKCE via `angular-oauth2-oidc` |
+| Spring config swap | `issuer-uri` → real Cognito endpoint (env var only, no code change) |
+| Remove `X-Dev-User-Sub` | Strip from prod security config |
+| JWT claims | `tenant_id`, `user_sub`, `scope` in token |
 
-**Exit criteria:** DB seeds successfully; OpenAPI validates; Postman collection runs against **mock server** or documented static examples; **no** Spring code required yet.
-
----
-
-## Phase 4 — Backend: multi-module scaffold + incremental services
-
-**Goal:** **Maven parent** + shared libs + **separate Spring Boot module per bounded context** — not one monolith. See [BACKEND_ARCHITECTURE.md](BACKEND_ARCHITECTURE.md), [adr/0007](adr/0007-modular-backend-services.md).
-
-| Order | Module | Spec file | Deliverable |
-|-------|--------|-----------|-------------|
-| 4a | `platform-parent`, `platform-common`, `platform-security` | — | Parent POM, Money, JWT autoconfig |
-| 4b | `dashboard-bff` | `docs/api/dashboard.openapi.yaml` | `:8080` health, me, stub overview |
-| 4c | `budget-service` | `docs/api/budget.openapi.yaml` | `:8081` budgets schema + seed + APIs |
-| 4d | BFF wiring | dashboard spec | BFF composes overview via HTTP to budget-service |
-| 4e+ | `activity-log-service`, `goals-service`, … | per-service openapi | **New module per context** when UI needs it |
-
-**Activity Log:** only in `activity-log-service` (`:8082`, [activity-log.openapi.yaml](api/activity-log.openapi.yaml)) — never merged into BFF or budget module code.
-
-Each slice PR: **service openapi → implement in that module only → Flyway for that schema → Postman folder → BFF proxy if UI needs it**.
-
-**Exit criteria:** `docker compose up` + `./mvnw -pl dashboard-bff,budget-service verify`; Postman folders **Dashboard BFF** and **Budget** pass.
+**Exit criteria:** Real user signs up → verifies email → logs in → sees seeded data; 401 without token; two users isolated.
 
 ---
 
-## Phase 5 — Wire Angular to real API
+### Phase 8 — Remaining nav pages
+| Page | Service | Notes |
+|------|---------|-------|
+| Wallets & Banks | `finance-service` | Accounts list + per-account transaction view |
+| Subscriptions | `finance-service` | Recurring transactions (type = RECURRING) |
+| Portfolio | `portfolio-service` | Holdings read model + trade history |
 
-**Goal:** Replace mock repositories with HTTP implementations — **no** template changes in section components.
-
-| Deliverable | Notes |
-|-------------|--------|
-| `overview-http.repository.ts` | Implements same interface as mock |
-| `providers.ts` | `useMockData: false` in environment.prod |
-| Error/loading | Facade exposes `loading$`, `error$` |
-| CORS / proxy | `proxy.conf.json` for local dev |
-
-**Exit criteria:** Overview identical visually; data from API + Docker seed.
+Each: Angular scoped feature + service endpoint + OpenAPI entry.
 
 ---
 
-## Phase 6 — AWS Cognito auth
+### Phase 9 — AWS infrastructure (Terraform)
+EC2 + Nginx + real Cognito User Pool. Modules: `state/`, `ec2/`, `cognito/`, optional `dns/`.
 
-**Goal:** Protect API and routes; remove dev-only headers in prod.
-
-| Deliverable | Notes |
-|-------------|--------|
-| Cognito User Pool + SPA client | PKCE |
-| Angular | `authGuard`, `authInterceptor` |
-| Spring | OAuth2 Resource Server |
-| Postman | Bearer token from Cognito login |
-| Seed users | Map Cognito `sub` to seed `user_sub` |
-
-**Exit criteria:** 401 without token; User A cannot see User B data in Postman and UI.
+**Exit criteria:** `terraform apply` provisions all; app reachable at Elastic IP; HTTPS works; LocalStack removed from prod compose.
 
 ---
 
-## Phase 7 — Remaining nav pages & backend modules
-
-- Each major nav area: Angular scoped feature + matching `*-service` module (if not already present).
-- **Activity Log page** → `activity-log-service` only.
-- Goals → `goals-service`; Portfolio → `portfolio-service`; etc.
-- BFF updated only to aggregate/proxy — no domain logic in BFF.
-
----
-
-## Phase 8 — Integrations & production
-
-- CSV import, optional bank API (new ADR).
-- Customize panel, Smart Tips.
-- CI: OpenAPI diff, Postman publish optional, `ng build`, `./mvnw verify`.
-
----
-
-## What “done” means for the mockup (Phase 2)
-
-| In | Out |
-|----|-----|
-| All 6 overview sections as isolated components | Backend calls |
-| Fixed nav + top bar as `shell/` components | Cognito |
-| Global tokens in `src/styles/` | Ad-hoc HTML mockup |
-| `app-modal` / `app-button` for any dialog | Per-feature Material dialogs |
-| Swappable `ui-kit` | Second UI library impl (until needed) |
-
----
-
-## Success metrics
-
-- Section CSS does not regress sibling widgets when changing one feature.
-- OpenAPI and Postman stay in sync (regenerate on spec change).
-- Backend PRs include domain tests before controller merge.
-- Switching `OverviewRepository` implementation does not change overview templates.
+### Phase 10 — Integrations
+CSV import, bank/stock API pull (new ADR per integration), agentic Python ingestion pipeline (classify + seed DB).

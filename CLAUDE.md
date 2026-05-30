@@ -1,43 +1,32 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Personal finance dashboard. Multi-tenant (tenant → users → accounts → transactions).
+**Angular SPA** + **Maven multi-module Spring Boot** (DDD) + **PostgreSQL** + **AWS Cognito** (Phase 7).
 
-## Project overview
+Current status: Angular scaffold + auth pages + overview mockup done. Initial backend scaffold done. **Next: Phase 5 — backend architecture refactor.**
 
-Personal finance dashboard. **Angular SPA** (full mockup phase first) + **Maven multi-module Spring Boot** backend (one deployable per bounded context) + **PostgreSQL** via Docker + **AWS Cognito** (Phase 6). Current status: backend scaffold done (phases 4a–4d); Angular mockup not yet started.
-
-Read `docs/ROADMAP.md` for current phase checklist. Read `AGENTS.md` for task-to-doc routing.
+See `docs/ROADMAP.md` for phase checklist. See `docs/ARCHITECTURE.md` for full architecture.
 
 ---
 
 ## Commands
 
-### Infrastructure
-
 ```bash
-docker compose up -d          # start Postgres (required for backend)
-```
+# Infrastructure
+docker compose -f infra/local/docker-compose.yml up -d
 
-### Backend (`backend/`)
+# Backend (from backend/)
+./mvnw test                                   # all modules
+./mvnw -pl budget-service test                # single module
+./mvnw -pl budget-service spring-boot:run     # :8081
+./mvnw -pl dashboard-bff spring-boot:run      # :8080
 
-```bash
-cd backend && ./mvnw test                          # all modules
-./mvnw -pl budget-service test                    # single module
-./mvnw -pl budget-service spring-boot:run         # :8081
-./mvnw -pl dashboard-bff spring-boot:run          # :8080
-```
+# Frontend (from frontend/)
+npm install && ng serve
+ng test
+ng build
 
-### Frontend (`frontend/`) — scaffold not yet created
-
-```bash
-cd frontend && npm install && ng serve            # dev server
-cd frontend && ng test                            # Karma/Jasmine
-cd frontend && ng build                           # production build
-```
-
-### Postman (regenerate after any OpenAPI change)
-
-```bash
+# Postman (after any OpenAPI change)
 npx openapi-to-postmanv2 \
   -s docs/api/openapi.yaml \
   -o docs/api/postman/finance-platform.postman_collection.json
@@ -45,90 +34,84 @@ npx openapi-to-postmanv2 \
 
 ---
 
-## Backend architecture
+## Backend
 
-Maven multi-module monorepo under `backend/`. Each bounded context is a **separate Spring Boot deployable**, not a package inside one app (see `docs/adr/0007-modular-backend-services.md`).
+| Module | Port | Schema | Role |
+|--------|------|--------|------|
+| `platform-common` | jar | — | `Money`, `UserId`, `ErrorEnvelope` |
+| `platform-security` | jar | — | JWT/Cognito autoconfig, `QueryContext`, scope-aware filtering |
+| `dashboard-bff` | 8080 | — | Composes overview; `/me`; `/health`; no domain code |
+| `identity-service` | 8079 | `identity` | Tenant, User, UserRelationship |
+| `budget-service` | 8081 | `budget` | BudgetCategory |
+| `activity-log-service` | 8082 | `activity_log` | ActivityLogEntry |
+| `goals-service` | 8083 | `goals` | Goal |
+| `finance-service` | 8084 | `finance` | Account, Transaction, Asset, InvestmentTransaction |
+| `portfolio-service` | 8085 | `portfolio` | Holdings (read model) |
 
-| Module | Port | Role |
-|--------|------|------|
-| `platform-common` | jar | `Money`, `UserId`, `ErrorEnvelope` — no aggregates |
-| `platform-security` | jar | JWT resource-server autoconfig (Cognito JWKS) |
-| `dashboard-bff` | 8080 | Composes Overview; `/me`; `/health`; **no domain code** |
-| `budget-service` | 8081 | Budgets / spending plan |
-| `activity-log-service` | 8082 | Activity log only |
-| `goals-service` | 8083 | Savings goals |
-| `ledger-service` | 8084 | Transactions |
-| `portfolio-service` | 8085 | Investments |
-| `recurring-service` | 8086 | Subscriptions |
+`finance-service` replaces `ledger-service` + `recurring-service`.
 
-**DDD layers inside every `*-service`** (no cross-service domain imports):
-
+**DDD layers** per service (no cross-service domain imports):
 ```
-domain → application → infrastructure → web
-```
-
-`domain` may only depend on `platform-common`. `application` uses domain ports. `infrastructure` implements ports with JPA. `web` (controllers) calls application handlers only — never repositories directly.
-
-**Database**: one Postgres instance, **schema per service** (`budget`, `activity_log`, etc.). Each service uses `spring.datasource.url` with `?currentSchema=<schema>` and Flyway scoped to that schema.
-
-**BFF pattern**: `dashboard-bff` calls domain services via `WebClient`; service URLs in config:
-
-```yaml
-platform:
-  services:
-    budget: http://localhost:8081
-    activity-log: http://localhost:8082
+web → application → domain ← infrastructure
 ```
 
-**Spec-first workflow**: edit `docs/api/<service>.openapi.yaml` → implement inside that `*-service` only → update BFF spec if BFF exposes the route → regenerate Postman.
+**Core data model:**
+```
+identity.tenants            (id, name, type: PERSONAL|FAMILY|ORG)
+identity.users              (id, tenant_id, user_sub, email)
+identity.user_relationships (tenant_id, user_sub, related_user_sub, can_view_summary)
+
+finance.accounts            (id, tenant_id, user_sub, type, name, currency)
+                            type: BANK | CREDIT_CARD | BROKERAGE | CRYPTO_WALLET
+finance.transactions        (id, tenant_id, user_sub, account_id, amount, type, category, description, transaction_date)
+finance.investment_transactions (transaction_id, asset_id, quantity, price_per_unit)  -- BUY/SELL only, extends transactions 1:1
+finance.assets              (id, symbol, name, asset_type: STOCK|CRYPTO|ETF)
+```
+
+**Multi-tenancy:** `user_sub` = ownership boundary (in every WHERE). `tenant_id` = org/family grouping (only for scoped cross-user queries).
+
+**Auth scopes** (enforced by `platform-security`, never by services directly):
+- `finance:own` — `WHERE user_sub = current` (default)
+- `finance:tenant` — `WHERE tenant_id = current` (family/org dashboard)
+- `finance:platform` — no filter (admin/analytics only)
+
+**Spec-first:** edit `docs/api/<service>.openapi.yaml` → implement in that service → update BFF spec if needed → regenerate Postman.
 
 ---
 
-## Frontend architecture
+## Frontend
 
 Angular 19+, TypeScript strict, standalone components.
 
-**Layer rules:**
-
 | Layer | Rule |
 |-------|------|
-| `src/styles/` | Global tokens, reset, typography only — nothing feature-specific |
-| `app/shell/` | `FixedNavigationComponent`, `TopBarComponent`, `AppShellComponent` — separate, stable; no feature SCSS |
-| `app/shared/ui/` | `app-button`, `app-modal`, `app-dashboard-card` — library-agnostic primitives |
-| `app/shared/ui-kit/` | Swappable adapter (Material today); features never import `@angular/material/*` directly |
-| `app/features/overview/*/` | One scoped section per widget; styles under one root BEM class |
+| `src/styles/` | Global tokens, reset, typography only |
+| `app/shell/` | `FixedNavigationComponent`, `TopBarComponent`, `AppShellComponent` — no feature SCSS |
+| `app/shared/ui/` | `app-button`, `app-modal`, `app-dashboard-card` — library-agnostic |
+| `app/shared/ui-kit/` | Material adapter; features never import `@angular/material/*` directly |
+| `app/features/<page>/*/` | One folder per widget; BEM SCSS under one root class |
 | `app/data-access/` | Repository interface + mock/HTTP swap via `environment.useMockData` |
 
-**Scoped CSS** — every section component wraps all rules in one root class; no bare selectors at file root:
-
-```scss
-.total-budgets {
-  &__header { }
-  &__category-row { }
-}
-```
-
-`ViewEncapsulation.None` on feature components requires an ADR.
-
-**Modals**: always `ModalService.open()` + `AppModalComponent` — never open Material dialog directly in features.
-
-**Mock data**: lives in `*-mock.repository.ts` / `*.mock.ts`; page components bind via `async` pipe through a facade — no inline arrays in templates.
+Scoped CSS: all rules nested under one root class (`.total-budgets { &__header {} }`).
+Modals: `ModalService.open()` + `AppModalComponent` only.
+Mock data: `*-mock.repository.ts`; templates bind via `async` pipe through facade — no inline arrays.
 
 ---
 
-## Hard rules (non-negotiable)
+## Hard rules
 
 - **Money**: `BigDecimal` in Java; decimal strings in JSON. Never `float`/`double`.
-- **Auth scoping**: use JWT `sub` only. Never trust a client-sent `userId`. Local dev: `X-Dev-User-Sub` header.
-- **OpenAPI before endpoints**: no controllers without an existing `docs/api/<service>.openapi.yaml` entry.
-- **No cross-context domain imports**: `budget-service` domain classes must not appear in `activity-log-service`.
-- **No domain code in BFF**: `dashboard-bff` only composes HTTP responses from other services.
-- **No UI library in features**: features import from `shared/ui` and `shared/ui-kit`, not `@angular/material/*` or PrimeNG.
-- **Regenerate Postman** whenever any service OpenAPI changes.
+- **Auth**: JWT `sub` only. Never trust client-sent userId. Local dev: `X-Dev-User-Sub` header.
+- **OpenAPI first**: no controllers without a `docs/api/<service>.openapi.yaml` entry.
+- **No cross-context imports**: domain classes must not cross service boundaries.
+- **No domain code in BFF**: BFF only composes HTTP responses from services.
+- **No UI library in features**: import from `shared/ui` and `shared/ui-kit` only.
+- **Every new table**: must have `tenant_id` + `user_sub` columns.
+- **Regenerate Postman** on any OpenAPI change.
 
 ---
 
-## Naming conventions
+## Naming
 
 | Item | Convention | Example |
 |------|------------|---------|
@@ -137,7 +120,7 @@ Angular 19+, TypeScript strict, standalone components.
 | Repository | interface + mock/http impl | `OverviewRepository`, `OverviewMockRepository` |
 | OpenAPI `operationId` | camelCase | `getDashboardOverview` |
 | Java aggregate | PascalCase | `BudgetCategory` |
-| DB column / seed | snake_case | `user_sub` |
+| DB column | snake_case | `user_sub`, `tenant_id`, `account_id` |
 | Branch | `feature/…`, `fix/…`, `docs/…` | — |
 
 ---
@@ -159,13 +142,12 @@ Angular 19+, TypeScript strict, standalone components.
 
 | Topic | File |
 |-------|------|
-| Current phase checklist | `docs/ROADMAP.md` |
-| Frontend structure | `docs/FRONTEND_ARCHITECTURE.md` |
-| Backend DDD + module map | `docs/BACKEND_ARCHITECTURE.md` |
-| Naming / do-don't | `docs/CONVENTIONS.md` |
-| Design / widget inventory | `docs/DESIGN.md` |
-| Versions | `docs/TECH_STACK.md` |
+| Phase checklist | `docs/ROADMAP.md` |
+| Full architecture | `docs/ARCHITECTURE.md` |
+| Naming + do/don't | `docs/CONVENTIONS.md` |
+| Design tokens + widgets | `docs/DESIGN.md` |
+| Stack + versions | `docs/TECH_STACK.md` |
 | OpenAPI contracts | `docs/api/*.openapi.yaml` |
+| Seed test users | `docs/api/seed-users.md` |
 | Why multi-module | `docs/adr/0007-modular-backend-services.md` |
 | Why Cognito | `docs/adr/0004-auth-cognito.md` |
-| Seed test users | `docs/api/seed-users.md` |
