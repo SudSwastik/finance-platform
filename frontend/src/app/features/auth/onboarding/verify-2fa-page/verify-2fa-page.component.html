@@ -1,0 +1,33 @@
+<app-auth-card
+  title="Enter 6 digit code"
+  subtitle="We send it to +1 623 913 990 393."
+  primaryLabel="Continue"
+  iconVariant="default"
+  (primaryClick)="onContinue()">
+  <svg slot="icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+  </svg>
+
+  <div class="verify-2fa-page__body">
+    <p class="verify-2fa-page__hint">Your digit 6 code</p>
+    <div class="verify-2fa-page__otp">
+      @for (digit of digits; track $index; let i = $index) {
+        <input
+          #digitInput
+          class="verify-2fa-page__otp-box"
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          [value]="digit"
+          (input)="onDigitInput(i, $event)"
+          (keydown)="onDigitKeydown(i, $event)"
+          autocomplete="one-time-code"
+        />
+      }
+    </div>
+  </div>
+
+  <a slot="secondary" class="verify-2fa-page__resend" href="#" (click)="$event.preventDefault()">
+    Didn't receive a code?
+  </a>
+</app-auth-card>

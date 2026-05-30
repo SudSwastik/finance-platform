@@ -1,0 +1,34 @@
+<div class="auth-card">
+  <div class="auth-card__icon-wrap">
+    <div class="auth-card__icon auth-card__icon--{{ iconVariant }}">
+      <ng-content select="[slot=icon]" />
+    </div>
+    @if (iconBadge === 'check') {
+      <div class="auth-card__icon-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        </svg>
+      </div>
+    }
+  </div>
+
+  <h2 class="auth-card__title">{{ title }}</h2>
+
+  @if (subtitle) {
+    <p class="auth-card__subtitle">{{ subtitle }}</p>
+  }
+
+  <div class="auth-card__body">
+    <ng-content />
+  </div>
+
+  @if (primaryLabel) {
+    <button class="auth-card__cta" type="button" (click)="primaryClick.emit()">
+      {{ primaryLabel }}
+    </button>
+  }
+
+  <div class="auth-card__secondary">
+    <ng-content select="[slot=secondary]" />
+  </div>
+</div>

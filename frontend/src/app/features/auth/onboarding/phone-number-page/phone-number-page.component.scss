@@ -1,0 +1,57 @@
+:host { display: block; }
+
+.phone-number-page {
+  &__field-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__label {
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  &__field {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--color-border-subtle);
+    border-radius: 10px;
+    background: var(--color-surface-card);
+    overflow: hidden;
+  }
+
+  &__code {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-right: 1px solid var(--color-border-subtle);
+    height: 46px;
+    font-size: var(--font-size-body);
+    font-weight: 500;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &__flag {
+    font-size: 16px;
+  }
+
+  &__input {
+    flex: 1;
+    height: 46px;
+    border: none;
+    outline: none;
+    font-size: var(--font-size-body);
+    font-family: var(--font-family);
+    color: var(--color-text-primary);
+    background: transparent;
+    padding: 0 12px;
+
+    &::placeholder { color: var(--color-text-secondary); }
+  }
+}

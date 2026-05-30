@@ -1,0 +1,25 @@
+<app-auth-card
+  title="Your country of primary residence"
+  subtitle="You can add another account later on, too."
+  primaryLabel="Continue"
+  iconVariant="default"
+  (primaryClick)="onContinue()">
+  <svg slot="icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+  </svg>
+
+  <div class="select-country-page__field-wrap">
+    <label class="select-country-page__label">Choose Country</label>
+    <div class="select-country-page__select-wrap">
+      <span class="select-country-page__flag">{{ selectedFlag }}</span>
+      <select class="select-country-page__select" [(ngModel)]="country" name="country">
+        @for (c of countries; track c.code) {
+          <option [value]="c.code">{{ c.name }}</option>
+        }
+      </select>
+      <svg class="select-country-page__chevron" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7 10l5 5 5-5z"/>
+      </svg>
+    </div>
+  </div>
+</app-auth-card>

@@ -1,0 +1,13 @@
+<app-auth-shell>
+  <app-auth-card
+    title="To login, check your email"
+    subtitle="For security, we've sent you an email. Simply click the link in the email and you'll be set."
+    primaryLabel="Send it again"
+    iconVariant="green"
+    iconBadge="check"
+    (primaryClick)="onResend()">
+    <svg slot="icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+    </svg>
+  </app-auth-card>
+</app-auth-shell>
