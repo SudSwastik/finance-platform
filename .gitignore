@@ -21,7 +21,6 @@ target/
 
 # Logs & temp
 *.log
-dashboard-preview.png
 
 # Test / coverage
 coverage/
@@ -29,5 +28,10 @@ coverage/
 
 
 # MockUp
-dashboard.webp
-dashboard-preview.png
+design/
+
+# Agent
+.claude/
+.cursor/
+
+

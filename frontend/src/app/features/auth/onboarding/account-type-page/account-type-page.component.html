@@ -1,0 +1,42 @@
+<app-auth-card
+  title="What kind of account would you open today?"
+  subtitle="You can add another account later on, too."
+  primaryLabel="Continue"
+  iconVariant="default"
+  (primaryClick)="onContinue()">
+  <svg slot="icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
+  </svg>
+
+  <div class="account-type-page__options">
+    <label class="account-type-page__option" [class.account-type-page__option--selected]="accountType === 'personal'">
+      <div class="account-type-page__option-left">
+        <div class="account-type-page__option-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="account-type-page__option-title">Personal Account</div>
+          <div class="account-type-page__option-sub">For individual use</div>
+        </div>
+      </div>
+      <input class="account-type-page__radio" type="radio" name="accountType" value="personal" [(ngModel)]="accountType" />
+    </label>
+
+    <label class="account-type-page__option" [class.account-type-page__option--selected]="accountType === 'business'">
+      <div class="account-type-page__option-left">
+        <div class="account-type-page__option-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 6h-2.18c.07-.44.18-.88.18-1.35C18 2.99 16.01 1 13.65 1c-1.3 0-2.51.56-3.43 1.44L9 3.66 7.78 2.44C6.86 1.56 5.65 1 4.35 1 1.99 1 0 2.99 0 5.35c0 .47.1.91.18 1.35H0v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="account-type-page__option-title">Business Account</div>
+          <div class="account-type-page__option-sub">For company use</div>
+        </div>
+      </div>
+      <input class="account-type-page__radio" type="radio" name="accountType" value="business" [(ngModel)]="accountType" />
+    </label>
+  </div>
+</app-auth-card>

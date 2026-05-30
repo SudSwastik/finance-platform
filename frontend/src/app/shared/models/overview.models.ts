@@ -15,36 +15,6 @@ export interface TotalBudgetsSection {
   categories: BudgetCategory[];
 }
 
-export interface SpendingPoint {
-  date: string;
-  thisMonth: Money;
-  lastMonth: Money;
-}
-
-export interface SpendingSection {
-  totalThisMonth: Money;
-  points: SpendingPoint[];
-}
-
-export interface Goal {
-  id: string;
-  name: string;
-  icon: string;
-  current: Money;
-  target: Money;
-  percent: number;
-  colorToken: string;
-  targetDate: string;
-}
-
-export interface Transaction {
-  id: string;
-  merchant: string;
-  category: 'essential' | 'lifestyle' | 'occasional' | 'other';
-  amount: Money;
-  date: string;
-}
-
 export interface Holding {
   id: string;
   symbol: string;
@@ -64,9 +34,6 @@ export interface RecurringBill {
 
 export interface OverviewData {
   budgets: TotalBudgetsSection;
-  spending: SpendingSection;
-  goals: Goal[];
-  transactions: Transaction[];
   holdings: Holding[];
   recurring: RecurringBill[];
 }

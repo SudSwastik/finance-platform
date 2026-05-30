@@ -1,0 +1,65 @@
+<div class="onboarding-shell">
+  <header class="onboarding-shell__topbar">
+    <div class="onboarding-shell__logo">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="7" fill="#111827"/>
+        <path d="M8 22L14 10l4 8 3-5 5 9H8z" fill="white" opacity="0.9"/>
+      </svg>
+    </div>
+
+    <nav class="onboarding-shell__stepper" aria-label="Registration progress">
+      @for (step of steps; track step.num; let last = $last) {
+        <div class="onboarding-shell__step onboarding-shell__step--{{ stepState(step.num) }}"
+             [attr.aria-current]="stepState(step.num) === 'active' ? 'step' : null">
+          <span class="onboarding-shell__step-badge">
+            @if (stepState(step.num) === 'done') {
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+              </svg>
+            } @else if (step.num === 2) {
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z"/>
+              </svg>
+            } @else if (step.num === 3) {
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+              </svg>
+            } @else {
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+              </svg>
+            }
+          </span>
+          {{ step.num }}. {{ step.label }}
+        </div>
+        @if (!last) {
+          <span class="onboarding-shell__sep" aria-hidden="true">›</span>
+        }
+      }
+    </nav>
+
+    <div class="onboarding-shell__lang">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+      </svg>
+      ENG
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7 10l5 5 5-5z"/>
+      </svg>
+    </div>
+  </header>
+
+  <main class="onboarding-shell__content">
+    <router-outlet />
+  </main>
+
+  <footer class="onboarding-shell__footer">
+    <span>©2024 LOGO Financial</span>
+    <button class="onboarding-shell__help" type="button">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+      </svg>
+      Get Help
+    </button>
+  </footer>
+</div>
