@@ -21,17 +21,19 @@ interface BffTotalBudgets {
   categories: BffBudgetCategory[];
 }
 
+interface BffRecurringItem {
+  id: string | null;
+  name: string;
+  frequency: string;
+  amount: string;
+  nextDate: string;
+}
+
 interface BffOverviewResponse {
   totalBudgets: BffTotalBudgets;
   investments: Holding[];
-  recurring: RecurringBill[]; 
+  recurring: BffRecurringItem[];
 }
-
-const MOCK_RECURRING: RecurringBill[] = [
-  { id: '1', name: 'Spotify Premium',  frequency: 'monthly', amount: '10.99', nextDate: '2025-07-15' },
-  { id: '2', name: 'ChatGPT Plus',     frequency: 'monthly', amount: '20.00', nextDate: '2025-07-18' },
-  { id: '3', name: 'YouTube Premium',  frequency: 'monthly', amount: '11.99', nextDate: '2025-07-22' },
-];
 
 @Injectable()
 export class OverviewHttpRepository extends OverviewRepository {
@@ -64,7 +66,13 @@ export class OverviewHttpRepository extends OverviewRepository {
         categories,
       },
       holdings: res.investments,
-      recurring: MOCK_RECURRING,
+      recurring: res.recurring.map((r, i) => ({
+        id: r.id ?? String(i),
+        name: r.name,
+        frequency: r.frequency.toLowerCase() as RecurringBill['frequency'],
+        amount: r.amount,
+        nextDate: r.nextDate,
+      })),
     };
   }
 }
