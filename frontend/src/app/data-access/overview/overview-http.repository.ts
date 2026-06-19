@@ -27,12 +27,6 @@ interface BffOverviewResponse {
   recurring: RecurringBill[]; 
 }
 
-const MOCK_HOLDINGS: Holding[] = [
-  { id: '1', symbol: 'AAPL', name: 'Apple',   costBasis: '1600.00', changePercent: 21.9,  value: '1950.00' },
-  { id: '2', symbol: 'TSLA', name: 'Tesla',   costBasis: '2000.00', changePercent: 15.0,  value: '2300.00' },
-  { id: '3', symbol: 'BTC',  name: 'Bitcoin', costBasis: '1100.00', changePercent: -19.1, value: '890.00' },
-];
-
 const MOCK_RECURRING: RecurringBill[] = [
   { id: '1', name: 'Spotify Premium',  frequency: 'monthly', amount: '10.99', nextDate: '2025-07-15' },
   { id: '2', name: 'ChatGPT Plus',     frequency: 'monthly', amount: '20.00', nextDate: '2025-07-18' },
@@ -69,8 +63,8 @@ export class OverviewHttpRepository extends OverviewRepository {
         filterLabel: res.totalBudgets.filter,
         categories,
       },
-      holdings: MOCK_HOLDINGS,   // chunk 3
-      recurring: MOCK_RECURRING, // chunk 4
+      holdings: res.investments,
+      recurring: MOCK_RECURRING,
     };
   }
 }
