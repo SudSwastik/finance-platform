@@ -43,8 +43,6 @@ npx openapi-to-postmanv2 \
 | `dashboard-bff` | 8080 | — | Composes overview; `/me`; `/health`; no domain code |
 | `identity-service` | 8079 | `identity` | Tenant, User, UserRelationship |
 | `budget-service` | 8081 | `budget` | BudgetCategory |
-| `activity-log-service` | 8082 | `activity_log` | ActivityLogEntry |
-| `goals-service` | 8083 | `goals` | Goal |
 | `finance-service` | 8084 | `finance` | Account, Transaction, Asset, InvestmentTransaction |
 | `portfolio-service` | 8085 | `portfolio` | Holdings (read model) |
 

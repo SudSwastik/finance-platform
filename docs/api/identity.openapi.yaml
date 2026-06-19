@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: Identity Service
+  version: 0.1.0
+  description: Tenant and user management. Port 8079.
+
+servers:
+  - url: http://localhost:8079
+
+paths:
+  /api/v1/identity/me:
+    get:
+      operationId: getMyProfile
+      summary: Get the authenticated user's profile
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileDto"
+        "401":
+          description: Not authenticated
+        "404":
+          description: User not found in identity store
+
+components:
+  securitySchemes:
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+
+  schemas:
+    UserProfileDto:
+      type: object
+      required: [userId, tenantId, userSub, email]
+      properties:
+        userId:
+          type: string
+          format: uuid
+        tenantId:
+          type: string
+          format: uuid
+        userSub:
+          type: string
+        email:
+          type: string

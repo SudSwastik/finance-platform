@@ -1,6 +1,7 @@
 package com.finance.platform.security;
 
 import com.finance.platform.common.domain.UserId;
+import com.finance.platform.common.tenant.TenantContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,9 +33,12 @@ public class DevUserSubAuthenticationFilter extends OncePerRequestFilter {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             String sub = request.getHeader(properties.getDevUserSubHeader());
             if (sub != null && !sub.isBlank()) {
-                PlatformUserPrincipal principal = new PlatformUserPrincipal(UserId.of(sub.trim()), List.of("USER"));
+                String trimmed = sub.trim();
+                PlatformUserPrincipal principal = new PlatformUserPrincipal(UserId.of(trimmed), List.of("USER"));
                 var authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                TenantContext.set(trimmed);
+                QueryContext.set(QueryContext.own(trimmed));
             }
         }
         filterChain.doFilter(request, response);

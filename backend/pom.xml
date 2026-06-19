@@ -20,7 +20,10 @@
     <modules>
         <module>platform-common</module>
         <module>platform-security</module>
+        <module>identity-service</module>
         <module>budget-service</module>
+        <module>finance-service</module>
+        <module>portfolio-service</module>
         <module>dashboard-bff</module>
     </modules>
 

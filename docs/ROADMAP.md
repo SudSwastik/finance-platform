@@ -17,13 +17,13 @@ Shell (`FixedNavigationComponent`, `TopBarComponent`, `AppShellComponent`), `app
 Overview page: `total-budgets`, `investments-widget`, `recurring-widget`. Nav: Overview, Wallets & Banks, Subscriptions, Portfolio.
 
 ### Phase 4 — Initial backend scaffold
-`platform-common`, `platform-security`, `dashboard-bff`, `budget-service`, `activity-log-service`, `goals-service`, `ledger-service`, `portfolio-service`, `recurring-service`. Docker Compose + LocalStack Cognito + Flyway seed. OpenAPI specs. `X-Dev-User-Sub` local auth.
+`platform-common`, `platform-security`, `dashboard-bff`, `budget-service`, `ledger-service`, `portfolio-service`, `recurring-service`. Docker Compose + LocalStack Cognito + Flyway seed. OpenAPI specs. `X-Dev-User-Sub` local auth.
 
 ---
 
 ## Upcoming
 
-### Phase 5 — Backend architecture refactor
+### Phase 5 — Backend architecture refactor ✅
 **Goal:** Replace initial scaffold with multi-tenant accounts-first data model.
 
 | Deliverable | Notes |
@@ -31,13 +31,15 @@ Overview page: `total-budgets`, `investments-widget`, `recurring-widget`. Nav: O
 | `identity-service` :8079 | `identity` schema: `tenants`, `users`, `user_relationships` |
 | `finance-service` :8084 | `finance` schema: `accounts`, `transactions`, `investment_transactions`, `assets`. Absorbs `ledger-service` + `recurring-service` |
 | Delete `ledger-service`, `recurring-service` | Replaced by `finance-service` |
-| `tenant_id` migration | Add to all existing schemas (`budget`, `goals`, `activity_log`, `portfolio`) |
+| `tenant_id` migration | Add to all existing schemas (`budget`, `portfolio`) |
 | `platform-security` update | `QueryContext` with scope-aware filtering: `finance:own`, `finance:tenant`, `finance:platform` |
 | OpenAPI update | Add `finance.openapi.yaml`; remove `ledger.openapi.yaml`, `recurring.openapi.yaml` |
 | BFF update | Wire `identity-service` and `finance-service` clients |
 | Postman regenerate | Reflect new service map |
 
 **Exit criteria:** `docker compose up`; unified `/finance/transactions` returns bank + card + stock + crypto filtered by `user_sub`; two seed users isolated; `./mvnw verify` passes.
+
+**Completed 2026-05-30.** `identity-service` + `finance-service` created. `ledger-service` + `recurring-service` deleted. `QueryContext` added to `platform-security`. BFF trimmed to 3 clients (budget, portfolio, finance). All 14 unit tests pass.
 
 ---
 

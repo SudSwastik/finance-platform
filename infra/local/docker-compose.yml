@@ -1,0 +1,133 @@
+services:
+
+  # ─── Infrastructure ────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: finance_dashboard
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: finance
+    volumes:
+      - ./postgres/init:/docker-entrypoint-initdb.d
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance -d finance_dashboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  localstack:
+    image: localstack/localstack:3
+    environment:
+      SERVICES: cognito-idp
+      DEBUG: 0
+      LOCALSTACK_HOST: localstack
+    volumes:
+      - ./localstack/init:/etc/localstack/init/ready.d
+    ports:
+      - "4566:4566"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:4566/_localstack/health | grep -q '\"cognito-idp\"'"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+
+  # ─── Domain Services ────────────────────────────────────────────────────────
+
+  identity-service:
+    build:
+      context: ../../backend/identity-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=identity
+      SPRING_DATASOURCE_USERNAME: finance
+      SPRING_DATASOURCE_PASSWORD: finance
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: identity
+      SPRING_FLYWAY_SCHEMAS: identity
+      SPRING_FLYWAY_DEFAULT_SCHEMA: identity
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+    ports:
+      - "8079:8079"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  budget-service:
+    build:
+      context: ../../backend/budget-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=budget
+      SPRING_DATASOURCE_USERNAME: finance
+      SPRING_DATASOURCE_PASSWORD: finance
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: budget
+      SPRING_FLYWAY_SCHEMAS: budget
+      SPRING_FLYWAY_DEFAULT_SCHEMA: budget
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  finance-service:
+    build:
+      context: ../../backend/finance-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=finance
+      SPRING_DATASOURCE_USERNAME: finance
+      SPRING_DATASOURCE_PASSWORD: finance
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: finance
+      SPRING_FLYWAY_SCHEMAS: finance
+      SPRING_FLYWAY_DEFAULT_SCHEMA: finance
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  portfolio-service:
+    build:
+      context: ../../backend/portfolio-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=portfolio
+      SPRING_DATASOURCE_USERNAME: finance
+      SPRING_DATASOURCE_PASSWORD: finance
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: portfolio
+      SPRING_FLYWAY_SCHEMAS: portfolio
+      SPRING_FLYWAY_DEFAULT_SCHEMA: portfolio
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+    ports:
+      - "8085:8085"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─── BFF ────────────────────────────────────────────────────────────────────
+
+  dashboard-bff:
+    build:
+      context: ../../backend/dashboard-bff
+      dockerfile: Dockerfile
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+      PLATFORM_SERVICES_BUDGET:    http://budget-service:8081
+      PLATFORM_SERVICES_IDENTITY:  http://identity-service:8079
+      PLATFORM_SERVICES_FINANCE:   http://finance-service:8084
+      PLATFORM_SERVICES_PORTFOLIO: http://portfolio-service:8085
+    ports:
+      - "8080:8080"
+    depends_on:
+      - identity-service
+      - budget-service
+      - finance-service
+      - portfolio-service
+
+volumes:
+  postgres-data:

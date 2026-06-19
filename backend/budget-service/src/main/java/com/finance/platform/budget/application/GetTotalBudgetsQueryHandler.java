@@ -16,8 +16,8 @@ public class GetTotalBudgetsQueryHandler {
 
     @Transactional(readOnly = true)
     public TotalBudgetsSnapshot handle(GetTotalBudgetsQuery query) {
-        var categories = repository.findByUserId(query.userId());
-        var total = repository.findTotalDisplayByUserId(query.userId());
+        var categories = repository.findAll();
+        var total = repository.findTotalDisplay();
         return new TotalBudgetsSnapshot(total, "Expenses", categories);
     }
 }

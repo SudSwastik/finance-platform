@@ -6,9 +6,6 @@ import java.util.List;
 
 public record OverviewResponseDto(
         TotalBudgetsSectionDto totalBudgets,
-        SpendingSectionDto spending,
-        List<GoalItemDto> goals,
-        List<TransactionItemDto> transactions,
         List<HoldingItemDto> investments,
         List<RecurringItemDto> recurring) {
 }
