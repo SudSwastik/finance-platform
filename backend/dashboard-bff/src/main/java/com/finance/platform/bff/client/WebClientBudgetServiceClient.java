@@ -2,7 +2,6 @@ package com.finance.platform.bff.client;
 
 import com.finance.platform.bff.client.dto.TotalBudgetsSectionDto;
 import com.finance.platform.bff.config.PlatformServicesProperties;
-import com.finance.platform.common.domain.UserId;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -17,10 +16,10 @@ public class WebClientBudgetServiceClient implements BudgetServiceClient {
     }
 
     @Override
-    public Mono<TotalBudgetsSectionDto> getTotalBudgets(UserId userId, String devUserSubHeaderValue) {
+    public Mono<TotalBudgetsSectionDto> getTotalBudgets(String userSub) {
         return webClient.get()
                 .uri("/api/v1/budgets/total-budgets")
-                .header("X-Dev-User-Sub", devUserSubHeaderValue)
+                .header("X-Dev-User-Sub", userSub)
                 .retrieve()
                 .bodyToMono(TotalBudgetsSectionDto.class);
     }

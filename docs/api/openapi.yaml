@@ -117,16 +117,12 @@ components:
 
     OverviewResponse:
       type: object
-      required: [totalBudgets, spending, goals, transactions, investments, recurring]
+      required: [totalBudgets, spending, transactions, investments, recurring]
       properties:
         totalBudgets:
           $ref: '#/components/schemas/TotalBudgetsSection'
         spending:
           $ref: '#/components/schemas/SpendingSection'
-        goals:
-          type: array
-          items:
-            $ref: '#/components/schemas/GoalItem'
         transactions:
           type: array
           items:
@@ -179,17 +175,6 @@ components:
         date: { type: string, format: date }
         thisMonth: { $ref: '#/components/schemas/Money' }
         lastMonth: { $ref: '#/components/schemas/Money' }
-
-    GoalItem:
-      type: object
-      properties:
-        id: { type: string }
-        name: { type: string }
-        current: { $ref: '#/components/schemas/Money' }
-        target: { $ref: '#/components/schemas/Money' }
-        percent: { type: number }
-        colorToken: { type: string }
-        targetDate: { type: string }
 
     TransactionItem:
       type: object

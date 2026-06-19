@@ -28,10 +28,18 @@ public class PlatformSecurityConfiguration {
                         .requestMatchers("/api/v1/health", "/actuator/health").permitAll()
                         .anyRequest().authenticated());
 
+        // Clear TenantContext at the end of every request (wraps entire chain via try-finally)
+        http.addFilterBefore(new TenantContextClearFilter(), UsernamePasswordAuthenticationFilter.class);
+
         if (properties.isDevUserSubEnabled()) {
             http.addFilterBefore(
                     new DevUserSubAuthenticationFilter(properties),
                     UsernamePasswordAuthenticationFilter.class);
+        } else {
+            // JWT resource server: spring.security.oauth2.resourceserver.jwt.issuer-uri must be set.
+            // No code change is needed when switching from LocalStack to real Cognito — only config.
+            http.oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(new JwtTenantAwareConverter())));
         }
 
         return http.build();

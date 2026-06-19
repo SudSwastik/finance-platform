@@ -3,7 +3,7 @@ package com.finance.platform.budget.infrastructure.persistence;
 import com.finance.platform.budget.domain.BudgetCategory;
 import com.finance.platform.budget.domain.BudgetCategoryRepository;
 import com.finance.platform.common.domain.Money;
-import com.finance.platform.common.domain.UserId;
+import com.finance.platform.common.tenant.TenantContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,15 +22,17 @@ public class BudgetCategoryRepositoryAdapter implements BudgetCategoryRepository
     }
 
     @Override
-    public List<BudgetCategory> findByUserId(UserId userId) {
-        return categoryRepository.findByUserSubOrderByNameAsc(userId.value()).stream()
+    public List<BudgetCategory> findAll() {
+        String sub = TenantContext.requireUserSub();
+        return categoryRepository.findByUserSubOrderByNameAsc(sub).stream()
                 .map(this::toDomain)
                 .toList();
     }
 
     @Override
-    public Money findTotalDisplayByUserId(UserId userId) {
-        return summaryRepository.findById(userId.value())
+    public Money findTotalDisplay() {
+        String sub = TenantContext.requireUserSub();
+        return summaryRepository.findById(sub)
                 .map(e -> Money.of(e.getTotalDisplay()))
                 .orElse(Money.zero());
     }

@@ -1,0 +1,26 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: portfolio-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finance_dashboard?currentSchema=portfolio
+    username: finance
+    password: finance
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: portfolio
+    open-in-view: false
+  flyway:
+    enabled: true
+    schemas: portfolio
+    default-schema: portfolio
+    locations: classpath:db/migration
+
+platform:
+  security:
+    dev-user-sub-enabled: true

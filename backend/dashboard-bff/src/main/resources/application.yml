@@ -9,7 +9,10 @@ platform:
   security:
     dev-user-sub-enabled: true
   services:
-    budget: http://localhost:8081
+    budget:    http://localhost:8081
+    identity:  http://localhost:8079
+    finance:   http://localhost:8084
+    portfolio: http://localhost:8085
 
 logging:
   level:

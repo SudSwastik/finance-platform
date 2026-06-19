@@ -1,0 +1,30 @@
+server:
+  port: 8079
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finance_dashboard?currentSchema=identity
+    username: finance
+    password: finance
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: identity
+    open-in-view: false
+  flyway:
+    enabled: true
+    schemas: identity
+    default-schema: identity
+    locations: classpath:db/migration
+
+platform:
+  security:
+    dev-user-sub-enabled: true
+
+logging:
+  level:
+    org.springframework.security: INFO

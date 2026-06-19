@@ -12,12 +12,10 @@ Angular SPA
     ▼
 dashboard-bff :8080
     │  WebClient (parallel)
-    ├──► identity-service     :8079
-    ├──► budget-service       :8081
-    ├──► activity-log-service :8082
-    ├──► goals-service        :8083
-    ├──► finance-service      :8084
-    └──► portfolio-service    :8085
+    ├──► identity-service  :8079
+    ├──► budget-service    :8081
+    ├──► finance-service   :8084
+    └──► portfolio-service :8085
                 │
                 ▼
           PostgreSQL (1 instance, schema per service)
@@ -34,8 +32,6 @@ dashboard-bff :8080
 | `dashboard-bff` | 8080 | — | BFF: composes overview, `/me`, `/health` |
 | `identity-service` | 8079 | `identity` | Tenant, User, UserRelationship |
 | `budget-service` | 8081 | `budget` | BudgetCategory |
-| `activity-log-service` | 8082 | `activity_log` | ActivityLogEntry |
-| `goals-service` | 8083 | `goals` | Goal |
 | `finance-service` | 8084 | `finance` | Account, Transaction, Asset (replaces `ledger-service` + `recurring-service`) |
 | `portfolio-service` | 8085 | `portfolio` | Holdings (read model computed from investment_transactions) |
 

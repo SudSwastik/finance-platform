@@ -1,9 +1,9 @@
 package com.finance.platform.bff.application;
 
-import com.finance.platform.bff.web.dto.OverviewResponseDto;
 import com.finance.platform.bff.client.BudgetServiceClient;
-import com.finance.platform.bff.support.OverviewStubSections;
-import com.finance.platform.common.domain.UserId;
+import com.finance.platform.bff.client.FinanceServiceClient;
+import com.finance.platform.bff.client.PortfolioServiceClient;
+import com.finance.platform.bff.web.dto.OverviewResponseDto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -11,22 +11,23 @@ import reactor.core.publisher.Mono;
 public class OverviewComposer {
 
     private final BudgetServiceClient budgetServiceClient;
-    private final OverviewStubSections stubSections;
+    private final PortfolioServiceClient portfolioServiceClient;
+    private final FinanceServiceClient financeServiceClient;
 
-    public OverviewComposer(BudgetServiceClient budgetServiceClient, OverviewStubSections stubSections) {
+    public OverviewComposer(
+            BudgetServiceClient budgetServiceClient,
+            PortfolioServiceClient portfolioServiceClient,
+            FinanceServiceClient financeServiceClient) {
         this.budgetServiceClient = budgetServiceClient;
-        this.stubSections = stubSections;
+        this.portfolioServiceClient = portfolioServiceClient;
+        this.financeServiceClient = financeServiceClient;
     }
 
-    public Mono<OverviewResponseDto> compose(UserId userId) {
-        return budgetServiceClient
-                .getTotalBudgets(userId, userId.value())
-                .map(totalBudgets -> new OverviewResponseDto(
-                        totalBudgets,
-                        stubSections.spending(),
-                        stubSections.goals(),
-                        stubSections.transactions(),
-                        stubSections.investments(),
-                        stubSections.recurring()));
+    public Mono<OverviewResponseDto> compose(String userSub) {
+        return Mono.zip(
+                budgetServiceClient.getTotalBudgets(userSub),
+                portfolioServiceClient.getHoldings(userSub),
+                financeServiceClient.getRecurringTransactions(userSub)
+        ).map(t -> new OverviewResponseDto(t.getT1(), t.getT2(), t.getT3()));
     }
 }

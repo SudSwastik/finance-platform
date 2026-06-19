@@ -1,7 +1,8 @@
 package com.finance.platform.budget.infrastructure.persistence;
 
 import com.finance.platform.budget.domain.BudgetCategoryRepository;
-import com.finance.platform.common.domain.UserId;
+import com.finance.platform.common.tenant.TenantContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.finance.platform.budget.BudgetServiceApplication;
@@ -43,16 +44,23 @@ class BudgetCategoryRepositoryAdapterIntegrationTest {
     @Autowired
     private BudgetCategoryRepository repository;
 
+    @AfterEach
+    void clearTenant() {
+        TenantContext.clear();
+    }
+
     @Test
-    void findByUserId_loadsSeedCategoriesForAlice() {
-        var categories = repository.findByUserId(UserId.of("seed-user-alice"));
+    void findAll_loadsSeedCategoriesForAlice() {
+        TenantContext.set("seed-user-alice");
+        var categories = repository.findAll();
         assertEquals(4, categories.size());
         assertTrue(categories.stream().anyMatch(c -> c.name().equals("Essentials")));
     }
 
     @Test
-    void findTotalDisplayByUserId_returnsConfiguredTotal() {
-        var total = repository.findTotalDisplayByUserId(UserId.of("seed-user-alice"));
+    void findTotalDisplay_returnsConfiguredTotal() {
+        TenantContext.set("seed-user-alice");
+        var total = repository.findTotalDisplay();
         assertEquals("6400", total.toApiString());
     }
 }

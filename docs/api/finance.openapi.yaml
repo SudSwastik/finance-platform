@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: Finance Service
+  version: 0.1.0
+  description: Accounts, transactions (bank/card/brokerage/crypto). Port 8084.
+
+servers:
+  - url: http://localhost:8084
+
+paths:
+  /api/v1/finance/accounts:
+    get:
+      operationId: listAccounts
+      summary: List all accounts for the authenticated user
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/recurring:
+    get:
+      operationId: listRecurringTransactions
+      summary: List recurring transactions for the overview widget
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: List of recurring transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecurringTransactionDto"
+        "401":
+          description: Not authenticated
+
+components:
+  securitySchemes:
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+
+  schemas:
+    AccountDto:
+      type: object
+      required: [id, type, name, currency]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [BANK, CREDIT_CARD, BROKERAGE, CRYPTO_WALLET]
+        name:
+          type: string
+        currency:
+          type: string
+          example: INR
+
+    RecurringTransactionDto:
+      type: object
+      required: [name, frequency, amount, nextDate]
+      properties:
+        name:
+          type: string
+          example: Spotify Premium
+        frequency:
+          type: string
+          example: Monthly
+        amount:
+          type: string
+          description: Decimal string (never float)
+          example: "10.99"
+        nextDate:
+          type: string
+          format: date
+          example: "2025-07-15"
