@@ -1,3 +1,15 @@
+@if (facade.loading$ | async) {
+  <div class="overview-page overview-page--loading">
+    <p class="overview-page__loading-text">Loading overview…</p>
+  </div>
+}
+
+@if (facade.error$ | async; as error) {
+  <div class="overview-page overview-page--error">
+    <p class="overview-page__error-text">{{ error }}</p>
+  </div>
+}
+
 @if (facade.overview$ | async; as data) {
   <div class="overview-page">
     <div class="overview-page__grid">
