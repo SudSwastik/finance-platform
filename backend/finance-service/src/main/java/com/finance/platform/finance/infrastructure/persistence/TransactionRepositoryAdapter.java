@@ -1,7 +1,11 @@
 package com.finance.platform.finance.infrastructure.persistence;
 
 import com.finance.platform.finance.domain.Transaction;
+import com.finance.platform.finance.domain.TransactionFilter;
+import com.finance.platform.finance.domain.TransactionPage;
 import com.finance.platform.finance.domain.TransactionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -40,6 +44,18 @@ class TransactionRepositoryAdapter implements TransactionRepository {
     @Override
     public List<Transaction> findByAccountId(UUID accountId, String userSub) {
         return jpaRepository.findAllByAccountIdAndUserSub(accountId, userSub).stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public TransactionPage findPage(String userSub, TransactionFilter filter, int page, int size) {
+        var spec     = TransactionSpecifications.forFilter(userSub, filter);
+        var pageable = PageRequest.of(page, size);
+        Page<TransactionJpaEntity> result = jpaRepository.findAll(spec, pageable);
+        return new TransactionPage(
+                result.getContent().stream().map(this::toDomain).toList(),
+                result.getTotalElements(),
+                page,
+                size);
     }
 
     @Override

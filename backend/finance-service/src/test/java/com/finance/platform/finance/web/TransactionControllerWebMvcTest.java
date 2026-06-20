@@ -2,8 +2,13 @@ package com.finance.platform.finance.web;
 
 import com.finance.platform.finance.application.GetMonthlySummaryQueryHandler;
 import com.finance.platform.finance.application.GetRecentTransactionsQueryHandler;
+import com.finance.platform.finance.application.GetTransactionStatsQueryHandler;
 import com.finance.platform.finance.application.ListRecurringTransactionsQueryHandler;
+import com.finance.platform.finance.application.ListTransactionsQueryHandler;
 import com.finance.platform.finance.application.MonthlySummary;
+import com.finance.platform.finance.application.TransactionListResult;
+import com.finance.platform.finance.application.TransactionStats;
+import com.finance.platform.finance.application.TransactionWithAccount;
 import com.finance.platform.finance.domain.Transaction;
 import com.finance.platform.finance.domain.TransactionStatus;
 import com.finance.platform.finance.domain.TransactionType;
@@ -33,14 +38,11 @@ class TransactionControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private ListRecurringTransactionsQueryHandler queryHandler;
-
-    @MockBean
-    private GetRecentTransactionsQueryHandler recentQueryHandler;
-
-    @MockBean
-    private GetMonthlySummaryQueryHandler monthlySummaryQueryHandler;
+    @MockBean private ListRecurringTransactionsQueryHandler queryHandler;
+    @MockBean private GetRecentTransactionsQueryHandler recentQueryHandler;
+    @MockBean private GetMonthlySummaryQueryHandler monthlySummaryQueryHandler;
+    @MockBean private ListTransactionsQueryHandler listTransactionsQueryHandler;
+    @MockBean private GetTransactionStatsQueryHandler transactionStatsQueryHandler;
 
     @Test
     void recurring_withoutAuth_isForbidden() throws Exception {
@@ -98,5 +100,46 @@ class TransactionControllerWebMvcTest {
                 .andExpect(jsonPath("$.income").value("85000.00"))
                 .andExpect(jsonPath("$.spending").value("45000.00"))
                 .andExpect(jsonPath("$.netSaved").value("40000.00"));
+    }
+
+    @Test
+    void listTransactions_withDevHeader_returnsPage() throws Exception {
+        var tx = new Transaction(
+                UUID.randomUUID(), UUID.randomUUID(), "seed-user-alice", UUID.randomUUID(),
+                new BigDecimal("2840.00"), "INR",
+                TransactionType.DEBIT, TransactionStatus.SETTLED,
+                "Zepto", "Groceries", null,
+                false, LocalDate.of(2026, 6, 17));
+
+        var result = new TransactionListResult(
+                List.of(new TransactionWithAccount(tx, "ICICI Credit Card")),
+                1L, 0, 20);
+
+        when(listTransactionsQueryHandler.handle(any())).thenReturn(result);
+
+        mockMvc.perform(get("/api/v1/finance/transactions")
+                        .header("X-Dev-User-Sub", "seed-user-alice"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].merchantName").value("Zepto"))
+                .andExpect(jsonPath("$.content[0].accountName").value("ICICI Credit Card"))
+                .andExpect(jsonPath("$.content[0].status").value("SETTLED"))
+                .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    void getStats_withDevHeader_returnsStats() throws Exception {
+        when(transactionStatsQueryHandler.handle(any()))
+                .thenReturn(new TransactionStats(
+                        new BigDecimal("85000.00"), 1L,
+                        new BigDecimal("75000.00"), 7L,
+                        new BigDecimal("10000.00"), 8L));
+
+        mockMvc.perform(get("/api/v1/finance/transactions/stats")
+                        .header("X-Dev-User-Sub", "seed-user-alice"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.moneyIn").value("85000.00"))
+                .andExpect(jsonPath("$.moneyOut").value("75000.00"))
+                .andExpect(jsonPath("$.netFlow").value("10000.00"))
+                .andExpect(jsonPath("$.totalCount").value(8));
     }
 }

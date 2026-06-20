@@ -16,5 +16,7 @@ public interface TransactionRepository {
 
     List<Transaction> findByAccountId(UUID accountId, String userSub);
 
+    TransactionPage findPage(String userSub, TransactionFilter filter, int page, int size);
+
     void save(Transaction transaction);
 }
