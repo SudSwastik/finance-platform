@@ -1,0 +1,75 @@
+<div class="net-worth-widget">
+
+  <!-- Header row -->
+  <div class="net-worth-widget__header">
+    <div>
+      <div class="net-worth-widget__label">
+        <i class="ph ph-wallet" aria-hidden="true"></i>Total net worth
+      </div>
+      <div class="net-worth-widget__number-row">
+        <span class="net-worth-widget__amount">
+          {{ whole }}<span class="net-worth-widget__cents">{{ cents }}</span>
+        </span>
+        <span class="net-worth-widget__pill">
+          <i class="ph ph-trend-up" aria-hidden="true"></i>{{ data.changePercent }}%
+        </span>
+      </div>
+      <div class="net-worth-widget__vs">{{ vsLastMonthFmt }}</div>
+    </div>
+
+    <!-- Period selector -->
+    <div class="net-worth-widget__periods" role="group" aria-label="Chart period">
+      @for (p of periods; track p) {
+        <button
+          class="net-worth-widget__period-btn"
+          [class.net-worth-widget__period-btn--active]="selectedPeriod() === p"
+          type="button"
+          (click)="selectPeriod(p)"
+        >{{ p }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <svg
+    class="net-worth-widget__chart"
+    viewBox="0 0 640 180"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id="nwGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#6E8FD6" stop-opacity="0.28" />
+        <stop offset="100%" stop-color="#6E8FD6" stop-opacity="0" />
+      </linearGradient>
+    </defs>
+    <line x1="0" y1="46"  x2="640" y2="46"  stroke="#1C1C21" stroke-width="1" />
+    <line x1="0" y1="93"  x2="640" y2="93"  stroke="#1C1C21" stroke-width="1" />
+    <line x1="0" y1="140" x2="640" y2="140" stroke="#1C1C21" stroke-width="1" />
+    <path [attr.d]="fillPath()" fill="url(#nwGrad)" />
+    <polyline
+      [attr.points]="polylinePoints()"
+      fill="none"
+      stroke="#6E8FD6"
+      stroke-width="2.5"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    />
+    <circle
+      [attr.cx]="lastPoint().cx"
+      [attr.cy]="lastPoint().cy"
+      r="4"
+      fill="#6E8FD6"
+      stroke="#121215"
+      stroke-width="2"
+    />
+  </svg>
+
+  <!-- Month labels -->
+  <div class="net-worth-widget__months">
+    @for (m of MONTHS; track m) {
+      <span>{{ m }}</span>
+    }
+  </div>
+
+</div>

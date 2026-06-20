@@ -1,31 +1,34 @@
 <app-dashboard-card>
   <div class="monthly-summary-widget">
 
-    <h2 class="text-card-title monthly-summary-widget__title">This Month</h2>
+    <div class="monthly-summary-widget__header">
+      <span class="text-card-title">This month</span>
+      <span class="monthly-summary-widget__month">June</span>
+    </div>
 
-    <div class="monthly-summary-widget__stats">
-      <div class="monthly-summary-widget__stat">
-        <span class="monthly-summary-widget__label text-meta text-secondary">Income</span>
-        <span class="monthly-summary-widget__value monthly-summary-widget__value--positive">
-          {{ fmt(summary.income) }}
-        </span>
+    <div class="monthly-summary-widget__row">
+      <div class="monthly-summary-widget__row-label">
+        <i class="ph ph-arrow-down-left monthly-summary-widget__income-icon" aria-hidden="true"></i>Income
       </div>
+      <span class="monthly-summary-widget__value">{{ fmt(summary.income) }}</span>
+    </div>
+    <div class="monthly-summary-widget__track">
+      <div class="monthly-summary-widget__fill monthly-summary-widget__fill--income" style="width:100%"></div>
+    </div>
 
-      <div class="monthly-summary-widget__divider"></div>
-
-      <div class="monthly-summary-widget__stat">
-        <span class="monthly-summary-widget__label text-meta text-secondary">Spending</span>
-        <span class="monthly-summary-widget__value monthly-summary-widget__value--negative">
-          {{ fmt(summary.spending) }}
-        </span>
+    <div class="monthly-summary-widget__row monthly-summary-widget__row--spaced">
+      <div class="monthly-summary-widget__row-label">
+        <i class="ph ph-arrow-up-right monthly-summary-widget__spend-icon" aria-hidden="true"></i>Spending
       </div>
+      <span class="monthly-summary-widget__value">{{ fmt(summary.spending) }}</span>
+    </div>
+    <div class="monthly-summary-widget__track">
+      <div class="monthly-summary-widget__fill monthly-summary-widget__fill--spend" [style.width]="spendPct()"></div>
+    </div>
 
-      <div class="monthly-summary-widget__divider"></div>
-
-      <div class="monthly-summary-widget__stat">
-        <span class="monthly-summary-widget__label text-meta text-secondary">Net Saved</span>
-        <span class="monthly-summary-widget__value">{{ fmt(summary.netSaved) }}</span>
-      </div>
+    <div class="monthly-summary-widget__net">
+      <span class="monthly-summary-widget__net-label">Net saved</span>
+      <span class="monthly-summary-widget__net-value">+{{ fmt(summary.netSaved) }}</span>
     </div>
 
   </div>

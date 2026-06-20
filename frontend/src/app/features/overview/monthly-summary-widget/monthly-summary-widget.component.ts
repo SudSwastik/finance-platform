@@ -15,4 +15,11 @@ export class MonthlySummaryWidgetComponent {
   protected fmt(val: string): string {
     return `$${parseFloat(val).toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
   }
+
+  protected spendPct(): string {
+    const income = parseFloat(this.summary.income);
+    const spend  = parseFloat(this.summary.spending);
+    if (!income) return '0%';
+    return `${Math.min(100, Math.round((spend / income) * 100))}%`;
+  }
 }

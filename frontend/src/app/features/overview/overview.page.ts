@@ -6,6 +6,7 @@ import { InvestmentsWidgetComponent } from './investments-widget/investments-wid
 import { RecurringWidgetComponent } from './recurring-widget/recurring-widget.component';
 import { RecentTransactionsWidgetComponent } from './recent-transactions-widget/recent-transactions-widget.component';
 import { MonthlySummaryWidgetComponent } from './monthly-summary-widget/monthly-summary-widget.component';
+import { NetWorthWidgetComponent } from './net-worth-widget/net-worth-widget.component';
 
 @Component({
   selector: 'app-overview-page',
@@ -18,6 +19,7 @@ import { MonthlySummaryWidgetComponent } from './monthly-summary-widget/monthly-
     RecurringWidgetComponent,
     RecentTransactionsWidgetComponent,
     MonthlySummaryWidgetComponent,
+    NetWorthWidgetComponent,
   ],
   templateUrl: './overview.page.html',
   styleUrl: './overview.page.scss',

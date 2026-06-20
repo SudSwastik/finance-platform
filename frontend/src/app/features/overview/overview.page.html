@@ -12,14 +12,56 @@
 
 @if (facade.overview$ | async; as data) {
   <div class="overview-page">
-    <div class="overview-page__summary-row">
-      <app-monthly-summary-widget [summary]="data.monthlySummary" />
+
+    <!-- Page header -->
+    <div class="overview-page__header">
+      <div>
+        <h1 class="overview-page__title">Overview</h1>
+        <p class="overview-page__subtitle">Welcome back, John &mdash; here's where your money stands today.</p>
+      </div>
+      <div class="overview-page__actions">
+        <div class="overview-page__search">
+          <i class="ph ph-magnifying-glass overview-page__search-icon" aria-hidden="true"></i>
+          <span class="overview-page__search-placeholder">Search anything</span>
+        </div>
+        <button class="overview-page__bell" type="button" aria-label="Notifications">
+          <i class="ph ph-bell"></i>
+          <span class="overview-page__bell-dot" aria-hidden="true"></span>
+        </button>
+        <button class="overview-page__add-btn" type="button">
+          <i class="ph ph-plus" aria-hidden="true"></i>Add transaction
+        </button>
+      </div>
     </div>
+
+    <!-- 12-col grid -->
     <div class="overview-page__grid">
-      <app-total-budgets [data]="data.budgets" />
-      <app-investments-widget [holdings]="data.holdings" />
-      <app-recent-transactions-widget [transactions]="data.recentTransactions" />
-      <app-recurring-widget [bills]="data.recurring" />
+
+      <!-- Row 1: net worth chart + this month -->
+      <div class="overview-page__cell overview-page__cell--span8">
+        <app-net-worth-widget [data]="data.netWorth" />
+      </div>
+      <div class="overview-page__cell overview-page__cell--span4">
+        <app-monthly-summary-widget [summary]="data.monthlySummary" />
+      </div>
+
+      <!-- Row 2: budgets + recurring -->
+      <div class="overview-page__cell overview-page__cell--span8">
+        <app-total-budgets [data]="data.budgets" />
+      </div>
+      <div class="overview-page__cell overview-page__cell--span4">
+        <app-recurring-widget [bills]="data.recurring" />
+      </div>
+
+      <!-- Row 3: recent transactions + top holdings -->
+      <div class="overview-page__cell overview-page__cell--span8">
+        <app-recent-transactions-widget [transactions]="data.recentTransactions" />
+      </div>
+      <div class="overview-page__cell overview-page__cell--span4">
+        <app-investments-widget [holdings]="data.holdings" />
+      </div>
+
     </div>
+
   </div>
 }

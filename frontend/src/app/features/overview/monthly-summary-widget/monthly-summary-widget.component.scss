@@ -1,34 +1,76 @@
 .monthly-summary-widget {
-  &__title { margin: 0 0 16px; }
-
-  &__stats {
+  &__header {
     display: flex;
     align-items: center;
-    gap: 24px;
+    justify-content: space-between;
+    margin-bottom: 16px;
   }
 
-  &__stat {
+  &__month {
+    font-size: 11.5px;
+    color: var(--color-text-faint);
+    font-weight: 600;
+  }
+
+  &__row {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    margin-bottom: 6px;
+
+    &--spaced { margin-top: 14px; }
   }
 
-  &__label { white-space: nowrap; }
+  &__row-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  &__income-icon { color: var(--color-semantic-positive); }
+  &__spend-icon  { color: var(--color-semantic-negative); }
 
   &__value {
-    font-size: var(--font-size-kpi);
+    color: var(--color-text-heading);
     font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    color: var(--color-text-primary);
   }
 
-  &__value--positive { color: var(--color-semantic-positive); }
-  &__value--negative { color: var(--color-semantic-negative); }
+  &__track {
+    height: 7px;
+    background: var(--color-progress-track);
+    border-radius: 4px;
+    overflow: hidden;
+  }
 
-  &__divider {
-    width: 1px;
-    height: 40px;
-    background: var(--color-border-subtle);
-    flex-shrink: 0;
+  &__fill {
+    height: 100%;
+    border-radius: 4px;
+
+    &--income { background: var(--color-semantic-positive); }
+    &--spend  { background: var(--color-semantic-negative); }
+  }
+
+  &__net {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__net-label {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+  }
+
+  &__net-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text-heading);
   }
 }

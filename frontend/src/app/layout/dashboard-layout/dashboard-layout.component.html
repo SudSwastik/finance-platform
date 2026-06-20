@@ -1,16 +1,12 @@
 <div class="dashboard-layout">
   <app-sidebar
-    [navItems]="navItems"
-    userName="Your Name"
-    userInitials="YN"
+    userName="John Avery"
+    userEmail="john@ledgerly.app"
+    userInitials="JA"
   />
-
-  <div class="dashboard-layout__main">
-    <app-page-header />
-    <main class="dashboard-layout__content" id="main-content">
-      <router-outlet />
-    </main>
-  </div>
+  <main class="dashboard-layout__main" id="main-content">
+    <router-outlet />
+  </main>
 </div>
 
 <app-modal />

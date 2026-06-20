@@ -2,28 +2,25 @@
   <div class="investments-widget">
 
     <div class="investments-widget__header">
-      <h2 class="text-card-title">Investments</h2>
-      <button class="investments-widget__see-all text-meta" type="button">See all</button>
+      <h2 class="text-card-title">Top holdings</h2>
+      <i class="ph ph-dots-three investments-widget__menu" aria-label="More options"></i>
     </div>
 
     <div class="investments-widget__list">
       @for (h of holdings; track h.id) {
         <div class="investments-widget__row">
-          <div class="investments-widget__ticker-wrap">
-            <div class="investments-widget__badge">{{ h.symbol }}</div>
-            <div>
-              <div class="investments-widget__symbol">{{ h.symbol }}</div>
-              <div class="investments-widget__name text-secondary text-meta">{{ h.name }}</div>
-            </div>
+          <div class="investments-widget__badge">{{ h.symbol.slice(0,2) }}</div>
+          <div class="investments-widget__info">
+            <span class="investments-widget__symbol">{{ h.symbol }}</span>
+            <span class="investments-widget__name">{{ h.name }}</span>
           </div>
           <div class="investments-widget__nums">
-            <span class="investments-widget__basis text-secondary text-meta">{{ fmtMoney(h.costBasis) }}</span>
+            <span class="investments-widget__value">{{ fmtMoney(h.value) }}</span>
             <span
               class="investments-widget__change"
-              [class.investments-widget__change--positive]="isPositive(h.changePercent)"
-              [class.investments-widget__change--negative]="!isPositive(h.changePercent)"
+              [class.investments-widget__change--pos]="isPositive(h.changePercent)"
+              [class.investments-widget__change--neg]="!isPositive(h.changePercent)"
             >{{ fmtChange(h.changePercent) }}</span>
-            <span class="investments-widget__value">{{ fmtMoney(h.value) }}</span>
           </div>
         </div>
       }

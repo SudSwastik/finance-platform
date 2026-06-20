@@ -1,32 +1,68 @@
-<nav class="sidebar" aria-label="Main navigation">
+<aside class="sidebar" aria-label="Main navigation">
+
+  <!-- Logo -->
   <div class="sidebar__logo">
-    <span class="sidebar__brand">FinancePlatform</span>
-  </div>
-
-  <ul class="sidebar__list" role="list">
-    @for (item of navItems; track item.route) {
-      <li>
-        <a
-          class="sidebar__link"
-          [routerLink]="item.route"
-          routerLinkActive="sidebar__link--active"
-          #rla="routerLinkActive"
-          [attr.aria-current]="rla.isActive ? 'page' : null"
-        >
-          @if (item.icon) {
-            <span class="sidebar__icon" aria-hidden="true">{{ item.icon }}</span>
-          }
-          <span>{{ item.label }}</span>
-        </a>
-      </li>
-    }
-  </ul>
-
-  <div class="sidebar__footer">
-    <a class="sidebar__footer-link" routerLink="/settings">Settings</a>
-    <div class="sidebar__profile">
-      <div class="sidebar__avatar" aria-hidden="true">{{ userInitials }}</div>
-      <span class="sidebar__username">{{ userName }}</span>
+    <div class="sidebar__logo-icon" aria-hidden="true">
+      <i class="ph ph-chart-line-up"></i>
+    </div>
+    <div class="sidebar__logo-text">
+      <span class="sidebar__brand">Ledgerly</span>
+      <span class="sidebar__brand-sub">Personal Finance</span>
     </div>
   </div>
-</nav>
+
+  <!-- Account switcher -->
+  <button class="sidebar__account-btn" type="button">
+    <span class="sidebar__account-dot" aria-hidden="true"></span>
+    <span class="sidebar__account-name">Personal</span>
+    <i class="ph ph-caret-up-down sidebar__account-caret" aria-hidden="true"></i>
+  </button>
+
+  <!-- MAIN nav -->
+  <div class="sidebar__section-label">MAIN</div>
+  <nav class="sidebar__nav">
+    <a class="sidebar__link" routerLink="/overview" routerLinkActive="sidebar__link--active" #rla1="routerLinkActive" [attr.aria-current]="rla1.isActive ? 'page' : null">
+      <i class="ph ph-squares-four sidebar__nav-icon" aria-hidden="true"></i>Overview
+    </a>
+    <a class="sidebar__link" routerLink="/wallets" routerLinkActive="sidebar__link--active" #rla2="routerLinkActive" [attr.aria-current]="rla2.isActive ? 'page' : null">
+      <i class="ph ph-bank sidebar__nav-icon" aria-hidden="true"></i>Wallets &amp; Banks
+    </a>
+    <a class="sidebar__link" routerLink="/portfolio" routerLinkActive="sidebar__link--active" #rla3="routerLinkActive" [attr.aria-current]="rla3.isActive ? 'page' : null">
+      <i class="ph ph-chart-pie-slice sidebar__nav-icon" aria-hidden="true"></i>Portfolio
+    </a>
+    <a class="sidebar__link" routerLink="/transactions" routerLinkActive="sidebar__link--active" #rla4="routerLinkActive" [attr.aria-current]="rla4.isActive ? 'page' : null">
+      <i class="ph ph-receipt sidebar__nav-icon" aria-hidden="true"></i>Transactions
+    </a>
+    <a class="sidebar__link" routerLink="/subscriptions" routerLinkActive="sidebar__link--active" #rla5="routerLinkActive" [attr.aria-current]="rla5.isActive ? 'page' : null">
+      <i class="ph ph-arrows-clockwise sidebar__nav-icon" aria-hidden="true"></i>Subscriptions
+    </a>
+    <a class="sidebar__link" routerLink="/goals" routerLinkActive="sidebar__link--active" #rla6="routerLinkActive" [attr.aria-current]="rla6.isActive ? 'page' : null">
+      <i class="ph ph-target sidebar__nav-icon" aria-hidden="true"></i>Goals
+    </a>
+  </nav>
+
+  <!-- OTHER nav -->
+  <div class="sidebar__section-label sidebar__section-label--spaced">OTHER</div>
+  <nav class="sidebar__nav">
+    <a class="sidebar__link" routerLink="/integrations" routerLinkActive="sidebar__link--active">
+      <i class="ph ph-plugs-connected sidebar__nav-icon" aria-hidden="true"></i>Integrations
+    </a>
+    <a class="sidebar__link" routerLink="/settings" routerLinkActive="sidebar__link--active">
+      <i class="ph ph-gear-six sidebar__nav-icon" aria-hidden="true"></i>Settings
+    </a>
+    <a class="sidebar__link" routerLink="/help" routerLinkActive="sidebar__link--active">
+      <i class="ph ph-question sidebar__nav-icon" aria-hidden="true"></i>Get Help
+    </a>
+  </nav>
+
+  <!-- User card -->
+  <div class="sidebar__user">
+    <div class="sidebar__avatar" aria-hidden="true">{{ userInitials }}</div>
+    <div class="sidebar__user-info">
+      <span class="sidebar__user-name">{{ userName }}</span>
+      <span class="sidebar__user-email">{{ userEmail }}</span>
+    </div>
+    <i class="ph ph-sign-out sidebar__signout" aria-label="Sign out"></i>
+  </div>
+
+</aside>
