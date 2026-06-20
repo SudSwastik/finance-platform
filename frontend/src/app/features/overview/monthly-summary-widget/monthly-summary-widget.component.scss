@@ -1,0 +1,34 @@
+.monthly-summary-widget {
+  &__title { margin: 0 0 16px; }
+
+  &__stats {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__label { white-space: nowrap; }
+
+  &__value {
+    font-size: var(--font-size-kpi);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+  }
+
+  &__value--positive { color: var(--color-semantic-positive); }
+  &__value--negative { color: var(--color-semantic-negative); }
+
+  &__divider {
+    width: 1px;
+    height: 40px;
+    background: var(--color-border-subtle);
+    flex-shrink: 0;
+  }
+}

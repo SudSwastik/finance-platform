@@ -12,9 +12,13 @@
 
 @if (facade.overview$ | async; as data) {
   <div class="overview-page">
+    <div class="overview-page__summary-row">
+      <app-monthly-summary-widget [summary]="data.monthlySummary" />
+    </div>
     <div class="overview-page__grid">
       <app-total-budgets [data]="data.budgets" />
       <app-investments-widget [holdings]="data.holdings" />
+      <app-recent-transactions-widget [transactions]="data.recentTransactions" />
       <app-recurring-widget [bills]="data.recurring" />
     </div>
   </div>

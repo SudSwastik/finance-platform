@@ -1,0 +1,32 @@
+<app-dashboard-card>
+  <div class="monthly-summary-widget">
+
+    <h2 class="text-card-title monthly-summary-widget__title">This Month</h2>
+
+    <div class="monthly-summary-widget__stats">
+      <div class="monthly-summary-widget__stat">
+        <span class="monthly-summary-widget__label text-meta text-secondary">Income</span>
+        <span class="monthly-summary-widget__value monthly-summary-widget__value--positive">
+          {{ fmt(summary.income) }}
+        </span>
+      </div>
+
+      <div class="monthly-summary-widget__divider"></div>
+
+      <div class="monthly-summary-widget__stat">
+        <span class="monthly-summary-widget__label text-meta text-secondary">Spending</span>
+        <span class="monthly-summary-widget__value monthly-summary-widget__value--negative">
+          {{ fmt(summary.spending) }}
+        </span>
+      </div>
+
+      <div class="monthly-summary-widget__divider"></div>
+
+      <div class="monthly-summary-widget__stat">
+        <span class="monthly-summary-widget__label text-meta text-secondary">Net Saved</span>
+        <span class="monthly-summary-widget__value">{{ fmt(summary.netSaved) }}</span>
+      </div>
+    </div>
+
+  </div>
+</app-dashboard-card>
