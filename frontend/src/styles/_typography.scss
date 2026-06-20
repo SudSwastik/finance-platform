@@ -2,9 +2,24 @@ body {
   font-family: var(--font-family);
   font-size: var(--font-size-body);
   color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
 
+i.ph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+a { text-decoration: none; }
+
+.text-heading   { color: var(--color-text-heading);   }
 .text-secondary { color: var(--color-text-secondary); }
-.text-meta      { font-size: var(--font-size-meta); color: var(--color-text-secondary); }
-.text-kpi       { font-size: var(--font-size-kpi); font-weight: 700; }
-.text-card-title{ font-size: var(--font-size-card-title); font-weight: 600; }
+.text-faint     { color: var(--color-text-faint);     }
+.text-meta      { font-size: var(--font-size-meta); color: var(--color-text-faint); }
+.text-card-title { font-size: var(--font-size-card-title); font-weight: 700; color: var(--color-text-heading); }
+.text-kpi       { font-size: var(--font-size-kpi); font-weight: 800; color: var(--color-text-heading); }
+.text-positive  { color: var(--color-semantic-positive); }
+.text-negative  { color: var(--color-semantic-negative); }

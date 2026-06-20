@@ -20,19 +20,18 @@ export class RecentTransactionsWidgetComponent {
     return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  protected isCredit(t: RecentTransaction): boolean {
-    return t.type === 'CREDIT';
-  }
+  protected isCredit(t: RecentTransaction): boolean { return t.type === 'CREDIT'; }
+  protected isDebit(t: RecentTransaction): boolean  { return t.type === 'DEBIT' || t.type === 'FEE'; }
 
-  protected isDebit(t: RecentTransaction): boolean {
-    return t.type === 'DEBIT' || t.type === 'FEE';
-  }
-
-  protected typeLabel(t: RecentTransaction): string {
-    return t.type.charAt(0) + t.type.slice(1).toLowerCase();
-  }
-
-  protected initials(name: string): string {
-    return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  protected iconClass(t: RecentTransaction): string {
+    const map: Record<string, string> = {
+      CREDIT:   'ph-buildings',
+      DEBIT:    'ph-shopping-cart-simple',
+      BUY:      'ph-currency-btc',
+      SELL:     'ph-trend-down',
+      TRANSFER: 'ph-arrows-left-right',
+      FEE:      'ph-receipt',
+    };
+    return map[t.type] ?? 'ph-circle';
   }
 }

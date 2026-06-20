@@ -1,20 +1,13 @@
-:host { display: block; height: 100%; }
+:host { display: block; min-height: 100vh; }
 
 .dashboard-layout {
   display: flex;
-  height: 100%;
-  overflow: hidden;
+  min-height: 100vh;
 
   &__main {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  &__content {
-    flex: 1;
+    min-width: 0;
+    padding: 26px 32px 40px;
     overflow-y: auto;
-    padding: var(--spacing-grid-gap);
   }
 }

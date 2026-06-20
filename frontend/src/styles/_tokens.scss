@@ -1,42 +1,63 @@
-// Generated from docs/design-tokens.json — do not edit manually
 :root {
   // Brand
-  --color-brand-primary: #7C3AED;
+  --color-brand-primary:       #6E8FD6;
+  --color-brand-primary-hover: #82A0E0;
+  --color-brand-icon:          #8FAAE0;
+
+  // Surfaces (darkest → lightest)
+  --color-bg:               #08080A;
+  --color-surface-sidebar:  #0C0C0F;
+  --color-surface-card:     #121215;
+  --color-surface-control:  #141417;
+  --color-surface-hover:    #1A1A1E;
+  --color-surface-nav-active: #1A1A1F;
+  --color-icon-tile:        #1C1C21;
+  --color-progress-track:   #1E1E23;
+  --color-surface-avatar:   #23232A;
+  --color-surface-page:     #08080A; // alias for body bg
+
+  // Borders
+  --color-border-hairline:  #1A1A1F;
+  --color-border-row:       #1E1E23;
+  --color-border-subtle:    #222227; // card borders
+  --color-border-control:   #242429;
+
+  // Text
+  --color-text-heading:   #F2F2F4;
+  --color-text-primary:   #ECECEE;
+  --color-text-body-soft: #C8C8CD;
+  --color-text-secondary: #84848B;
+  --color-text-faint:     #6C6C73;
+  --color-text-caption:   #55555C;
+
+  // Semantic
+  --color-semantic-positive:    #4FAE85;
+  --color-semantic-positive-bg: #16271F;
+  --color-semantic-negative:    #D2796F;
+  --color-semantic-warning:     #C9A24B;
+  --color-semantic-warning-bg:  #29230F;
 
   // Categories
   --color-category-essentials: #8B5CF6;
   --color-category-lifestyles: #22C55E;
   --color-category-occasional: #F97316;
-  --color-category-others: #EAB308;
-
-  // Semantic
-  --color-semantic-positive: #16A34A;
-  --color-semantic-negative: #DC2626;
-
-  // Surfaces
-  --color-surface-page: #F3F4F6;
-  --color-surface-card: #FFFFFF;
-
-  // Text
-  --color-text-primary: #111827;
-  --color-text-secondary: #6B7280;
-
-  // Borders
-  --color-border-subtle: #E5E7EB;
+  --color-category-others:     #EAB308;
 
   // Shape
-  --radius-card: 12px;
-  --radius-pill: 9999px;
+  --radius-card:      16px;
+  --radius-stat-card: 14px;
+  --radius-btn:       10px;
+  --radius-pill:      9999px;
 
   // Spacing
-  --spacing-card-padding: 24px;
-  --spacing-grid-gap: 20px;
-  --sidebar-width: 260px;
+  --spacing-card-padding: 22px 24px;
+  --spacing-grid-gap:     18px;
+  --sidebar-width:        248px;
 
   // Typography
-  --font-family: Inter, system-ui, sans-serif;
-  --font-size-kpi: 28px;
-  --font-size-card-title: 16px;
-  --font-size-body: 14px;
-  --font-size-meta: 12px;
+  --font-family:       'Manrope', system-ui, -apple-system, sans-serif;
+  --font-size-kpi:     20px;
+  --font-size-card-title: 14px;
+  --font-size-body:    13.5px;
+  --font-size-meta:    11.5px;
 }

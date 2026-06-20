@@ -7,8 +7,21 @@
   }
 
   &__title { margin: 0 0 4px; }
-  &__kpi { display: block; }
-  &__filter { cursor: default; align-self: flex-end; }
+
+  &__kpi {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text-heading);
+    letter-spacing: -.02em;
+  }
+
+  &__filter {
+    cursor: default;
+    align-self: flex-end;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
 
   &__bar {
     display: flex;
@@ -17,7 +30,7 @@
     overflow: hidden;
     gap: 2px;
     margin-bottom: 20px;
-    background: var(--color-border-subtle);
+    background: var(--color-progress-track);
   }
 
   &__segment { height: 100%; min-width: 2px; }
@@ -42,15 +55,22 @@
   }
 
   &__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
     flex-shrink: 0;
   }
 
-  &__spent {
+  &__name {
+    font-size: 12.5px;
     font-weight: 600;
+    color: var(--color-text-body-soft);
+  }
+
+  &__spent {
+    font-weight: 700;
     font-size: var(--font-size-body);
+    color: var(--color-text-heading);
     text-align: right;
     white-space: nowrap;
   }
@@ -63,19 +83,30 @@
 
   &__progress-bar {
     flex: 1;
-    height: 6px;
-    background: var(--color-border-subtle);
-    border-radius: 3px;
+    height: 7px;
+    background: var(--color-progress-track);
+    border-radius: 4px;
     overflow: hidden;
     min-width: 60px;
   }
 
   &__progress-fill {
     height: 100%;
-    border-radius: 3px;
+    border-radius: 4px;
     transition: width 0.3s ease;
   }
 
-  &__pct { min-width: 38px; text-align: right; }
-  &__cap { white-space: nowrap; text-align: right; }
+  &__pct {
+    min-width: 38px;
+    text-align: right;
+    font-size: var(--font-size-meta);
+    color: var(--color-text-faint);
+  }
+
+  &__cap {
+    white-space: nowrap;
+    text-align: right;
+    font-size: var(--font-size-meta);
+    color: var(--color-text-faint);
+  }
 }

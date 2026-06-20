@@ -6,12 +6,11 @@
 html {
   @include mat.theme((
     color: (
-      theme-type: light,
-      primary: mat.$violet-palette,
+      theme-type: dark,
+      primary: mat.$blue-palette,
     ),
-    typography: Inter,
     density: 0,
   ));
 }
 
-body { background: var(--color-surface-page); }
+body { background: var(--color-bg); }

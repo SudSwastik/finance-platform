@@ -5,6 +5,12 @@ import { OverviewData } from '../../shared/models/overview.models';
 
 // Seed data aligned with docs/api/seed-users.md
 const MOCK_OVERVIEW: OverviewData = {
+  netWorth: {
+    total: '248310.00',
+    changePercent: 4.2,
+    vsLastMonth: '10040.00',
+    chartY: [160, 140, 152, 115, 93, 101, 76, 56, 68, 42, 31, 20],
+  },
   budgets: {
     totalDisplay: '6400',
     filterLabel: 'Expenses',

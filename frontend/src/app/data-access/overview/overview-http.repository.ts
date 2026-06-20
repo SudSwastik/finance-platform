@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { OverviewRepository } from './overview.repository';
-import { OverviewData, Holding, RecurringBill, BudgetCategory, RecentTransaction, MonthlySummary } from '../../shared/models/overview.models';
+import { OverviewData, Holding, RecurringBill, BudgetCategory, RecentTransaction, MonthlySummary, NetWorthData } from '../../shared/models/overview.models';
 
 // BFF response shape — mirrors OverviewResponseDto + nested DTOs
 interface BffBudgetCategory {
@@ -35,6 +35,7 @@ interface BffOverviewResponse {
   recurring: BffRecurringItem[];
   recentTransactions: RecentTransaction[];
   monthlySummary: MonthlySummary;
+  netWorth?: NetWorthData;
 }
 
 @Injectable()
@@ -62,6 +63,12 @@ export class OverviewHttpRepository extends OverviewRepository {
     }));
 
     return {
+      netWorth: res.netWorth ?? {
+        total: '0.00',
+        changePercent: 0,
+        vsLastMonth: '0.00',
+        chartY: [180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180],
+      },
       budgets: {
         totalDisplay: res.totalBudgets.total,
         filterLabel: res.totalBudgets.filter,

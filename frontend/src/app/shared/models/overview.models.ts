@@ -47,7 +47,16 @@ export interface MonthlySummary {
   netSaved: Money;
 }
 
+export interface NetWorthData {
+  total: Money;
+  changePercent: number;
+  vsLastMonth: Money;
+  // 12 monthly y-values in SVG space (0 = top, 180 = bottom) Jul → Jun
+  chartY: number[];
+}
+
 export interface OverviewData {
+  netWorth: NetWorthData;
   budgets: TotalBudgetsSection;
   holdings: Holding[];
   recurring: RecurringBill[];
