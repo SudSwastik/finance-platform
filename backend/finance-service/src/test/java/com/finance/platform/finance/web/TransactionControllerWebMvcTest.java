@@ -1,6 +1,9 @@
 package com.finance.platform.finance.web;
 
+import com.finance.platform.finance.application.GetMonthlySummaryQueryHandler;
+import com.finance.platform.finance.application.GetRecentTransactionsQueryHandler;
 import com.finance.platform.finance.application.ListRecurringTransactionsQueryHandler;
+import com.finance.platform.finance.application.MonthlySummary;
 import com.finance.platform.finance.domain.Transaction;
 import com.finance.platform.finance.domain.TransactionStatus;
 import com.finance.platform.finance.domain.TransactionType;
@@ -33,6 +36,12 @@ class TransactionControllerWebMvcTest {
     @MockBean
     private ListRecurringTransactionsQueryHandler queryHandler;
 
+    @MockBean
+    private GetRecentTransactionsQueryHandler recentQueryHandler;
+
+    @MockBean
+    private GetMonthlySummaryQueryHandler monthlySummaryQueryHandler;
+
     @Test
     void recurring_withoutAuth_isForbidden() throws Exception {
         mockMvc.perform(get("/api/v1/finance/transactions/recurring"))
@@ -55,5 +64,39 @@ class TransactionControllerWebMvcTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Spotify Premium"))
                 .andExpect(jsonPath("$[0].amount").value("10.99"));
+    }
+
+    @Test
+    void recent_withDevHeader_returnsList() throws Exception {
+        var tx = new Transaction(
+                UUID.randomUUID(), UUID.randomUUID(), "seed-user-alice", UUID.randomUUID(),
+                new BigDecimal("84.20"), "INR",
+                TransactionType.DEBIT, TransactionStatus.SETTLED,
+                "Zepto", "Groceries", null,
+                false, LocalDate.of(2026, 6, 10));
+
+        when(recentQueryHandler.handle(any())).thenReturn(List.of(tx));
+
+        mockMvc.perform(get("/api/v1/finance/transactions/recent")
+                        .header("X-Dev-User-Sub", "seed-user-alice"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].merchantName").value("Zepto"))
+                .andExpect(jsonPath("$[0].amount").value("84.20"));
+    }
+
+    @Test
+    void monthlySummary_withDevHeader_returnsSummary() throws Exception {
+        when(monthlySummaryQueryHandler.handle(any()))
+                .thenReturn(new MonthlySummary(
+                        new BigDecimal("85000.00"),
+                        new BigDecimal("45000.00"),
+                        new BigDecimal("40000.00")));
+
+        mockMvc.perform(get("/api/v1/finance/transactions/monthly-summary")
+                        .header("X-Dev-User-Sub", "seed-user-alice"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.income").value("85000.00"))
+                .andExpect(jsonPath("$.spending").value("45000.00"))
+                .andExpect(jsonPath("$.netSaved").value("40000.00"));
     }
 }
