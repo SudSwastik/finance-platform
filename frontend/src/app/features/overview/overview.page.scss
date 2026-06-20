@@ -2,6 +2,13 @@
 
 .overview-page {
   padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-grid-gap);
+
+  &__summary-row {
+    display: block;
+  }
 
   &__grid {
     display: grid;

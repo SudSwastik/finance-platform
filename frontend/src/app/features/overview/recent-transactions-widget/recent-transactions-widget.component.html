@@ -1,0 +1,41 @@
+<app-dashboard-card>
+  <div class="recent-transactions-widget">
+
+    <div class="recent-transactions-widget__header">
+      <h2 class="text-card-title">Recent Transactions</h2>
+      <button class="recent-transactions-widget__see-all text-meta" type="button">See all</button>
+    </div>
+
+    <div class="recent-transactions-widget__list">
+      @for (tx of transactions; track tx.id) {
+        <div class="recent-transactions-widget__row">
+          <div class="recent-transactions-widget__icon" aria-hidden="true">
+            {{ initials(tx.merchantName) }}
+          </div>
+          <div class="recent-transactions-widget__info">
+            <span class="recent-transactions-widget__merchant">{{ tx.merchantName }}</span>
+            <span class="recent-transactions-widget__category text-meta text-secondary">{{ tx.category }}</span>
+          </div>
+          <div class="recent-transactions-widget__right">
+            <span
+              class="recent-transactions-widget__amount"
+              [class.recent-transactions-widget__amount--credit]="isCredit(tx)"
+              [class.recent-transactions-widget__amount--debit]="isDebit(tx)"
+            >
+              {{ isCredit(tx) ? '+' : isDebit(tx) ? '&minus;' : '' }}{{ fmt(tx.amount) }}
+            </span>
+            <span class="recent-transactions-widget__date text-meta text-secondary">{{ fmtDate(tx.transactionDate) }}</span>
+          </div>
+          <span
+            class="recent-transactions-widget__pill"
+            [class.recent-transactions-widget__pill--credit]="isCredit(tx)"
+            [class.recent-transactions-widget__pill--debit]="isDebit(tx)"
+            [class.recent-transactions-widget__pill--buy]="tx.type === 'BUY'"
+            [class.recent-transactions-widget__pill--sell]="tx.type === 'SELL'"
+          >{{ typeLabel(tx) }}</span>
+        </div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>
