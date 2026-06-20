@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { AppButtonComponent } from '../../shared/ui/button/app-button.component';
 
 @Component({
-  selector: 'app-top-bar',
+  selector: 'app-page-header',
   standalone: true,
   imports: [AppButtonComponent],
-  templateUrl: './top-bar.component.html',
-  styleUrl: './top-bar.component.scss',
+  templateUrl: './page-header.component.html',
+  styleUrl: './page-header.component.scss',
 })
-export class TopBarComponent {}
+export class PageHeaderComponent {}

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FixedNavigationComponent, NavItem } from '../fixed-navigation/fixed-navigation.component';
-import { TopBarComponent } from '../top-bar/top-bar.component';
+import { SidebarComponent, NavItem } from '../sidebar/sidebar.component';
+import { PageHeaderComponent } from '../page-header/page-header.component';
 import { AppModalComponent } from '../../shared/ui/modal/app-modal.component';
 
 const NAV_ITEMS: NavItem[] = [
@@ -12,12 +12,12 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 @Component({
-  selector: 'app-shell',
+  selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, FixedNavigationComponent, TopBarComponent, AppModalComponent],
-  templateUrl: './app-shell.component.html',
-  styleUrl: './app-shell.component.scss',
+  imports: [RouterOutlet, SidebarComponent, PageHeaderComponent, AppModalComponent],
+  templateUrl: './dashboard-layout.component.html',
+  styleUrl: './dashboard-layout.component.scss',
 })
-export class AppShellComponent {
+export class DashboardLayoutComponent {
   protected readonly navItems = NAV_ITEMS;
 }

@@ -1,44 +1,82 @@
 {
   "color": {
     "brand": {
-      "primary": "#7C3AED"
-    },
-    "category": {
-      "essentials": "#8B5CF6",
-      "lifestyles": "#22C55E",
-      "occasional": "#F97316",
-      "others": "#EAB308"
-    },
-    "semantic": {
-      "positive": "#16A34A",
-      "negative": "#DC2626"
+      "primary": "#6E8FD6",
+      "primaryHover": "#82A0E0",
+      "primaryIconTint": "#8FAAE0"
     },
     "surface": {
-      "page": "#F3F4F6",
-      "card": "#FFFFFF"
-    },
-    "text": {
-      "primary": "#111827",
-      "secondary": "#6B7280"
+      "page": "#08080A",
+      "sidebar": "#0C0C0F",
+      "card": "#121215",
+      "control": "#141417",
+      "hoverFill": "#1A1A1E",
+      "activeNav": "#1A1A1F",
+      "iconTile": "#1C1C21",
+      "progressBase": "#1E1E23",
+      "avatarTile": "#23232A"
     },
     "border": {
-      "subtle": "#E5E7EB"
+      "hairline": "#1A1A1F",
+      "rowSubtle": "#1E1E23",
+      "rowFaint": "#16161A",
+      "card": "#222227",
+      "control": "#242429"
+    },
+    "text": {
+      "heading": "#F2F2F4",
+      "bodyStrong": "#ECECEE",
+      "bodySoft": "#C8C8CD",
+      "bodySofter": "#A8A8AE",
+      "muted": "#84848B",
+      "faint": "#6C6C73",
+      "faintest": "#55555C",
+      "fainterAlt": "#5C5C63"
+    },
+    "semantic": {
+      "positive": "#4FAE85",
+      "positiveBg": "#16271F",
+      "negative": "#D2796F",
+      "warning": "#C9A24B",
+      "warningBg": "#29230F"
+    },
+    "chart": {
+      "primary": "#6E8FD6",
+      "secondary": "#6E6E76",
+      "tertiary": "#39393F",
+      "gridline": "#1C1C21"
     }
   },
   "radius": {
-    "card": "12px",
-    "pill": "9999px"
+    "card": "16px",
+    "statCard": "14px",
+    "button": "10px",
+    "nav": "9px",
+    "pill": "7px",
+    "progress": "4px",
+    "avatar": "50%"
   },
   "spacing": {
-    "cardPadding": "24px",
-    "gridGap": "20px",
-    "sidebarWidth": "260px"
+    "sidebarWidth": "248px",
+    "mainPadding": "26px 32px 40px",
+    "gridGap": "18px",
+    "cardPadding": "22px 24px"
   },
   "typography": {
-    "fontFamily": "Inter, system-ui, sans-serif",
-    "kpiSize": "28px",
-    "cardTitleSize": "16px",
-    "bodySize": "14px",
-    "metaSize": "12px"
+    "fontFamily": "'Manrope', system-ui, -apple-system, sans-serif",
+    "pageTitle": { "size": "24px", "weight": 800, "letterSpacing": "-0.02em" },
+    "heroStat": { "size": "38px", "weight": 800 },
+    "statCard": { "size": "24px", "weight": 800 },
+    "cardTitle": { "size": "14px", "weight": 700 },
+    "body": { "size": "13.5px" },
+    "meta": { "size": "11px" },
+    "numericVariant": "tabular-nums"
+  },
+  "icons": {
+    "library": "Phosphor Icons",
+    "version": "2.1.1",
+    "weight": "regular",
+    "navSize": "17px",
+    "inlineSize": "13-15px"
   }
 }
