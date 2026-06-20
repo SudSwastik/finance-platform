@@ -1,6 +1,8 @@
 package com.finance.platform.bff.client;
 
 import com.finance.platform.bff.config.PlatformServicesProperties;
+import com.finance.platform.bff.web.dto.MonthlySummaryDto;
+import com.finance.platform.bff.web.dto.RecentTransactionItemDto;
 import com.finance.platform.bff.web.dto.RecurringItemDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
@@ -25,5 +27,23 @@ public class WebClientFinanceServiceClient implements FinanceServiceClient {
                 .header("X-Dev-User-Sub", userSub)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<List<RecurringItemDto>>() {});
+    }
+
+    @Override
+    public Mono<List<RecentTransactionItemDto>> getRecentTransactions(String userSub) {
+        return webClient.get()
+                .uri("/api/v1/finance/transactions/recent")
+                .header("X-Dev-User-Sub", userSub)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<RecentTransactionItemDto>>() {});
+    }
+
+    @Override
+    public Mono<MonthlySummaryDto> getMonthlySummary(String userSub) {
+        return webClient.get()
+                .uri("/api/v1/finance/transactions/monthly-summary")
+                .header("X-Dev-User-Sub", userSub)
+                .retrieve()
+                .bodyToMono(MonthlySummaryDto.class);
     }
 }

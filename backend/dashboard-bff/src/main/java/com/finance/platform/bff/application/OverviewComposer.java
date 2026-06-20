@@ -27,7 +27,9 @@ public class OverviewComposer {
         return Mono.zip(
                 budgetServiceClient.getTotalBudgets(userSub),
                 portfolioServiceClient.getHoldings(userSub),
-                financeServiceClient.getRecurringTransactions(userSub)
-        ).map(t -> new OverviewResponseDto(t.getT1(), t.getT2(), t.getT3()));
+                financeServiceClient.getRecurringTransactions(userSub),
+                financeServiceClient.getRecentTransactions(userSub),
+                financeServiceClient.getMonthlySummary(userSub)
+        ).map(t -> new OverviewResponseDto(t.getT1(), t.getT2(), t.getT3(), t.getT4(), t.getT5()));
     }
 }

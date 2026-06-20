@@ -32,8 +32,25 @@ export interface RecurringBill {
   nextDate: string;
 }
 
+export interface RecentTransaction {
+  id: string;
+  merchantName: string;
+  category: string;
+  type: 'DEBIT' | 'CREDIT' | 'BUY' | 'SELL' | 'TRANSFER' | 'FEE';
+  amount: Money;
+  transactionDate: string;
+}
+
+export interface MonthlySummary {
+  income: Money;
+  spending: Money;
+  netSaved: Money;
+}
+
 export interface OverviewData {
   budgets: TotalBudgetsSection;
   holdings: Holding[];
   recurring: RecurringBill[];
+  recentTransactions: RecentTransaction[];
+  monthlySummary: MonthlySummary;
 }

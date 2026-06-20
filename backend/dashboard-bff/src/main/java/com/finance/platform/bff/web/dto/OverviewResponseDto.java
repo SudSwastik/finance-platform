@@ -7,5 +7,7 @@ import java.util.List;
 public record OverviewResponseDto(
         TotalBudgetsSectionDto totalBudgets,
         List<HoldingItemDto> investments,
-        List<RecurringItemDto> recurring) {
+        List<RecurringItemDto> recurring,
+        List<RecentTransactionItemDto> recentTransactions,
+        MonthlySummaryDto monthlySummary) {
 }

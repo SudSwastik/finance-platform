@@ -48,7 +48,9 @@ class DashboardControllerWebMvcTest {
         var overview = new OverviewResponseDto(
                 new TotalBudgetsSectionDto("6400", "Expenses", List.of()),
                 List.of(),
-                List.of());
+                List.of(),
+                List.of(),
+                new com.finance.platform.bff.web.dto.MonthlySummaryDto("85000.00", "45000.00", "40000.00"));
 
         when(overviewComposer.compose(anyString())).thenReturn(Mono.just(overview));
 
