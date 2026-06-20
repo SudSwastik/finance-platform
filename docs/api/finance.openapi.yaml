@@ -26,6 +26,40 @@ paths:
         "401":
           description: Not authenticated
 
+  /api/v1/finance/transactions/recent:
+    get:
+      operationId: listRecentTransactions
+      summary: Last 10 transactions sorted by date desc
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Recent transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecentTransactionDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/monthly-summary:
+    get:
+      operationId: getMonthlySummary
+      summary: Income, spending and net saved for the current month
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Monthly summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlySummaryDto"
+        "401":
+          description: Not authenticated
+
   /api/v1/finance/transactions/recurring:
     get:
       operationId: listRecurringTransactions
@@ -67,6 +101,45 @@ components:
         currency:
           type: string
           example: INR
+
+    RecentTransactionDto:
+      type: object
+      required: [id, type, amount, transactionDate]
+      properties:
+        id:
+          type: string
+          format: uuid
+        merchantName:
+          type: string
+        category:
+          type: string
+        type:
+          type: string
+          enum: [DEBIT, CREDIT, BUY, SELL, TRANSFER, FEE]
+        amount:
+          type: string
+          description: Decimal string
+          example: "84.20"
+        transactionDate:
+          type: string
+          format: date
+
+    MonthlySummaryDto:
+      type: object
+      required: [income, spending, netSaved]
+      properties:
+        income:
+          type: string
+          description: Decimal string
+          example: "85000.00"
+        spending:
+          type: string
+          description: Decimal string
+          example: "45000.00"
+        netSaved:
+          type: string
+          description: Decimal string (income − spending)
+          example: "40000.00"
 
     RecurringTransactionDto:
       type: object

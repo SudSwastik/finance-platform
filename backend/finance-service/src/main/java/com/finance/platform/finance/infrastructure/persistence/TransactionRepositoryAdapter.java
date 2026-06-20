@@ -4,6 +4,7 @@ import com.finance.platform.finance.domain.Transaction;
 import com.finance.platform.finance.domain.TransactionRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +25,16 @@ class TransactionRepositoryAdapter implements TransactionRepository {
     @Override
     public List<Transaction> findRecurringByUserSub(String userSub) {
         return jpaRepository.findAllByUserSubAndRecurringTrue(userSub).stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public List<Transaction> findRecentByUserSub(String userSub) {
+        return jpaRepository.findTop10ByUserSubOrderByTransactionDateDesc(userSub).stream().map(this::toDomain).toList();
+    }
+
+    @Override
+    public List<Transaction> findByUserSubAndDateBetween(String userSub, LocalDate from, LocalDate to) {
+        return jpaRepository.findAllByUserSubAndTransactionDateBetween(userSub, from, to).stream().map(this::toDomain).toList();
     }
 
     @Override
