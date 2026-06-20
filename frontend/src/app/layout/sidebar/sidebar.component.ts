@@ -8,13 +8,13 @@ export interface NavItem {
 }
 
 @Component({
-  selector: 'app-fixed-navigation',
+  selector: 'app-sidebar',
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
-  templateUrl: './fixed-navigation.component.html',
-  styleUrl: './fixed-navigation.component.scss',
+  templateUrl: './sidebar.component.html',
+  styleUrl: './sidebar.component.scss',
 })
-export class FixedNavigationComponent {
+export class SidebarComponent {
   @Input() navItems: NavItem[] = [];
   @Input() userName = '';
   @Input() userInitials = '';

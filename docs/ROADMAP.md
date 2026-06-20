@@ -43,13 +43,15 @@ Overview page: `total-budgets`, `investments-widget`, `recurring-widget`. Nav: O
 
 ---
 
-### Phase 6 — Wire Angular to API
+### Phase 6 — Wire Angular to API 🚧
 | Deliverable | Notes |
 |-------------|-------|
 | `overview-http.repository.ts` | HTTP impl, same interface as mock |
 | `providers.ts` | `useMockData: false` in `environment.prod` |
 | Loading + error states | Facade exposes `loading$`, `error$` |
 | `proxy.conf.json` | CORS proxy for local dev |
+
+**In progress.** totalBudgets, investments, recurring widgets wired to live BFF.
 
 **Exit criteria:** Overview identical visually; data from Docker seed via API.
 

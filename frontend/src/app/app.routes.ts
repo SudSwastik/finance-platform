@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AppShellComponent } from './shell/app-shell/app-shell.component';
+import { DashboardLayoutComponent } from './layout/dashboard-layout/dashboard-layout.component';
 import { PlaceholderPageComponent } from './shared/ui/placeholder-page/placeholder-page.component';
 
 export const routes: Routes = [
@@ -78,7 +78,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: AppShellComponent,
+    component: DashboardLayoutComponent,
     children: [
       { path: '', redirectTo: 'overview', pathMatch: 'full' },
       {
