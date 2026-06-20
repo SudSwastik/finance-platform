@@ -1,0 +1,218 @@
+<div class="transactions-page">
+
+  <!-- Header -->
+  <div class="transactions-page__header">
+    <div>
+      <h1 class="transactions-page__title">Transactions</h1>
+      <p class="transactions-page__subtitle">Every movement across your banks, cards, and exchanges.</p>
+    </div>
+    <div class="transactions-page__actions">
+      <button class="transactions-page__btn-secondary">
+        <i class="ph ph-export"></i>Export
+      </button>
+      <button class="transactions-page__btn-primary">
+        <i class="ph ph-plus"></i>Add transaction
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  @if (stats$ | async; as stats) {
+    <div class="transactions-page__stats">
+      <div class="transactions-page__stat-card">
+        <div class="transactions-page__stat-label">
+          <i class="ph ph-arrow-down-left" style="color:#4FAE85;font-size:15px;"></i>Money in
+        </div>
+        <div class="transactions-page__stat-value transactions-page__stat-value--positive">
+          +{{ formatStatMoney(stats.moneyIn) }}
+        </div>
+        <div class="transactions-page__stat-meta">
+          {{ stats.moneyInCount }} transaction{{ stats.moneyInCount !== 1 ? 's' : '' }}&nbsp;&middot;&nbsp;{{ formatMonth(currentMonth()) }}
+        </div>
+      </div>
+
+      <div class="transactions-page__stat-card">
+        <div class="transactions-page__stat-label">
+          <i class="ph ph-arrow-up-right" style="color:#D2796F;font-size:15px;"></i>Money out
+        </div>
+        <div class="transactions-page__stat-value">
+          &minus;{{ formatStatMoney(stats.moneyOut) }}
+        </div>
+        <div class="transactions-page__stat-meta">
+          {{ stats.moneyOutCount }} transaction{{ stats.moneyOutCount !== 1 ? 's' : '' }}&nbsp;&middot;&nbsp;{{ formatMonth(currentMonth()) }}
+        </div>
+      </div>
+
+      <div class="transactions-page__stat-card">
+        <div class="transactions-page__stat-label">
+          <i class="ph ph-equals" style="color:#6E8FD6;font-size:15px;"></i>Net flow
+        </div>
+        <div class="transactions-page__stat-value"
+             [class.transactions-page__stat-value--positive]="isNetFlowPositive(stats.netFlow)"
+             [class.transactions-page__stat-value--negative]="!isNetFlowPositive(stats.netFlow)">
+          {{ isNetFlowPositive(stats.netFlow) ? '+' : '−' }}{{ formatStatMoney(stats.netFlow) }}
+        </div>
+        <div class="transactions-page__stat-meta">
+          {{ stats.totalCount }} total&nbsp;&middot;&nbsp;{{ formatMonth(currentMonth()) }}
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Table card -->
+  <div class="transactions-page__card">
+
+    <!-- Filter toolbar -->
+    <div class="transactions-page__toolbar">
+      <div class="transactions-page__toolbar-row">
+        <!-- Type group tabs -->
+        <div class="transactions-page__segmented">
+          @for (tab of [['ALL','All'],['INCOME','Income'],['EXPENSE','Expense'],['TRANSFERS','Transfers']]; track tab[0]) {
+            <span class="transactions-page__seg-item"
+                  [class.transactions-page__seg-item--active]="typeGroup() === tab[0]"
+                  (click)="setTypeGroup($any(tab[0]))">
+              {{ tab[1] }}
+            </span>
+          }
+        </div>
+
+        <!-- Search -->
+        <div class="transactions-page__search">
+          <i class="ph ph-magnifying-glass" style="color:#6C6C73;font-size:15px;flex:none;"></i>
+          <input type="text"
+                 placeholder="Search transactions"
+                 [value]="searchTerm()"
+                 (input)="onSearch($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="transactions-page__filter-row">
+        <button class="transactions-page__filter-btn"
+                [class.transactions-page__filter-btn--active]="!!currentMonth()"
+                (click)="toggleMonth()">
+          <i class="ph ph-calendar-blank" style="font-size:14px;color:#84848B;"></i>
+          {{ formatMonth(currentMonth()) }}
+          <i class="ph ph-caret-down" style="font-size:12px;color:#6C6C73;"></i>
+        </button>
+        <button class="transactions-page__filter-btn">
+          <i class="ph ph-bank" style="font-size:14px;color:#84848B;"></i>
+          Account
+          <i class="ph ph-caret-down" style="font-size:12px;color:#6C6C73;"></i>
+        </button>
+        <button class="transactions-page__filter-btn">
+          <i class="ph ph-tag" style="font-size:14px;color:#84848B;"></i>
+          Category
+          <i class="ph ph-caret-down" style="font-size:12px;color:#6C6C73;"></i>
+        </button>
+        <button class="transactions-page__filter-btn">
+          <i class="ph ph-circle-half" style="font-size:14px;color:#84848B;"></i>
+          Status
+          <i class="ph ph-caret-down" style="font-size:12px;color:#6C6C73;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Column header -->
+    <div class="transactions-page__col-header">
+      <span class="transactions-page__col-check">
+        <span class="transactions-page__checkbox"></span>
+      </span>
+      <span class="transactions-page__col-desc">
+        Description<i class="ph ph-caret-up-down" style="font-size:11px;"></i>
+      </span>
+      <span class="transactions-page__col-account">Account</span>
+      <span class="transactions-page__col-date">
+        Date<i class="ph ph-caret-down" style="font-size:11px;color:#8FAAE0;"></i>
+      </span>
+      <span class="transactions-page__col-status">Status</span>
+      <span class="transactions-page__col-amount">
+        Amount<i class="ph ph-caret-up-down" style="font-size:11px;"></i>
+      </span>
+      <span class="transactions-page__col-menu"></span>
+    </div>
+
+    <!-- Rows -->
+    @if (result$ | async; as result) {
+      @if (result.content.length === 0) {
+        <div class="transactions-page__empty">No transactions found.</div>
+      }
+      @for (tx of result.content; track tx.id) {
+        <div class="transactions-page__row">
+          <span class="transactions-page__col-check">
+            <span class="transactions-page__checkbox"></span>
+          </span>
+
+          <div class="transactions-page__col-desc">
+            <div class="transactions-page__icon-tile"
+                 [style.background]="iconFor(tx).bg"
+                 [style.color]="iconFor(tx).color">
+              <i [class]="'ph ' + iconFor(tx).icon"></i>
+            </div>
+            <div class="transactions-page__tx-info">
+              <span class="transactions-page__tx-name">{{ tx.merchantName }}</span>
+              <span class="transactions-page__tx-category">{{ tx.category }}</span>
+            </div>
+          </div>
+
+          <span class="transactions-page__col-account transactions-page__cell-muted">
+            {{ tx.accountName }}
+          </span>
+
+          <span class="transactions-page__col-date transactions-page__cell-muted">
+            {{ formatDate(tx.transactionDate) }}
+          </span>
+
+          <span class="transactions-page__col-status">
+            <span class="transactions-page__status-pill"
+                  [class]="'transactions-page__status-pill--' + tx.status.toLowerCase()">
+              <span class="transactions-page__status-dot"></span>
+              {{ statusLabel(tx.status) }}
+            </span>
+          </span>
+
+          <span class="transactions-page__col-amount"
+                [class.transactions-page__amount--positive]="isPositiveType(tx)">
+            {{ amountDisplay(tx) }}
+          </span>
+
+          <span class="transactions-page__col-menu">
+            <i class="ph ph-dots-three" style="color:#6C6C73;font-size:18px;cursor:pointer;"></i>
+          </span>
+        </div>
+      }
+
+      <!-- Pagination -->
+      @if (result.totalPages > 0) {
+        <div class="transactions-page__pagination">
+          <span class="transactions-page__page-info">
+            Showing {{ showingFrom(result.page) }}–{{ showingTo(result.page, result.totalElements) }} of {{ result.totalElements }} transactions
+          </span>
+          <div class="transactions-page__page-btns">
+            <button class="transactions-page__page-btn"
+                    [disabled]="page() === 0"
+                    (click)="goToPage(page() - 1)">
+              <i class="ph ph-caret-left" style="font-size:14px;"></i>
+            </button>
+            @for (p of pageNumbers(result.totalPages); track $index) {
+              @if (p === '...') {
+                <span class="transactions-page__page-ellipsis">&hellip;</span>
+              } @else {
+                <button class="transactions-page__page-btn"
+                        [class.transactions-page__page-btn--active]="page() === p"
+                        (click)="goToPage(+p)">
+                  {{ +p + 1 }}
+                </button>
+              }
+            }
+            <button class="transactions-page__page-btn"
+                    [disabled]="page() >= result.totalPages - 1"
+                    (click)="goToPage(page() + 1)">
+              <i class="ph ph-caret-right" style="font-size:14px;"></i>
+            </button>
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>
