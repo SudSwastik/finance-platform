@@ -1,52 +1,48 @@
-# Personal Finance Dashboard
+# Ledgerly
 
-Personal finance dashboard from [dashboard.webp](dashboard.webp). **Angular** mockup first · **Multi-module Spring Boot** (separate service per area, e.g. Activity Log) · **Docker** · **Postman** · **Cognito** (later).
+Dark-mode personal finance dashboard. Angular SPA + multi-module Spring Boot (DDD) + PostgreSQL + AWS Cognito (Phase 7).
 
-**Status:** Backend Phase 4a–4d scaffolded (multi-module, tests passing). Angular mockup not started.
+**Status:** Phase 6 in progress — Angular wired to live BFF (totalBudgets, investments, recurring done).
 
-## Design
-
-![Dashboard mockup](dashboard.webp) · [docs/DESIGN.md](docs/DESIGN.md)
-
-## Documentation
+## Docs
 
 | Document | Purpose |
 |----------|---------|
-| [docs/ROADMAP.md](docs/ROADMAP.md) | **Phases 1–8** — mockup → OpenAPI/Docker → backend → wire API → Cognito |
-| [docs/FRONTEND_ARCHITECTURE.md](docs/FRONTEND_ARCHITECTURE.md) | Scoped components, shell, ui-kit, modals |
-| [docs/BACKEND_ARCHITECTURE.md](docs/BACKEND_ARCHITECTURE.md) | Multi-module services, BFF, DDD per module |
-| [docs/adr/0007-modular-backend-services.md](docs/adr/0007-modular-backend-services.md) | Why not one clubbed Spring Boot app |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System overview |
-| [docs/api/openapi.yaml](docs/api/openapi.yaml) | API contract (source of truth) |
-| [docs/api/postman/](docs/api/postman/) | Generated Postman collection |
-| [docs/TECH_STACK.md](docs/TECH_STACK.md) | Versions and tools |
-| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Do's and don'ts |
-| [docs/adr/](docs/adr/) | ADRs including ui-kit (0005) and DDD (0006) |
-| [AGENTS.md](AGENTS.md) | AI agent briefing |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Phase checklist |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System flow, services, data model |
+| [docs/DESIGN.md](docs/DESIGN.md) | UI layout, widgets, component inventory |
+| [docs/TECHSTACK.md](docs/TECHSTACK.md) | Stack versions and env vars |
+| [docs/CONVENTIONS.md](docs/CONVENTIONS.md) | Naming and rules |
+| [docs/adr/](docs/adr/) | Architecture decision records |
+| [docs/api/](docs/api/) | OpenAPI specs (one per service) |
 
-## Target layout
+## Structure
 
 ```
 finance-platform/
-├── frontend/          # Angular: shell + scoped overview sections + ui-kit
-├── backend/           # Maven: dashboard-bff, activity-log-service, budget-service, …
-├── docs/api/          # one OpenAPI per service + postman/
-├── docker/            # Postgres init + seed
-├── docker-compose.yml
-└── dashboard.webp
+├── frontend/          # Angular 19 SPA
+├── backend/           # Maven multi-module Spring Boot
+│   ├── dashboard-bff
+│   ├── identity-service
+│   ├── budget-service
+│   ├── finance-service
+│   └── portfolio-service
+├── design/            # UI mockups (dc.html)
+├── docs/              # Architecture, design, ADRs, OpenAPI
+└── infra/local/       # Docker Compose (Postgres)
 ```
 
-## Run backend
+## Run
 
 ```bash
-docker compose up -d
-cd backend && mvn test
-mvn -pl budget-service spring-boot:run   # :8081
-mvn -pl dashboard-bff spring-boot:run    # :8080
+# Infrastructure
+docker compose -f infra/local/docker-compose.yml up -d
+
+# Backend (from backend/)
+./mvnw test
+./mvnw -pl dashboard-bff spring-boot:run     # :8080
+./mvnw -pl budget-service spring-boot:run    # :8081
+
+# Frontend (from frontend/)
+npm install && ng serve
 ```
-
-Details: [backend/README.md](backend/README.md)
-
-## Next step
-
-[docs/ROADMAP.md](docs/ROADMAP.md) **Phase 1–2** — Angular full mockup.
