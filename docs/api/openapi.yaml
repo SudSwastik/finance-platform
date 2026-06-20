@@ -117,16 +117,10 @@ components:
 
     OverviewResponse:
       type: object
-      required: [totalBudgets, spending, transactions, investments, recurring]
+      required: [totalBudgets, investments, recurring, recentTransactions, monthlySummary]
       properties:
         totalBudgets:
           $ref: '#/components/schemas/TotalBudgetsSection'
-        spending:
-          $ref: '#/components/schemas/SpendingSection'
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionItem'
         investments:
           type: array
           items:
@@ -135,6 +129,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RecurringItem'
+        recentTransactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentTransactionItem'
+        monthlySummary:
+          $ref: '#/components/schemas/MonthlySummary'
 
     TotalBudgetsSection:
       type: object
@@ -203,6 +203,27 @@ components:
         frequency: { type: string }
         amount: { $ref: '#/components/schemas/Money' }
         nextDate: { type: string, format: date }
+
+    RecentTransactionItem:
+      type: object
+      required: [id, type, amount, transactionDate]
+      properties:
+        id: { type: string, format: uuid }
+        merchantName: { type: string }
+        category: { type: string }
+        type:
+          type: string
+          enum: [DEBIT, CREDIT, BUY, SELL, TRANSFER, FEE]
+        amount: { $ref: '#/components/schemas/Money' }
+        transactionDate: { type: string, format: date }
+
+    MonthlySummary:
+      type: object
+      required: [income, spending, netSaved]
+      properties:
+        income: { $ref: '#/components/schemas/Money' }
+        spending: { $ref: '#/components/schemas/Money' }
+        netSaved: { $ref: '#/components/schemas/Money' }
 
     ErrorEnvelope:
       type: object
