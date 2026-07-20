@@ -1,0 +1,149 @@
+<div class="portfolio-page">
+
+  <!-- Header -->
+  <div class="portfolio-page__header">
+    <div>
+      <h1 class="portfolio-page__title">Portfolio</h1>
+      <p class="portfolio-page__subtitle">Stocks and crypto, holdings and trade history.</p>
+    </div>
+    <button class="portfolio-page__add-btn">
+      <i class="ph ph-plus" style="font-size:15px;"></i>
+      Add trade
+    </button>
+  </div>
+
+  @if (holdings$ | async; as holdings) {
+    <!-- Stats strip -->
+    <div class="portfolio-page__stats">
+      <div class="portfolio-page__stat-card">
+        <div class="portfolio-page__stat-label">Portfolio value</div>
+        <div class="portfolio-page__stat-value">{{ formatAmount(totalValue(holdings)) }}</div>
+        <div class="portfolio-page__stat-meta">stocks + crypto</div>
+      </div>
+
+      <div class="portfolio-page__stat-card">
+        <div class="portfolio-page__stat-label">Total return</div>
+        <div class="portfolio-page__stat-value"
+             [class.portfolio-page__stat-value--negative]="!isPositive(totalReturn(holdings).amount)">
+          {{ formatAmount(totalReturn(holdings).amount, true) }}
+        </div>
+        <div class="portfolio-page__stat-meta"
+             [class.portfolio-page__stat-meta--positive]="isPositive(totalReturn(holdings).amount)"
+             [class.portfolio-page__stat-meta--negative]="!isPositive(totalReturn(holdings).amount)">
+          {{ formatPercent(totalReturn(holdings).percent) }} all time
+        </div>
+      </div>
+
+      <div class="portfolio-page__stat-card">
+        <div class="portfolio-page__stat-label">Invested</div>
+        <div class="portfolio-page__stat-value">{{ formatAmount(totalCostBasis(holdings)) }}</div>
+        <div class="portfolio-page__stat-meta">cost basis</div>
+      </div>
+    </div>
+
+    <!-- Mix -->
+    <div class="portfolio-page__card portfolio-page__mix-card">
+      <div class="portfolio-page__card-title">Mix</div>
+      <div class="portfolio-page__mix-bar">
+        @for (seg of mixSegments(holdings); track seg.type) {
+          <div class="portfolio-page__mix-segment"
+               [style.width.%]="seg.percent"
+               [style.background]="seg.color"></div>
+        }
+      </div>
+      <div class="portfolio-page__mix-legend">
+        @for (seg of mixSegments(holdings); track seg.type) {
+          <div class="portfolio-page__mix-item">
+            <span class="portfolio-page__mix-dot" [style.background]="seg.color"></span>
+            <span class="portfolio-page__mix-label">{{ seg.label }}</span>
+            <span class="portfolio-page__mix-value">{{ formatAmount(seg.value) }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Holdings -->
+    <div class="portfolio-page__card portfolio-page__holdings-card">
+      <div class="portfolio-page__holdings-header">
+        <span class="portfolio-page__card-title">Holdings</span>
+        <div class="portfolio-page__segmented">
+          @for (tab of [['ALL','All'],['STOCK','Stocks'],['CRYPTO','Crypto']]; track tab[0]) {
+            <span class="portfolio-page__seg-item"
+                  [class.portfolio-page__seg-item--active]="holdingsFilter() === tab[0]"
+                  (click)="setHoldingsFilter($any(tab[0]))">
+              {{ tab[1] }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <div class="portfolio-page__col-header">
+        <span class="portfolio-page__col-asset">Asset</span>
+        <span class="portfolio-page__col-type">Type</span>
+        <span class="portfolio-page__col-cost">Cost basis</span>
+        <span class="portfolio-page__col-value">Value</span>
+        <span class="portfolio-page__col-change">Return</span>
+      </div>
+
+      @if (filteredHoldings(holdings).length === 0) {
+        <div class="portfolio-page__empty">No holdings in this category.</div>
+      }
+      @for (h of filteredHoldings(holdings); track h.id) {
+        <div class="portfolio-page__row">
+          <div class="portfolio-page__col-asset">
+            <div class="portfolio-page__icon-tile"
+                 [style.background]="holdingTile(h).bg"
+                 [style.color]="holdingTile(h).color">
+              @if (holdingTile(h).icon) {
+                <i [class]="'ph ' + holdingTile(h).icon"></i>
+              } @else {
+                {{ holdingTile(h).initials }}
+              }
+            </div>
+            <div class="portfolio-page__asset-info">
+              <span class="portfolio-page__asset-symbol">{{ h.symbol }}</span>
+              <span class="portfolio-page__asset-name">{{ h.name }}</span>
+            </div>
+          </div>
+          <span class="portfolio-page__col-type">
+            <span class="portfolio-page__type-pill">{{ typeLabel(h.assetType) }}</span>
+          </span>
+          <span class="portfolio-page__col-cost portfolio-page__cell-muted">{{ formatAmount(+h.costBasis) }}</span>
+          <span class="portfolio-page__col-value">{{ formatAmount(+h.value) }}</span>
+          <span class="portfolio-page__col-change"
+                [class.portfolio-page__col-change--negative]="!isPositive(h.changePercent)">
+            {{ formatPercent(h.changePercent) }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Trade history -->
+  <div class="portfolio-page__card portfolio-page__trades-card">
+    <div class="portfolio-page__card-title">Trade history</div>
+    @if (trades$ | async; as trades) {
+      @if (trades.length === 0) {
+        <div class="portfolio-page__empty">No trades yet.</div>
+      }
+      @for (t of trades; track t.id) {
+        <div class="portfolio-page__trade-row">
+          <span class="portfolio-page__side-pill"
+                [class.portfolio-page__side-pill--sell]="t.side === 'SELL'">
+            {{ t.side }}
+          </span>
+          <div class="portfolio-page__trade-info">
+            <span class="portfolio-page__trade-name">{{ t.assetName }}</span>
+            <span class="portfolio-page__trade-subline">{{ tradeSubline(t) }}</span>
+          </div>
+          <span class="portfolio-page__trade-date">{{ formatDate(t.tradeDate) }}</span>
+          <span class="portfolio-page__trade-amount"
+                [class.portfolio-page__trade-amount--positive]="t.side === 'SELL'">
+            {{ tradeAmountDisplay(t) }}
+          </span>
+        </div>
+      }
+    }
+  </div>
+
+</div>

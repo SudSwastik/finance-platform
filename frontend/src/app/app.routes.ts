@@ -104,7 +104,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/subscriptions/subscriptions.routes').then(m => m.subscriptionRoutes),
       },
-      { path: 'portfolio',     component: PlaceholderPageComponent, data: { title: 'Portfolio' } },
+      {
+        path: 'portfolio',
+        loadChildren: () =>
+          import('./features/portfolio/portfolio.routes').then(m => m.portfolioRoutes),
+      },
       { path: 'tips',          component: PlaceholderPageComponent, data: { title: 'Smart Tips' } },
       { path: 'settings',      component: PlaceholderPageComponent, data: { title: 'Settings' } },
     ],
