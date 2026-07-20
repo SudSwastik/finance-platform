@@ -1,0 +1,151 @@
+<div class="wallets-page">
+
+  <!-- Header -->
+  <div class="wallets-page__header">
+    <div>
+      <h1 class="wallets-page__title">Wallets &amp; Banks</h1>
+      <p class="wallets-page__subtitle">All your linked accounts and cards in one place.</p>
+    </div>
+    <button class="wallets-page__link-btn">
+      <i class="ph ph-link-simple" style="font-size:15px;"></i>
+      Link account
+    </button>
+  </div>
+
+  <!-- Stats strip -->
+  @if (accounts$ | async; as accounts) {
+    <div class="wallets-page__stats">
+      <div class="wallets-page__stat-card">
+        <div class="wallets-page__stat-label">Total cash</div>
+        <div class="wallets-page__stat-value">{{ formatAmount((totalCash$ | async) ?? 0) }}</div>
+        <div class="wallets-page__stat-meta">{{ accounts.length }} accounts linked</div>
+      </div>
+
+      <div class="wallets-page__stat-card">
+        <div class="wallets-page__stat-label">Credit card balance</div>
+        <div class="wallets-page__stat-value"
+             [class.wallets-page__stat-value--negative]="!isPositive((creditCardBalance$ | async) ?? 0)">
+          {{ formatAmount((creditCardBalance$ | async) ?? 0) }}
+        </div>
+        <div class="wallets-page__stat-meta">Owed across linked cards</div>
+      </div>
+
+      <div class="wallets-page__stat-card">
+        <div class="wallets-page__stat-label">Linked accounts</div>
+        <div class="wallets-page__stat-value">{{ accounts.length }}</div>
+        <div class="wallets-page__stat-meta">banks, cards &amp; exchanges</div>
+      </div>
+    </div>
+  }
+
+  <div class="wallets-page__grid">
+
+    <!-- Accounts list -->
+    <div class="wallets-page__card wallets-page__list-card">
+      @for (group of (groupedAccounts$ | async); track group.key) {
+        <div class="wallets-page__group-label">{{ group.label }}</div>
+        <div class="wallets-page__group-rows">
+          @for (account of group.accounts; track account.id) {
+            <div class="wallets-page__account-row"
+                 [class.wallets-page__account-row--active]="selectedAccountId() === account.id"
+                 (click)="selectAccount(account.id)">
+              <div class="wallets-page__icon-tile"
+                   [style.background]="iconFor(account.type).bg"
+                   [style.color]="iconFor(account.type).color">
+                <i [class]="'ph ' + iconFor(account.type).icon"></i>
+              </div>
+              <div class="wallets-page__account-info">
+                <span class="wallets-page__account-name">{{ account.name }}</span>
+                <span class="wallets-page__account-currency">{{ account.currency }}</span>
+              </div>
+              <span class="wallets-page__account-balance"
+                    [class.wallets-page__account-balance--negative]="!isPositive(account.balance)">
+                {{ balanceDisplay(account.balance) }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Detail panel -->
+    <div class="wallets-page__detail">
+      @if (detail$ | async; as detail) {
+        <div class="wallets-page__card wallets-page__balance-card">
+          <div class="wallets-page__balance-header">
+            <div>
+              <div class="wallets-page__balance-label">{{ detail.name }}</div>
+              <div class="wallets-page__balance-value"
+                   [class.wallets-page__balance-value--negative]="!isPositive(detail.balance)">
+                {{ balanceDisplay(detail.balance) }}
+              </div>
+              <div class="wallets-page__balance-trend"
+                   [class.wallets-page__balance-trend--negative]="!isPositive(detail.monthChange)">
+                <i [class]="isPositive(detail.monthChange) ? 'ph ph-trend-up' : 'ph ph-trend-down'"></i>
+                {{ monthChangeText(detail.monthChange) }}
+              </div>
+            </div>
+            <div class="wallets-page__balance-tile"
+                 [style.background]="iconFor(detail.type).bg"
+                 [style.color]="iconFor(detail.type).color">
+              <i [class]="'ph ' + iconFor(detail.type).icon" style="font-size:26px;"></i>
+            </div>
+          </div>
+
+          <div class="wallets-page__balance-footer">
+            <div>
+              <div class="wallets-page__footer-label">Money in</div>
+              <div class="wallets-page__footer-value wallets-page__footer-value--positive">
+                {{ moneyInDisplay(detail.moneyInMonth) }}
+              </div>
+            </div>
+            <div>
+              <div class="wallets-page__footer-label">Money out</div>
+              <div class="wallets-page__footer-value">{{ moneyOutDisplay(detail.moneyOutMonth) }}</div>
+            </div>
+            <div>
+              <div class="wallets-page__footer-label">Avg. daily</div>
+              <div class="wallets-page__footer-value">{{ avgDailyDisplay(detail.avgDailyMonth) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wallets-page__card wallets-page__activity-card">
+          <div class="wallets-page__activity-header">
+            <span class="wallets-page__activity-title">Account activity</span>
+            <a class="wallets-page__view-all" routerLink="/transactions">
+              View all<i class="ph ph-arrow-right" style="font-size:12px;"></i>
+            </a>
+          </div>
+
+          @if (activity$ | async; as activity) {
+            @if (activity.content.length === 0) {
+              <div class="wallets-page__empty">No activity yet for this account.</div>
+            }
+            @for (tx of activity.content; track tx.id) {
+              <div class="wallets-page__activity-row">
+                <div class="wallets-page__icon-tile"
+                     [style.background]="txIconFor(tx).bg"
+                     [style.color]="txIconFor(tx).color">
+                  <i [class]="'ph ' + txIconFor(tx).icon"></i>
+                </div>
+                <div class="wallets-page__activity-info">
+                  <span class="wallets-page__activity-name">{{ tx.merchantName }}</span>
+                  <span class="wallets-page__activity-category">{{ tx.category }}</span>
+                </div>
+                <span class="wallets-page__activity-date">{{ formatDate(tx.transactionDate) }}</span>
+                <span class="wallets-page__activity-amount"
+                      [class.wallets-page__activity-amount--positive]="tx.type === 'CREDIT' || tx.type === 'SELL'">
+                  {{ txAmountDisplay(tx) }}
+                </span>
+              </div>
+            }
+          }
+        </div>
+      } @else {
+        <div class="wallets-page__card wallets-page__empty">Select an account to see its details.</div>
+      }
+    </div>
+
+  </div>
+</div>

@@ -91,7 +91,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/transactions/transactions.routes').then(m => m.transactionRoutes),
       },
-      { path: 'wallets',       component: PlaceholderPageComponent, data: { title: 'Wallets & Banks' } },
+      {
+        path: 'wallets',
+        loadChildren: () =>
+          import('./features/wallets/wallets.routes').then(m => m.walletsRoutes),
+      },
       { path: 'movement',      component: PlaceholderPageComponent, data: { title: 'Money Movement' } },
       { path: 'insights',      component: PlaceholderPageComponent, data: { title: 'Insights' } },
       { path: 'spending-plan', component: PlaceholderPageComponent, data: { title: 'Spending Plan' } },
