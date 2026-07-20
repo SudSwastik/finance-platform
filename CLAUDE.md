@@ -3,7 +3,7 @@
 Personal finance dashboard. Multi-tenant (tenant → users → accounts → transactions).
 **Angular SPA** + **Maven multi-module Spring Boot** (DDD) + **PostgreSQL** + **AWS Cognito** (Phase 7).
 
-Current status: Backend architecture refactor done (Phase 5). Angular wired to live BFF/finance-service — overview + transactions pages (Phase 6). **Next: Phase 7 — Cognito auth + multi-tenant.**
+Current status: Backend architecture refactor done (Phase 5). Angular wired to live BFF/finance-service — overview + transactions pages (Phase 6). Remaining nav pages (Wallets & Banks, Subscriptions, Portfolio) done (Phase 8). **Next: Phase 7 — Cognito auth + multi-tenant.**
 
 See `docs/ROADMAP.md` for phase checklist. See `docs/ARCHITECTURE.md` for full architecture.
 
