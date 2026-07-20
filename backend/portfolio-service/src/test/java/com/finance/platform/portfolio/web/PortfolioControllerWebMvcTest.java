@@ -3,6 +3,7 @@ package com.finance.platform.portfolio.web;
 import com.finance.platform.common.domain.Money;
 import com.finance.platform.portfolio.application.ListHoldingsQuery;
 import com.finance.platform.portfolio.application.ListHoldingsQueryHandler;
+import com.finance.platform.portfolio.domain.AssetType;
 import com.finance.platform.portfolio.domain.Holding;
 import com.finance.platform.portfolio.web.dto.HoldingItemDto;
 import com.finance.platform.security.PlatformSecurityConfiguration;
@@ -44,9 +45,9 @@ class PortfolioControllerWebMvcTest {
 
     @Test
     void listHoldings_withDevHeader_returns200() throws Exception {
-        var holding = new Holding(UUID.randomUUID(), "AAPL", "Apple Inc.",
+        var holding = new Holding(UUID.randomUUID(), "AAPL", "Apple Inc.", AssetType.STOCK,
                 Money.of("1600"), new BigDecimal("21.9"), Money.of("1950"));
-        var dto = new HoldingItemDto(holding.id(), "AAPL", "Apple Inc.", "1600", new BigDecimal("21.9"), "1950");
+        var dto = new HoldingItemDto(holding.id(), "AAPL", "Apple Inc.", "STOCK", "1600", new BigDecimal("21.9"), "1950");
 
         when(queryHandler.handle(any(ListHoldingsQuery.class))).thenReturn(List.of(holding));
         when(mapper.toDto(holding)).thenReturn(dto);

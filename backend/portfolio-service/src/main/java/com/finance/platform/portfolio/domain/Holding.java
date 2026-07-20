@@ -9,6 +9,7 @@ public record Holding(
         UUID id,
         String symbol,
         String name,
+        AssetType assetType,
         Money costBasis,
         BigDecimal changePercent,
         Money currentValue

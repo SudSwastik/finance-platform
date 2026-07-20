@@ -1,6 +1,7 @@
 package com.finance.platform.portfolio.application;
 
 import com.finance.platform.common.domain.Money;
+import com.finance.platform.portfolio.domain.AssetType;
 import com.finance.platform.portfolio.domain.Holding;
 import com.finance.platform.portfolio.domain.HoldingRepository;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ class ListHoldingsQueryHandlerTest {
 
     @Test
     void handle_returnsHoldingsForCurrentTenant() {
-        var holding = new Holding(UUID.randomUUID(), "AAPL", "Apple Inc.",
+        var holding = new Holding(UUID.randomUUID(), "AAPL", "Apple Inc.", AssetType.STOCK,
                 Money.of("1600"), new BigDecimal("21.9"), Money.of("1950"));
         when(repository.findAll()).thenReturn(List.of(holding));
 
