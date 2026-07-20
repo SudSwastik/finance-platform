@@ -9,9 +9,11 @@ public record TransactionFilter(
         YearMonth month,
         UUID accountId,
         String category,
-        String status
+        String status,
+        boolean recurringOnly,
+        RecurringFrequency recurringFrequency
 ) {
     public static TransactionFilter empty() {
-        return new TransactionFilter(null, null, null, null, null, null);
+        return new TransactionFilter(null, null, null, null, null, null, false, null);
     }
 }

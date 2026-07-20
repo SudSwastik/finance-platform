@@ -95,7 +95,11 @@ export const routes: Routes = [
       { path: 'movement',      component: PlaceholderPageComponent, data: { title: 'Money Movement' } },
       { path: 'insights',      component: PlaceholderPageComponent, data: { title: 'Insights' } },
       { path: 'spending-plan', component: PlaceholderPageComponent, data: { title: 'Spending Plan' } },
-      { path: 'subscriptions', component: PlaceholderPageComponent, data: { title: 'Subscriptions' } },
+      {
+        path: 'subscriptions',
+        loadChildren: () =>
+          import('./features/subscriptions/subscriptions.routes').then(m => m.subscriptionRoutes),
+      },
       { path: 'portfolio',     component: PlaceholderPageComponent, data: { title: 'Portfolio' } },
       { path: 'tips',          component: PlaceholderPageComponent, data: { title: 'Smart Tips' } },
       { path: 'settings',      component: PlaceholderPageComponent, data: { title: 'Settings' } },

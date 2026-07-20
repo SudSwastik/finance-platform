@@ -1,5 +1,6 @@
 package com.finance.platform.finance.infrastructure.persistence;
 
+import com.finance.platform.finance.domain.RecurringFrequency;
 import com.finance.platform.finance.domain.TransactionStatus;
 import com.finance.platform.finance.domain.TransactionType;
 import jakarta.persistence.*;
@@ -50,6 +51,13 @@ public class TransactionJpaEntity {
     @Column(name = "is_recurring", nullable = false)
     private boolean recurring;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "recurring_frequency", length = 16)
+    private RecurringFrequency recurringFrequency;
+
+    @Column(name = "next_due_date")
+    private LocalDate nextDueDate;
+
     @Column(name = "transaction_date", nullable = false)
     private LocalDate transactionDate;
 
@@ -73,6 +81,8 @@ public class TransactionJpaEntity {
     public String getCategory()           { return category; }
     public String getDescription()        { return description; }
     public boolean isRecurring()          { return recurring; }
+    public RecurringFrequency getRecurringFrequency() { return recurringFrequency; }
+    public LocalDate getNextDueDate()     { return nextDueDate; }
     public LocalDate getTransactionDate() { return transactionDate; }
     public String getEntrySource()        { return entrySource; }
     public String getCreatedBy()          { return createdBy; }
@@ -89,6 +99,8 @@ public class TransactionJpaEntity {
     public void setCategory(String category)              { this.category = category; }
     public void setDescription(String description)        { this.description = description; }
     public void setRecurring(boolean recurring)           { this.recurring = recurring; }
+    public void setRecurringFrequency(RecurringFrequency f) { this.recurringFrequency = f; }
+    public void setNextDueDate(LocalDate nextDueDate)     { this.nextDueDate = nextDueDate; }
     public void setTransactionDate(LocalDate date)        { this.transactionDate = date; }
     public void setEntrySource(String entrySource)        { this.entrySource = entrySource; }
     public void setCreatedBy(String createdBy)            { this.createdBy = createdBy; }

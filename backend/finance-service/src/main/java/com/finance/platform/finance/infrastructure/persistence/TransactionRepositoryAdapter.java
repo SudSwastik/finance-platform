@@ -68,7 +68,8 @@ class TransactionRepositoryAdapter implements TransactionRepository {
                 e.getId(), e.getTenantId(), e.getUserSub(), e.getAccountId(),
                 e.getAmount(), e.getCurrency(), e.getType(), e.getStatus(),
                 e.getMerchantName(), e.getCategory(), e.getDescription(),
-                e.isRecurring(), e.getTransactionDate());
+                e.isRecurring(), e.getRecurringFrequency(), e.getNextDueDate(),
+                e.getTransactionDate());
     }
 
     private TransactionJpaEntity toEntity(Transaction t) {
@@ -85,6 +86,8 @@ class TransactionRepositoryAdapter implements TransactionRepository {
         e.setCategory(t.category());
         e.setDescription(t.description());
         e.setRecurring(t.isRecurring());
+        e.setRecurringFrequency(t.recurringFrequency());
+        e.setNextDueDate(t.nextDueDate());
         e.setTransactionDate(t.transactionDate());
         e.setCreatedBy(t.userSub());
         return e;

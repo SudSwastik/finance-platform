@@ -2,7 +2,7 @@
 
 Dark-mode personal finance dashboard. Angular SPA + multi-module Spring Boot (DDD) + PostgreSQL + AWS Cognito (Phase 7).
 
-**Status:** Phase 6 in progress — Angular wired to live BFF (totalBudgets, investments, recurring done).
+**Status:** Phase 6 done — Angular wired to live BFF/finance-service (overview + transactions pages). Next: Phase 7 — Cognito auth.
 
 ## Docs
 
@@ -40,8 +40,8 @@ docker compose -f infra/local/docker-compose.yml up -d
 
 # Backend (from backend/)
 ./mvnw test
-./mvnw -pl dashboard-bff spring-boot:run     # :8080
-./mvnw -pl budget-service spring-boot:run    # :8081
+./mvnw -pl dashboard-bff spring-boot:run     # :8081
+./mvnw -pl budget-service spring-boot:run    # :8084
 
 # Frontend (from frontend/)
 npm install && ng serve

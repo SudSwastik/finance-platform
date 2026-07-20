@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { DashboardCardComponent } from '../../../shared/ui/card/dashboard-card.component';
 import { RecurringBill } from '../../../shared/models/overview.models';
 
 @Component({
   selector: 'app-recurring-widget',
   standalone: true,
-  imports: [DashboardCardComponent],
+  imports: [DashboardCardComponent, RouterLink],
   templateUrl: './recurring-widget.component.html',
   styleUrl: './recurring-widget.component.scss',
 })

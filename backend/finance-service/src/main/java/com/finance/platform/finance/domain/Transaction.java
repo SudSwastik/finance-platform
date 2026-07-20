@@ -19,6 +19,8 @@ public final class Transaction {
     private final String category;
     private final String description;
     private final boolean recurring;
+    private final RecurringFrequency recurringFrequency;
+    private final LocalDate nextDueDate;
     private final LocalDate transactionDate;
 
     public Transaction(
@@ -27,19 +29,32 @@ public final class Transaction {
             TransactionType type, TransactionStatus status,
             String merchantName, String category, String description,
             boolean recurring, LocalDate transactionDate) {
-        this.id              = Objects.requireNonNull(id);
-        this.tenantId        = Objects.requireNonNull(tenantId);
-        this.userSub         = Objects.requireNonNull(userSub);
-        this.accountId       = Objects.requireNonNull(accountId);
-        this.amount          = Objects.requireNonNull(amount);
-        this.currency        = Objects.requireNonNull(currency);
-        this.type            = Objects.requireNonNull(type);
-        this.status          = Objects.requireNonNull(status);
-        this.merchantName    = merchantName;
-        this.category        = category;
-        this.description     = description;
-        this.recurring       = recurring;
-        this.transactionDate = Objects.requireNonNull(transactionDate);
+        this(id, tenantId, userSub, accountId, amount, currency, type, status,
+                merchantName, category, description, recurring, null, null, transactionDate);
+    }
+
+    public Transaction(
+            UUID id, UUID tenantId, String userSub, UUID accountId,
+            BigDecimal amount, String currency,
+            TransactionType type, TransactionStatus status,
+            String merchantName, String category, String description,
+            boolean recurring, RecurringFrequency recurringFrequency, LocalDate nextDueDate,
+            LocalDate transactionDate) {
+        this.id                 = Objects.requireNonNull(id);
+        this.tenantId           = Objects.requireNonNull(tenantId);
+        this.userSub            = Objects.requireNonNull(userSub);
+        this.accountId          = Objects.requireNonNull(accountId);
+        this.amount             = Objects.requireNonNull(amount);
+        this.currency           = Objects.requireNonNull(currency);
+        this.type               = Objects.requireNonNull(type);
+        this.status             = Objects.requireNonNull(status);
+        this.merchantName       = merchantName;
+        this.category           = category;
+        this.description        = description;
+        this.recurring          = recurring;
+        this.recurringFrequency = recurringFrequency;
+        this.nextDueDate        = nextDueDate;
+        this.transactionDate    = Objects.requireNonNull(transactionDate);
     }
 
     public UUID id()                  { return id; }
@@ -54,5 +69,7 @@ public final class Transaction {
     public String category()          { return category; }
     public String description()       { return description; }
     public boolean isRecurring()      { return recurring; }
+    public RecurringFrequency recurringFrequency() { return recurringFrequency; }
+    public LocalDate nextDueDate()    { return nextDueDate; }
     public LocalDate transactionDate() { return transactionDate; }
 }

@@ -53,6 +53,14 @@ class TransactionSpecifications {
                         TransactionStatus.valueOf(filter.status().toUpperCase())));
             }
 
+            if (filter.recurringOnly()) {
+                predicates.add(cb.isTrue(root.get("recurring")));
+            }
+
+            if (filter.recurringFrequency() != null) {
+                predicates.add(cb.equal(root.get("recurringFrequency"), filter.recurringFrequency()));
+            }
+
             if (query != null) {
                 query.orderBy(cb.desc(root.get("transactionDate")));
             }

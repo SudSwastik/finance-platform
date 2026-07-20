@@ -5,6 +5,8 @@ import { OverviewMockRepository } from './overview/overview-mock.repository';
 import { OverviewHttpRepository } from './overview/overview-http.repository';
 import { TransactionRepository } from './transactions/transaction.repository';
 import { TransactionHttpRepository } from './transactions/transaction-http.repository';
+import { SubscriptionRepository } from './subscriptions/subscription.repository';
+import { SubscriptionHttpRepository } from './subscriptions/subscription-http.repository';
 
 export function provideDataAccess(): Provider[] {
   const overviewProvider = environment.useMockData
@@ -14,5 +16,6 @@ export function provideDataAccess(): Provider[] {
   return [
     overviewProvider,
     { provide: TransactionRepository, useClass: TransactionHttpRepository },
+    { provide: SubscriptionRepository, useClass: SubscriptionHttpRepository },
   ];
 }
