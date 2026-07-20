@@ -7,6 +7,8 @@ import { TransactionRepository } from './transactions/transaction.repository';
 import { TransactionHttpRepository } from './transactions/transaction-http.repository';
 import { SubscriptionRepository } from './subscriptions/subscription.repository';
 import { SubscriptionHttpRepository } from './subscriptions/subscription-http.repository';
+import { AccountRepository } from './accounts/account.repository';
+import { AccountHttpRepository } from './accounts/account-http.repository';
 
 export function provideDataAccess(): Provider[] {
   const overviewProvider = environment.useMockData
@@ -17,5 +19,6 @@ export function provideDataAccess(): Provider[] {
     overviewProvider,
     { provide: TransactionRepository, useClass: TransactionHttpRepository },
     { provide: SubscriptionRepository, useClass: SubscriptionHttpRepository },
+    { provide: AccountRepository, useClass: AccountHttpRepository },
   ];
 }

@@ -1,0 +1,338 @@
+.wallets-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #F2F2F4;
+    letter-spacing: -.02em;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    font-size: 13.5px;
+    color: #84848B;
+  }
+
+  &__link-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6E8FD6;
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+    height: 38px;
+    color: #0C0C0F;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s;
+
+    &:hover { background: #82A0E0; }
+  }
+
+  // ── Stats strip ──────────────────────────────────────────────────────────
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  &__stat-card {
+    background: #121215;
+    border: 1px solid #222227;
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  &__stat-label {
+    color: #84848B;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  &__stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #F2F2F4;
+    margin-top: 7px;
+
+    &--negative { color: #D2796F; }
+  }
+
+  &__stat-meta {
+    font-size: 11.5px;
+    color: #6C6C73;
+    margin-top: 2px;
+  }
+
+  // ── Grid + shared card ───────────────────────────────────────────────────
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  &__card {
+    background: #121215;
+    border: 1px solid #222227;
+    border-radius: 16px;
+  }
+
+  // ── Accounts list ────────────────────────────────────────────────────────
+  &__list-card {
+    grid-column: span 5;
+    padding: 18px;
+  }
+
+  &__group-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #55555C;
+    padding: 4px 6px 10px;
+  }
+
+  &__group-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  &__account-row {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px;
+    border-radius: 11px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.1s;
+
+    &:hover { background: #16161A; }
+
+    &--active {
+      background: #1A1A1F;
+      border-color: #2A3550;
+
+      &:hover { background: #1A1A1F; }
+    }
+  }
+
+  &__account-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    min-width: 0;
+  }
+
+  &__account-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ECECEE;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__account-currency {
+    font-size: 11.5px;
+    color: #6C6C73;
+  }
+
+  &__account-balance {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ECECEE;
+
+    &--negative { color: #D2796F; }
+  }
+
+  &__icon-tile {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  // ── Detail panel ─────────────────────────────────────────────────────────
+  &__detail {
+    grid-column: span 7;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  &__balance-card { padding: 24px; }
+
+  &__balance-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  &__balance-label {
+    font-size: 12.5px;
+    color: #84848B;
+    font-weight: 600;
+  }
+
+  &__balance-value {
+    font-size: 34px;
+    font-weight: 800;
+    color: #F2F2F4;
+    letter-spacing: -.02em;
+    margin-top: 6px;
+
+    &--negative { color: #D2796F; }
+  }
+
+  &__balance-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: #4FAE85;
+    font-weight: 600;
+    margin-top: 4px;
+
+    &--negative { color: #D2796F; }
+  }
+
+  &__balance-tile {
+    width: 64px;
+    height: 64px;
+    flex: none;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__balance-footer {
+    display: flex;
+    gap: 24px;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #1E1E23;
+  }
+
+  &__footer-label {
+    font-size: 11.5px;
+    color: #6C6C73;
+    font-weight: 600;
+  }
+
+  &__footer-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #F2F2F4;
+    margin-top: 3px;
+
+    &--positive { color: #4FAE85; }
+  }
+
+  // ── Activity card ────────────────────────────────────────────────────────
+  &__activity-card { padding: 22px 24px; }
+
+  &__activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__activity-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #F2F2F4;
+  }
+
+  &__view-all {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #6E8FD6;
+    cursor: pointer;
+  }
+
+  &__activity-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 0;
+    border-top: 1px solid #1E1E23;
+  }
+
+  &__activity-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    min-width: 0;
+  }
+
+  &__activity-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ECECEE;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__activity-category {
+    font-size: 11.5px;
+    color: #6C6C73;
+  }
+
+  &__activity-date {
+    font-size: 12px;
+    color: #6C6C73;
+    width: 62px;
+    flex: none;
+    text-align: right;
+  }
+
+  &__activity-amount {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ECECEE;
+    width: 96px;
+    flex: none;
+    text-align: right;
+
+    &--positive { color: #4FAE85; }
+  }
+
+  &__empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: #6C6C73;
+    font-size: 13.5px;
+  }
+}

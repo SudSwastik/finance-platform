@@ -25,7 +25,7 @@ public class PlatformSecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/health", "/actuator/health").permitAll()
+                        .requestMatchers("/api/v1/health", "/actuator/health", "/error").permitAll()
                         .anyRequest().authenticated());
 
         // Clear TenantContext at the end of every request (wraps entire chain via try-finally)
