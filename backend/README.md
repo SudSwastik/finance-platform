@@ -8,8 +8,8 @@ Maven multi-module Spring Boot backend (DDD, spec-first, testable).
 |--------|------|-------------|
 | `platform-common` | — | `Money`, `UserId`, shared API types |
 | `platform-security` | — | Dev `X-Dev-User-Sub` auth (Cognito later) |
-| `budget-service` | 8081 | Budget bounded context |
-| `dashboard-bff` | 8080 | UI edge: health, me, overview |
+| `budget-service` | 8084 | Budget bounded context |
+| `dashboard-bff` | 8081 | UI edge: health, me, overview |
 
 ## Prerequisites
 
@@ -35,16 +35,16 @@ mvn -pl dashboard-bff spring-boot:run
 
 ```bash
 # Health (public)
-curl http://localhost:8080/api/v1/health
+curl http://localhost:8081/api/v1/health
 
 # Me
-curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8080/api/v1/me
+curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8081/api/v1/me
 
 # Overview (BFF composes budget-service + stubs)
-curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8080/api/v1/dashboard/overview
+curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8081/api/v1/dashboard/overview
 
 # Budget service directly
-curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8081/api/v1/budgets/total-budgets
+curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8084/api/v1/budgets/total-budgets
 ```
 
 ## Tests

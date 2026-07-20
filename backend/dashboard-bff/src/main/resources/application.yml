@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -9,10 +9,10 @@ platform:
   security:
     dev-user-sub-enabled: true
   services:
-    budget:    http://localhost:8081
-    identity:  http://localhost:8079
-    finance:   http://localhost:8084
-    portfolio: http://localhost:8085
+    budget:    http://localhost:8084
+    identity:  http://localhost:8082
+    finance:   http://localhost:8085
+    portfolio: http://localhost:8086
 
 logging:
   level:

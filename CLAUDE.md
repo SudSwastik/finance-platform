@@ -3,7 +3,7 @@
 Personal finance dashboard. Multi-tenant (tenant → users → accounts → transactions).
 **Angular SPA** + **Maven multi-module Spring Boot** (DDD) + **PostgreSQL** + **AWS Cognito** (Phase 7).
 
-Current status: Angular scaffold + auth pages + overview mockup done. Initial backend scaffold done. **Next: Phase 5 — backend architecture refactor.**
+Current status: Backend architecture refactor done (Phase 5). Angular wired to live BFF/finance-service — overview + transactions pages (Phase 6). **Next: Phase 7 — Cognito auth + multi-tenant.**
 
 See `docs/ROADMAP.md` for phase checklist. See `docs/ARCHITECTURE.md` for full architecture.
 
@@ -18,8 +18,8 @@ docker compose -f infra/local/docker-compose.yml up -d
 # Backend (from backend/)
 ./mvnw test                                   # all modules
 ./mvnw -pl budget-service test                # single module
-./mvnw -pl budget-service spring-boot:run     # :8081
-./mvnw -pl dashboard-bff spring-boot:run      # :8080
+./mvnw -pl budget-service spring-boot:run     # :8084
+./mvnw -pl dashboard-bff spring-boot:run      # :8081
 
 # Frontend (from frontend/)
 npm install && ng serve
@@ -40,11 +40,12 @@ npx openapi-to-postmanv2 \
 |--------|------|--------|------|
 | `platform-common` | jar | — | `Money`, `UserId`, `ErrorEnvelope` |
 | `platform-security` | jar | — | JWT/Cognito autoconfig, `QueryContext`, scope-aware filtering |
-| `dashboard-bff` | 8080 | — | Composes overview; `/me`; `/health`; no domain code |
-| `identity-service` | 8079 | `identity` | Tenant, User, UserRelationship |
-| `budget-service` | 8081 | `budget` | BudgetCategory |
-| `finance-service` | 8084 | `finance` | Account, Transaction, Asset, InvestmentTransaction |
-| `portfolio-service` | 8085 | `portfolio` | Holdings (read model) |
+| `dashboard-bff` | 8081 | — | Composes overview; `/me`; `/health`; no domain code |
+| `identity-service` | 8082 | `identity` | Tenant, User, UserRelationship |
+| `goals-service` (unbuilt) | 8083 | — | Reserved; see `docs/api/goals.openapi.yaml` |
+| `budget-service` | 8084 | `budget` | BudgetCategory |
+| `finance-service` | 8085 | `finance` | Account, Transaction, Asset, InvestmentTransaction |
+| `portfolio-service` | 8086 | `portfolio` | Holdings (read model) |
 
 `finance-service` replaces `ledger-service` + `recurring-service`.
 

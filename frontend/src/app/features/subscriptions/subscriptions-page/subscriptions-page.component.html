@@ -1,0 +1,173 @@
+<div class="subscriptions-page">
+
+  <!-- Header -->
+  <div class="subscriptions-page__header">
+    <div>
+      <h1 class="subscriptions-page__title">Subscriptions</h1>
+      <p class="subscriptions-page__subtitle">Recurring charges across your accounts.</p>
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  @if (stats$ | async; as stats) {
+    <div class="subscriptions-page__stats">
+      <div class="subscriptions-page__stat-card">
+        <div class="subscriptions-page__stat-label">
+          <i class="ph ph-arrows-clockwise" style="color:#6E8FD6;font-size:15px;"></i>Active subscriptions
+        </div>
+        <div class="subscriptions-page__stat-value">{{ stats.activeCount }}</div>
+        <div class="subscriptions-page__stat-meta">Recurring charges tracked</div>
+      </div>
+
+      <div class="subscriptions-page__stat-card">
+        <div class="subscriptions-page__stat-label">
+          <i class="ph ph-calendar-blank" style="color:#D2796F;font-size:15px;"></i>Monthly cost
+        </div>
+        <div class="subscriptions-page__stat-value">&minus;{{ formatStatMoney(stats.monthlyCost) }}</div>
+        <div class="subscriptions-page__stat-meta">Normalized to a monthly cadence</div>
+      </div>
+
+      <div class="subscriptions-page__stat-card">
+        <div class="subscriptions-page__stat-label">
+          <i class="ph ph-chart-line-up" style="color:#D2796F;font-size:15px;"></i>Yearly cost
+        </div>
+        <div class="subscriptions-page__stat-value">&minus;{{ formatStatMoney(stats.yearlyCost) }}</div>
+        <div class="subscriptions-page__stat-meta">Projected annual spend</div>
+      </div>
+
+      <div class="subscriptions-page__stat-card">
+        <div class="subscriptions-page__stat-label">
+          <i class="ph ph-bell-ringing" style="color:#C9A24B;font-size:15px;"></i>Next renewal
+        </div>
+        <div class="subscriptions-page__stat-value">{{ formatDate(stats.nextRenewal) }}</div>
+        <div class="subscriptions-page__stat-meta">Earliest upcoming charge</div>
+      </div>
+    </div>
+  }
+
+  <!-- Table card -->
+  <div class="subscriptions-page__card">
+
+    <!-- Filter toolbar -->
+    <div class="subscriptions-page__toolbar">
+      <div class="subscriptions-page__toolbar-row">
+        <!-- Frequency tabs -->
+        <div class="subscriptions-page__segmented">
+          @for (tab of [['ALL','All'],['WEEKLY','Weekly'],['MONTHLY','Monthly'],['YEARLY','Yearly']]; track tab[0]) {
+            <span class="subscriptions-page__seg-item"
+                  [class.subscriptions-page__seg-item--active]="frequency() === tab[0]"
+                  (click)="setFrequency($any(tab[0]))">
+              {{ tab[1] }}
+            </span>
+          }
+        </div>
+
+        <!-- Search -->
+        <div class="subscriptions-page__search">
+          <i class="ph ph-magnifying-glass" style="color:#6C6C73;font-size:15px;flex:none;"></i>
+          <input type="text"
+                 placeholder="Search subscriptions"
+                 [value]="searchTerm()"
+                 (input)="onSearch($any($event.target).value)" />
+        </div>
+      </div>
+
+      <div class="subscriptions-page__filter-row">
+        <button class="subscriptions-page__filter-btn">
+          <i class="ph ph-tag" style="font-size:14px;color:#84848B;"></i>
+          Category
+          <i class="ph ph-caret-down" style="font-size:12px;color:#6C6C73;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Column header -->
+    <div class="subscriptions-page__col-header">
+      <span class="subscriptions-page__col-desc">Description</span>
+      <span class="subscriptions-page__col-account">Account</span>
+      <span class="subscriptions-page__col-frequency">Frequency</span>
+      <span class="subscriptions-page__col-date">Next due</span>
+      <span class="subscriptions-page__col-status">Status</span>
+      <span class="subscriptions-page__col-amount">Amount</span>
+    </div>
+
+    <!-- Rows -->
+    @if (result$ | async; as result) {
+      @if (result.content.length === 0) {
+        <div class="subscriptions-page__empty">No subscriptions found.</div>
+      }
+      @for (sub of result.content; track sub.id) {
+        <div class="subscriptions-page__row">
+          <div class="subscriptions-page__col-desc">
+            <div class="subscriptions-page__icon-tile"
+                 [style.background]="iconFor(sub).bg"
+                 [style.color]="iconFor(sub).color">
+              <i [class]="'ph ' + iconFor(sub).icon"></i>
+            </div>
+            <div class="subscriptions-page__tx-info">
+              <span class="subscriptions-page__tx-name">{{ sub.name }}</span>
+              <span class="subscriptions-page__tx-category">{{ sub.category }}</span>
+            </div>
+          </div>
+
+          <span class="subscriptions-page__col-account subscriptions-page__cell-muted">
+            {{ sub.accountName }}
+          </span>
+
+          <span class="subscriptions-page__col-frequency">
+            <span class="subscriptions-page__frequency-pill">{{ frequencyLabel(sub.frequency) }}</span>
+          </span>
+
+          <span class="subscriptions-page__col-date subscriptions-page__cell-muted">
+            {{ formatDate(sub.nextDueDate) }}
+          </span>
+
+          <span class="subscriptions-page__col-status">
+            <span class="subscriptions-page__status-pill"
+                  [class]="'subscriptions-page__status-pill--' + sub.status.toLowerCase()">
+              <span class="subscriptions-page__status-dot"></span>
+              {{ statusLabel(sub.status) }}
+            </span>
+          </span>
+
+          <span class="subscriptions-page__col-amount">
+            {{ amountDisplay(sub) }}
+          </span>
+        </div>
+      }
+
+      <!-- Pagination -->
+      @if (result.totalPages > 0) {
+        <div class="subscriptions-page__pagination">
+          <span class="subscriptions-page__page-info">
+            Showing {{ showingFrom(result.page) }}–{{ showingTo(result.page, result.totalElements) }} of {{ result.totalElements }} subscriptions
+          </span>
+          <div class="subscriptions-page__page-btns">
+            <button class="subscriptions-page__page-btn"
+                    [disabled]="page() === 0"
+                    (click)="goToPage(page() - 1)">
+              <i class="ph ph-caret-left" style="font-size:14px;"></i>
+            </button>
+            @for (p of pageNumbers(result.totalPages); track $index) {
+              @if (p === '...') {
+                <span class="subscriptions-page__page-ellipsis">&hellip;</span>
+              } @else {
+                <button class="subscriptions-page__page-btn"
+                        [class.subscriptions-page__page-btn--active]="page() === p"
+                        (click)="goToPage(+p)">
+                  {{ +p + 1 }}
+                </button>
+              }
+            }
+            <button class="subscriptions-page__page-btn"
+                    [disabled]="page() >= result.totalPages - 1"
+                    (click)="goToPage(page() + 1)">
+              <i class="ph ph-caret-right" style="font-size:14px;"></i>
+            </button>
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>

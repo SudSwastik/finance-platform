@@ -98,7 +98,9 @@ public class TransactionController {
                 month != null ? YearMonth.parse(month) : null,
                 accountId != null ? UUID.fromString(accountId) : null,
                 category,
-                status);
+                status,
+                false,
+                null);
 
         TransactionListResult result = listTransactionsQueryHandler.handle(
                 new ListTransactionsQuery(userSub, filter, page, size));
