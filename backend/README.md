@@ -8,8 +8,11 @@ Maven multi-module Spring Boot backend (DDD, spec-first, testable).
 |--------|------|-------------|
 | `platform-common` | — | `Money`, `UserId`, shared API types |
 | `platform-security` | — | Dev `X-Dev-User-Sub` auth (Cognito later) |
-| `budget-service` | 8084 | Budget bounded context |
 | `dashboard-bff` | 8081 | UI edge: health, me, overview |
+| `identity-service` | 8082 | Tenant, User, UserRelationship |
+| `budget-service` | 8084 | BudgetCategory |
+| `finance-service` | 8085 | Account, Transaction, Asset, InvestmentTransaction |
+| `portfolio-service` | 8086 | Holdings (read model) |
 
 ## Prerequisites
 
@@ -20,15 +23,15 @@ Maven multi-module Spring Boot backend (DDD, spec-first, testable).
 ## Quick start
 
 ```bash
-# 1. Database
-docker compose up -d
+# 1. Database + infra
+docker compose -f ../infra/local/docker-compose.yml up -d
 
 # 2. Run tests
-cd backend && mvn test
+mvn test
 
-# 3. Start services (two terminals)
-mvn -pl budget-service spring-boot:run
+# 3. Start services (separate terminals as needed)
 mvn -pl dashboard-bff spring-boot:run
+mvn -pl finance-service spring-boot:run
 ```
 
 ## Try APIs
@@ -40,11 +43,11 @@ curl http://localhost:8081/api/v1/health
 # Me
 curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8081/api/v1/me
 
-# Overview (BFF composes budget-service + stubs)
+# Overview (BFF composes budget/finance/portfolio services)
 curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8081/api/v1/dashboard/overview
 
-# Budget service directly
-curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8084/api/v1/budgets/total-budgets
+# finance-service directly
+curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8085/api/v1/finance/accounts
 ```
 
 ## Tests
@@ -59,5 +62,4 @@ curl -H "X-Dev-User-Sub: seed-user-alice" http://localhost:8084/api/v1/budgets/t
 
 ## Docs
 
-- [docs/BACKEND_ARCHITECTURE.md](../docs/BACKEND_ARCHITECTURE.md)
-- [docs/api/](../docs/api/)
+Full architecture, DDD layering, multi-tenancy rules, and hard rules live in [`../CLAUDE.md`](../CLAUDE.md) — the maintained source of truth for this repo.
