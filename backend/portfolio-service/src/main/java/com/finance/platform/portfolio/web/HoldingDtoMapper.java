@@ -12,6 +12,7 @@ public class HoldingDtoMapper {
                 holding.id(),
                 holding.symbol(),
                 holding.name(),
+                holding.assetType().name(),
                 holding.costBasis().toApiString(),
                 holding.changePercent(),
                 holding.currentValue().toApiString());

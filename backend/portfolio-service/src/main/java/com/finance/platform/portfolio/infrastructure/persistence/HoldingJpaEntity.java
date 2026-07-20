@@ -1,5 +1,6 @@
 package com.finance.platform.portfolio.infrastructure.persistence;
 
+import com.finance.platform.portfolio.domain.AssetType;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -21,6 +22,10 @@ public class HoldingJpaEntity {
     @Column(nullable = false)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "asset_type", nullable = false, length = 8)
+    private AssetType assetType;
+
     @Column(name = "cost_basis", nullable = false, precision = 19, scale = 2)
     private BigDecimal costBasis;
 
@@ -38,6 +43,8 @@ public class HoldingJpaEntity {
     public void setSymbol(String symbol) { this.symbol = symbol; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public AssetType getAssetType() { return assetType; }
+    public void setAssetType(AssetType assetType) { this.assetType = assetType; }
     public BigDecimal getCostBasis() { return costBasis; }
     public void setCostBasis(BigDecimal costBasis) { this.costBasis = costBasis; }
     public BigDecimal getChangePercent() { return changePercent; }

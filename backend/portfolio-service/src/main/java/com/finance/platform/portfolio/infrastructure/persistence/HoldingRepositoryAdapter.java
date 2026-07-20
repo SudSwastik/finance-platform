@@ -30,6 +30,7 @@ public class HoldingRepositoryAdapter implements HoldingRepository {
                 entity.getId(),
                 entity.getSymbol(),
                 entity.getName(),
+                entity.getAssetType(),
                 Money.of(entity.getCostBasis()),
                 entity.getChangePercent(),
                 Money.of(entity.getCurrentValue()));
