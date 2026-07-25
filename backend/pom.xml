@@ -24,6 +24,7 @@
         <module>budget-service</module>
         <module>finance-service</module>
         <module>portfolio-service</module>
+        <module>goals-service</module>
         <module>dashboard-bff</module>
     </modules>
 
