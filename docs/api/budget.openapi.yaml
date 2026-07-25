@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: Budget Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8084
+tags:
+  - name: Budgets
+paths:
+  /api/v1/budgets/total-budgets:
+    get:
+      tags: [Budgets]
+      summary: Total budgets section for dashboard
+      operationId: getTotalBudgets
+      security:
+        - devUserSub: []
+      responses:
+        '200':
+          description: Total budgets with categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotalBudgetsSection'
+        '401':
+          description: Unauthorized
+components:
+  securitySchemes:
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+  schemas:
+    TotalBudgetsSection:
+      type: object
+      properties:
+        total: { type: string }
+        filter: { type: string }
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/BudgetCategoryItem'
+    BudgetCategoryItem:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        colorToken: { type: string }
+        spent: { type: string }
+        budget: { type: string }
+        percentUsed: { type: number }

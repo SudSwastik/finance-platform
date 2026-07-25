@@ -5,7 +5,7 @@ Personal finance dashboard. Multi-tenant (tenant → users → accounts → tran
 
 Current status: Backend architecture refactor done (Phase 5). Angular wired to live BFF/finance-service — overview + transactions pages (Phase 6). Remaining nav pages (Wallets & Banks, Subscriptions, Portfolio) done (Phase 8). Goals feature — `goals-service` backend + live Angular page + Overview widget — done (Phase 9). **Next: Phase 7 — Cognito auth + multi-tenant.**
 
-See `docs/ROADMAP.md` for phase checklist. See `docs/ARCHITECTURE.md` for full architecture.
+See `docs/ROADMAP.md` for phase checklist. See `docs/REFERENCE.md` for architecture, conventions, design, and seed users.
 
 ---
 
@@ -244,11 +244,8 @@ font-family:'Manrope',system-ui,-apple-system,sans-serif;
 | Topic | File |
 |-------|------|
 | Phase checklist | `docs/ROADMAP.md` |
-| Full architecture | `docs/ARCHITECTURE.md` |
-| Naming + do/don't | `docs/CONVENTIONS.md` |
-| Design reference + widgets | `docs/DESIGN.md` |
+| Architecture, conventions, design, seed users | `docs/REFERENCE.md` |
 | Stack + versions | `docs/TECHSTACK.md` |
 | OpenAPI contracts | `docs/api/*.openapi.yaml` |
-| Seed test users | `docs/SEEDUSERS.md` |
 | Why multi-module | `docs/adr/0007-modular-backend-services.md` |
 | Why Cognito | `docs/adr/0004-auth-cognito.md` |
