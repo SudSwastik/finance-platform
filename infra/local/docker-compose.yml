@@ -109,6 +109,24 @@ services:
       postgres:
         condition: service_healthy
 
+  goals-service:
+    build:
+      context: ../../backend/goals-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=goals
+      SPRING_DATASOURCE_USERNAME: finance
+      SPRING_DATASOURCE_PASSWORD: finance
+      SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: goals
+      SPRING_FLYWAY_SCHEMAS: goals
+      SPRING_FLYWAY_DEFAULT_SCHEMA: goals
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "true"
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   # ─── BFF ────────────────────────────────────────────────────────────────────
 
   dashboard-bff:

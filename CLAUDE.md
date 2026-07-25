@@ -42,7 +42,7 @@ npx openapi-to-postmanv2 \
 | `platform-security` | jar | — | JWT/Cognito autoconfig, `QueryContext`, scope-aware filtering |
 | `dashboard-bff` | 8081 | — | Composes overview; `/me`; `/health`; no domain code |
 | `identity-service` | 8082 | `identity` | Tenant, User, UserRelationship |
-| `goals-service` (unbuilt) | 8083 | — | Reserved; see `docs/api/goals.openapi.yaml` |
+| `goals-service` | 8083 | `goals` | Goal, GoalContribution |
 | `budget-service` | 8084 | `budget` | BudgetCategory |
 | `finance-service` | 8085 | `finance` | Account, Transaction, Asset, InvestmentTransaction |
 | `portfolio-service` | 8086 | `portfolio` | Holdings (read model) |
@@ -59,6 +59,9 @@ web → application → domain ← infrastructure
 identity.tenants            (id, name, type: PERSONAL|FAMILY|ORG)
 identity.users              (id, tenant_id, user_sub, email)
 identity.user_relationships (tenant_id, user_sub, related_user_sub, can_view_summary)
+
+goals.goals                 (id, tenant_id, user_sub, name, color_token, current_amount, target_amount, target_date)
+goals.goal_contributions    (id, goal_id, tenant_id, user_sub, amount, note, contributed_at)
 
 finance.accounts            (id, tenant_id, user_sub, type, name, currency)
                             type: BANK | CREDIT_CARD | BROKERAGE | CRYPTO_WALLET
