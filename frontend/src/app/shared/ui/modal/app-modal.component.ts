@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { ModalService } from './modal.service';
-import { AppButtonComponent } from '../button/app-button.component';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [AsyncPipe, AppButtonComponent],
+  imports: [AsyncPipe, NgTemplateOutlet],
   templateUrl: './app-modal.component.html',
   styleUrl: './app-modal.component.scss',
 })

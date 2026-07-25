@@ -1,0 +1,137 @@
+<div class="goals-page">
+
+  <!-- Header -->
+  <div class="goals-page__header">
+    <div>
+      <h1 class="goals-page__title">Goals</h1>
+      <p class="goals-page__subtitle">Save toward what matters, track every contribution.</p>
+    </div>
+    <button class="goals-page__add-btn" (click)="openNewGoalModal()">
+      <i class="ph ph-plus" style="font-size:15px;"></i>
+      New goal
+    </button>
+  </div>
+
+  @if (goals$ | async; as goals) {
+    <!-- Stats strip -->
+    <div class="goals-page__stats">
+      <div class="goals-page__stat-card">
+        <div class="goals-page__stat-label">Total saved</div>
+        <div class="goals-page__stat-value">{{ formatAmount(totalSaved(goals)) }}</div>
+        <div class="goals-page__stat-meta">of {{ formatAmount(totalTarget(goals)) }} target</div>
+      </div>
+
+      <div class="goals-page__stat-card">
+        <div class="goals-page__stat-label">Combined progress</div>
+        <div class="goals-page__stat-value">{{ combinedProgress(goals) | number: '1.0-0' }}%</div>
+        <div class="goals-page__stat-meta">across {{ goals.length }} goal{{ goals.length === 1 ? '' : 's' }}</div>
+      </div>
+
+      @if (allContributions$ | async; as contributions) {
+        <div class="goals-page__stat-card">
+          <div class="goals-page__stat-label">Contributed this month</div>
+          <div class="goals-page__stat-value goals-page__stat-value--positive">
+            +{{ formatAmount(contributedThisMonth(contributions)) }}
+          </div>
+          <div class="goals-page__stat-meta">across all goals</div>
+        </div>
+      }
+    </div>
+
+    @if (goals.length === 0) {
+      <div class="goals-page__card goals-page__empty">
+        No goals yet. Create one to start tracking your savings.
+      </div>
+    }
+
+    <!-- Goal cards -->
+    <div class="goals-page__grid">
+      @for (goal of goals; track goal.id) {
+        <div class="goals-page__card goals-page__goal-card">
+          <div class="goals-page__goal-header">
+            <div class="goals-page__goal-heading">
+              <div class="goals-page__icon-tile"
+                   [style.background]="colorsFor(goal.colorToken).iconBg"
+                   [style.color]="colorsFor(goal.colorToken).iconColor">
+                <i class="ph ph-target"></i>
+              </div>
+              <div class="goals-page__goal-title-block">
+                <div class="goals-page__goal-name">{{ goal.name }}</div>
+                <div class="goals-page__goal-target-date">Target &middot; {{ formatDate(goal.targetDate) }}</div>
+              </div>
+            </div>
+            <div class="goals-page__menu-wrap">
+              <i class="ph ph-dots-three goals-page__menu-trigger" (click)="toggleMenu(goal.id)"></i>
+              @if (openMenuId() === goal.id) {
+                <div class="goals-page__menu">
+                  <button class="goals-page__menu-item" (click)="openEditGoalModal(goal)">Edit goal</button>
+                  <button class="goals-page__menu-item goals-page__menu-item--danger" (click)="deleteGoal(goal)">Delete goal</button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="goals-page__goal-body">
+            <div class="goals-page__ring-wrap">
+              <svg width="96" height="96" viewBox="0 0 96 96">
+                <circle cx="48" cy="48" r="42" fill="none" stroke="#1E1E23" stroke-width="8"></circle>
+                <circle cx="48" cy="48" r="42" fill="none"
+                        [style.stroke]="colorsFor(goal.colorToken).ring"
+                        stroke-width="8" stroke-linecap="round"
+                        [attr.stroke-dasharray]="ringCircumference"
+                        [attr.stroke-dashoffset]="ringOffset(goal.percent)"
+                        transform="rotate(-90 48 48)"></circle>
+              </svg>
+              <div class="goals-page__ring-value">{{ goal.percent | number: '1.0-0' }}%</div>
+            </div>
+            <div class="goals-page__goal-amounts">
+              <div class="goals-page__goal-current">{{ formatMoneyString(goal.current) }}</div>
+              <div class="goals-page__goal-target">of {{ formatMoneyString(goal.target) }}</div>
+              <div class="goals-page__goal-footer">
+                <span class="goals-page__badge">
+                  <i [class]="'ph ' + badge(goal.percent).icon"></i>
+                  {{ badge(goal.percent).label }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button class="goals-page__add-funds-btn" (click)="openAddFundsModal(goal)">Add funds</button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- New / edit goal form (projected into the shared modal) -->
+  <ng-template #goalFormTpl>
+    <div class="goals-page__form">
+      <div class="goals-page__form-field">
+        <label>Name</label>
+        <input type="text" placeholder="e.g. Emergency Fund" [(ngModel)]="goalName" name="goalName" />
+      </div>
+      <div class="goals-page__form-field">
+        <label>Target amount</label>
+        <input type="number" min="0" step="0.01" placeholder="20000" [(ngModel)]="goalTarget" name="goalTarget" />
+      </div>
+      <div class="goals-page__form-field">
+        <label>Target date</label>
+        <input type="date" [(ngModel)]="goalTargetDate" name="goalTargetDate" />
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Add funds form (projected into the shared modal) -->
+  <ng-template #contributeFormTpl>
+    <div class="goals-page__form">
+      <div class="goals-page__form-field">
+        <label>Amount</label>
+        <input type="number" min="0" step="0.01" placeholder="500" [(ngModel)]="contributeAmount" name="contributeAmount" />
+      </div>
+      <div class="goals-page__form-field">
+        <label>Note (optional)</label>
+        <input type="text" placeholder="e.g. Bonus deposit" [(ngModel)]="contributeNote" name="contributeNote" />
+      </div>
+    </div>
+  </ng-template>
+
+</div>

@@ -60,4 +60,31 @@
     padding-top: 16px;
     border-top: 1px solid var(--color-border-subtle);
   }
+
+  &__btn {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s;
+
+    &--cancel {
+      background: transparent;
+      border: 1px solid #242429;
+      color: #C8C8CD;
+
+      &:hover { background: #1A1A1E; }
+    }
+
+    &--confirm {
+      background: #6E8FD6;
+      border: none;
+      color: #0C0C0F;
+
+      &:hover { background: #82A0E0; }
+    }
+  }
 }

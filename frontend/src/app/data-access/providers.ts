@@ -11,6 +11,8 @@ import { AccountRepository } from './accounts/account.repository';
 import { AccountHttpRepository } from './accounts/account-http.repository';
 import { PortfolioRepository } from './portfolio/portfolio.repository';
 import { PortfolioHttpRepository } from './portfolio/portfolio-http.repository';
+import { GoalRepository } from './goals/goal.repository';
+import { GoalMockRepository } from './goals/goal-mock.repository';
 
 export function provideDataAccess(): Provider[] {
   const overviewProvider = environment.useMockData
@@ -23,5 +25,6 @@ export function provideDataAccess(): Provider[] {
     { provide: SubscriptionRepository, useClass: SubscriptionHttpRepository },
     { provide: AccountRepository, useClass: AccountHttpRepository },
     { provide: PortfolioRepository, useClass: PortfolioHttpRepository },
+    { provide: GoalRepository, useClass: GoalMockRepository },
   ];
 }
