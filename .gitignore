@@ -30,9 +30,6 @@ coverage/
 # MockUp
 design/
 
-# Docs
-docs/
-
 # Agent
 .claude/
 .cursor/

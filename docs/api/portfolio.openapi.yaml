@@ -1,0 +1,57 @@
+openapi: 3.1.0
+info:
+  title: Portfolio Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8086
+tags:
+  - name: Portfolio
+paths:
+  /api/v1/portfolio/holdings:
+    get:
+      tags: [Portfolio]
+      summary: List holdings for current user
+      operationId: listHoldings
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      responses:
+        '200':
+          description: Holdings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HoldingItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+  responses:
+    Unauthorized:
+      description: Unauthorized
+  schemas:
+    Money:
+      type: string
+      pattern: '^-?\d+(\.\d{1,2})?$'
+      example: '1600.00'
+    HoldingItem:
+      type: object
+      required: [id, symbol, name, assetType, costBasis, changePercent, value]
+      properties:
+        id:            { type: string, format: uuid }
+        symbol:        { type: string }
+        name:          { type: string }
+        assetType:     { type: string, enum: [STOCK, CRYPTO, ETF] }
+        costBasis:     { $ref: '#/components/schemas/Money' }
+        changePercent: { type: number }
+        value:         { $ref: '#/components/schemas/Money' }

@@ -1,0 +1,528 @@
+openapi: 3.1.0
+info:
+  title: Finance Service
+  version: 0.1.0
+  description: Accounts, transactions (bank/card/brokerage/crypto). Port 8085.
+
+servers:
+  - url: http://localhost:8085
+
+paths:
+  /api/v1/finance/accounts:
+    get:
+      operationId: listAccounts
+      summary: List all accounts for the authenticated user
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: List of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/accounts/{id}:
+    get:
+      operationId: getAccount
+      summary: Balance and current-month activity stats for one account
+      security:
+        - devUserSub: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Account detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountDetailDto"
+        "401":
+          description: Not authenticated
+        "404":
+          description: Account not found
+
+  /api/v1/finance/transactions:
+    get:
+      operationId: listTransactions
+      summary: Paginated, filtered transaction list
+      security:
+        - devUserSub: []
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: typeGroup
+          in: query
+          description: "INCOME | EXPENSE | TRANSFERS (omit = All)"
+          schema: { type: string, enum: [INCOME, EXPENSE, TRANSFERS] }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: month
+          in: query
+          description: "YYYY-MM"
+          schema: { type: string, example: "2026-06" }
+        - name: accountId
+          in: query
+          schema: { type: string, format: uuid }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string, enum: [PENDING, SETTLED, FAILED, REVERSED] }
+      responses:
+        "200":
+          description: Paginated transactions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionPageDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/stats:
+    get:
+      operationId: getTransactionStats
+      summary: Money in / out / net flow totals and counts for a month
+      security:
+        - devUserSub: []
+      parameters:
+        - name: month
+          in: query
+          description: "YYYY-MM (defaults to current month)"
+          schema: { type: string, example: "2026-06" }
+      responses:
+        "200":
+          description: Transaction stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionStatsDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/recent:
+    get:
+      operationId: listRecentTransactions
+      summary: Last 10 transactions sorted by date desc
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Recent transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecentTransactionDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/monthly-summary:
+    get:
+      operationId: getMonthlySummary
+      summary: Income, spending and net saved for the current month
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Monthly summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MonthlySummaryDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/transactions/recurring:
+    get:
+      operationId: listRecurringTransactions
+      summary: List recurring transactions for the overview widget
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: List of recurring transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecurringTransactionDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/subscriptions:
+    get:
+      operationId: listSubscriptions
+      summary: Paginated, filtered list of recurring transactions
+      security:
+        - devUserSub: []
+      parameters:
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20 }
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: frequency
+          in: query
+          schema: { type: string, enum: [WEEKLY, MONTHLY, YEARLY] }
+        - name: status
+          in: query
+          schema: { type: string, enum: [PENDING, SETTLED, FAILED, REVERSED] }
+      responses:
+        "200":
+          description: Paginated subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionPageDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/subscriptions/stats:
+    get:
+      operationId: getSubscriptionStats
+      summary: Active subscription count, monthly/yearly cost, and next renewal date
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Subscription stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionStatsDto"
+        "401":
+          description: Not authenticated
+
+  /api/v1/finance/trades:
+    get:
+      operationId: listTrades
+      summary: BUY/SELL investment trade history for the authenticated user
+      security:
+        - devUserSub: []
+      responses:
+        "200":
+          description: Trade history, most recent first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TradeDto"
+        "401":
+          description: Not authenticated
+
+components:
+  securitySchemes:
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+
+  schemas:
+    AccountDto:
+      type: object
+      required: [id, type, name, currency, balance]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [BANK, CREDIT_CARD, BROKERAGE, CRYPTO_WALLET]
+        name:
+          type: string
+        currency:
+          type: string
+          example: INR
+        balance:
+          type: string
+          description: Decimal string, signed (negative for card balances owed)
+          example: "12480.50"
+
+    AccountDetailDto:
+      type: object
+      required: [id, type, name, currency, balance, monthChange, moneyInMonth, moneyOutMonth, avgDailyMonth]
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [BANK, CREDIT_CARD, BROKERAGE, CRYPTO_WALLET]
+        name:
+          type: string
+        currency:
+          type: string
+          example: INR
+        balance:
+          type: string
+          description: Decimal string, signed, all-time
+          example: "12480.50"
+        monthChange:
+          type: string
+          description: Decimal string, signed net flow for the current month
+          example: "1240.00"
+        moneyInMonth:
+          type: string
+          description: Decimal string, current-month inflow
+          example: "8420.00"
+        moneyOutMonth:
+          type: string
+          description: Decimal string, current-month outflow (positive magnitude)
+          example: "7180.00"
+        avgDailyMonth:
+          type: string
+          description: Decimal string, moneyOutMonth divided by days elapsed this month
+          example: "239.30"
+
+    TransactionPageDto:
+      type: object
+      required: [content, totalElements, page, size, totalPages]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransactionDto"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        size:
+          type: integer
+        totalPages:
+          type: integer
+
+    TransactionDto:
+      type: object
+      required: [id, type, status, amount, transactionDate]
+      properties:
+        id:
+          type: string
+          format: uuid
+        merchantName:
+          type: string
+        category:
+          type: string
+        type:
+          type: string
+          enum: [DEBIT, CREDIT, BUY, SELL, TRANSFER, FEE]
+        status:
+          type: string
+          enum: [PENDING, SETTLED, FAILED, REVERSED]
+        amount:
+          type: string
+          description: Decimal string
+          example: "84.20"
+        transactionDate:
+          type: string
+          format: date
+        accountName:
+          type: string
+
+    TransactionStatsDto:
+      type: object
+      required: [moneyIn, moneyInCount, moneyOut, moneyOutCount, netFlow, totalCount]
+      properties:
+        moneyIn:
+          type: string
+          description: Decimal string
+        moneyInCount:
+          type: integer
+          format: int64
+        moneyOut:
+          type: string
+          description: Decimal string
+        moneyOutCount:
+          type: integer
+          format: int64
+        netFlow:
+          type: string
+          description: Decimal string (moneyIn − moneyOut)
+        totalCount:
+          type: integer
+          format: int64
+
+    RecentTransactionDto:
+      type: object
+      required: [id, type, amount, transactionDate]
+      properties:
+        id:
+          type: string
+          format: uuid
+        merchantName:
+          type: string
+        category:
+          type: string
+        type:
+          type: string
+          enum: [DEBIT, CREDIT, BUY, SELL, TRANSFER, FEE]
+        amount:
+          type: string
+          description: Decimal string
+          example: "84.20"
+        transactionDate:
+          type: string
+          format: date
+
+    MonthlySummaryDto:
+      type: object
+      required: [income, spending, netSaved]
+      properties:
+        income:
+          type: string
+          description: Decimal string
+          example: "85000.00"
+        spending:
+          type: string
+          description: Decimal string
+          example: "45000.00"
+        netSaved:
+          type: string
+          description: Decimal string (income − spending)
+          example: "40000.00"
+
+    RecurringTransactionDto:
+      type: object
+      required: [name, frequency, amount, nextDate]
+      properties:
+        name:
+          type: string
+          example: Spotify Premium
+        frequency:
+          type: string
+          example: Monthly
+        amount:
+          type: string
+          description: Decimal string (never float)
+          example: "10.99"
+        nextDate:
+          type: string
+          format: date
+          example: "2025-07-15"
+
+    SubscriptionPageDto:
+      type: object
+      required: [content, totalElements, page, size, totalPages]
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/SubscriptionDto"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+        size:
+          type: integer
+        totalPages:
+          type: integer
+
+    SubscriptionDto:
+      type: object
+      required: [id, name, amount, currency, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: Spotify Premium
+        category:
+          type: string
+        amount:
+          type: string
+          description: Decimal string
+          example: "10.99"
+        currency:
+          type: string
+          example: INR
+        frequency:
+          type: string
+          enum: [WEEKLY, MONTHLY, YEARLY]
+        nextDueDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [PENDING, SETTLED, FAILED, REVERSED]
+        accountName:
+          type: string
+
+    SubscriptionStatsDto:
+      type: object
+      required: [activeCount, monthlyCost, yearlyCost]
+      properties:
+        activeCount:
+          type: integer
+          format: int64
+        monthlyCost:
+          type: string
+          description: Decimal string; sum of all subscriptions normalized to a monthly cadence
+          example: "42.98"
+        yearlyCost:
+          type: string
+          description: Decimal string (monthlyCost * 12)
+          example: "515.76"
+        nextRenewal:
+          type: string
+          format: date
+          description: Earliest upcoming next-due-date among active subscriptions
+
+    TradeDto:
+      type: object
+      required: [id, side, assetSymbol, assetName, quantity, pricePerUnit, amount, tradeDate]
+      properties:
+        id:
+          type: string
+          format: uuid
+        side:
+          type: string
+          enum: [BUY, SELL]
+        assetSymbol:
+          type: string
+          example: BTC
+        assetName:
+          type: string
+          example: Bitcoin
+        quantity:
+          type: string
+          description: Decimal string, trailing zeros stripped
+          example: "0.05"
+        pricePerUnit:
+          type: string
+          description: Decimal string, trailing zeros stripped
+          example: "840000"
+        amount:
+          type: string
+          description: Decimal string, total trade amount
+          example: "42000.00"
+        accountName:
+          type: string
+        tradeDate:
+          type: string
+          format: date

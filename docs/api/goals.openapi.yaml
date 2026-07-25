@@ -1,0 +1,226 @@
+openapi: 3.1.0
+info:
+  title: Goals Service API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8083
+tags:
+  - name: Goals
+paths:
+  /api/v1/goals:
+    get:
+      tags: [Goals]
+      summary: List savings goals for current user
+      operationId: listGoals
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      responses:
+        '200':
+          description: Goals list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GoalItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Goals]
+      summary: Create a new savings goal
+      operationId: createGoal
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/v1/goals/{id}:
+    patch:
+      tags: [Goals]
+      summary: Update a savings goal's name, target, or target date
+      operationId: updateGoal
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGoalRequest'
+      responses:
+        '200':
+          description: Goal updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Goals]
+      summary: Delete a savings goal
+      operationId: deleteGoal
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '204':
+          description: Goal deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/goals/{id}/contributions:
+    get:
+      tags: [Goals]
+      summary: List contribution history for a goal, most recent first
+      operationId: listGoalContributions
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Contribution history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GoalContributionDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Goals]
+      summary: Add funds to a goal (creates a contribution and bumps the goal's current amount)
+      operationId: contributeToGoal
+      security:
+        - bearerAuth: []
+        - devUserSub: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContributeToGoalRequest'
+      responses:
+        '201':
+          description: Contribution recorded; returns the updated goal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoalItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    devUserSub:
+      type: apiKey
+      in: header
+      name: X-Dev-User-Sub
+  responses:
+    Unauthorized:
+      description: Unauthorized
+    BadRequest:
+      description: Validation error
+    NotFound:
+      description: Goal not found
+  schemas:
+    Money:
+      type: string
+      pattern: '^-?\d+(\.\d{1,2})?$'
+      example: '2300.00'
+    GoalItem:
+      type: object
+      required: [id, name, current, target, percent, colorToken, targetDate]
+      properties:
+        id:           { type: string, format: uuid }
+        name:         { type: string }
+        current:      { $ref: '#/components/schemas/Money' }
+        target:       { $ref: '#/components/schemas/Money' }
+        percent:      { type: number }
+        colorToken:   { type: string }
+        targetDate:   { type: string, format: date }
+    CreateGoalRequest:
+      type: object
+      required: [name, target, targetDate]
+      properties:
+        name:         { type: string }
+        target:       { $ref: '#/components/schemas/Money' }
+        targetDate:   { type: string, format: date }
+        colorToken:   { type: string, description: 'Optional; server assigns one from the palette if omitted' }
+    UpdateGoalRequest:
+      type: object
+      description: All fields optional; only provided fields are changed
+      properties:
+        name:         { type: string }
+        target:       { $ref: '#/components/schemas/Money' }
+        targetDate:   { type: string, format: date }
+    ContributeToGoalRequest:
+      type: object
+      required: [amount]
+      properties:
+        amount:       { $ref: '#/components/schemas/Money' }
+        note:         { type: string }
+    GoalContributionDto:
+      type: object
+      required: [id, goalId, amount, contributedAt]
+      properties:
+        id:            { type: string, format: uuid }
+        goalId:        { type: string, format: uuid }
+        amount:        { $ref: '#/components/schemas/Money' }
+        note:          { type: string }
+        contributedAt: { type: string, format: date-time }
