@@ -13,11 +13,16 @@ import { PortfolioRepository } from './portfolio/portfolio.repository';
 import { PortfolioHttpRepository } from './portfolio/portfolio-http.repository';
 import { GoalRepository } from './goals/goal.repository';
 import { GoalMockRepository } from './goals/goal-mock.repository';
+import { GoalHttpRepository } from './goals/goal-http.repository';
 
 export function provideDataAccess(): Provider[] {
   const overviewProvider = environment.useMockData
     ? { provide: OverviewRepository, useClass: OverviewMockRepository }
     : { provide: OverviewRepository, useClass: OverviewHttpRepository };
+
+  const goalProvider = environment.useMockData
+    ? { provide: GoalRepository, useClass: GoalMockRepository }
+    : { provide: GoalRepository, useClass: GoalHttpRepository };
 
   return [
     overviewProvider,
@@ -25,6 +30,6 @@ export function provideDataAccess(): Provider[] {
     { provide: SubscriptionRepository, useClass: SubscriptionHttpRepository },
     { provide: AccountRepository, useClass: AccountHttpRepository },
     { provide: PortfolioRepository, useClass: PortfolioHttpRepository },
-    { provide: GoalRepository, useClass: GoalMockRepository },
+    goalProvider,
   ];
 }
