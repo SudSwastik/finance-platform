@@ -109,6 +109,11 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/portfolio/portfolio.routes').then(m => m.portfolioRoutes),
       },
+      {
+        path: 'goals',
+        loadChildren: () =>
+          import('./features/goals/goals.routes').then(m => m.goalsRoutes),
+      },
       { path: 'tips',          component: PlaceholderPageComponent, data: { title: 'Smart Tips' } },
       { path: 'settings',      component: PlaceholderPageComponent, data: { title: 'Settings' } },
     ],

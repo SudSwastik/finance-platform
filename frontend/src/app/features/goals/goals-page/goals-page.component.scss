@@ -1,0 +1,295 @@
+.goals-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    color: #F2F2F4;
+    letter-spacing: -.02em;
+  }
+
+  &__subtitle {
+    margin: 4px 0 0;
+    font-size: 13.5px;
+    color: #84848B;
+  }
+
+  &__add-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #6E8FD6;
+    border: none;
+    border-radius: 10px;
+    padding: 0 16px;
+    height: 38px;
+    color: #0C0C0F;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s;
+
+    &:hover { background: #82A0E0; }
+  }
+
+  // ── Stats strip ──────────────────────────────────────────────────────────
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  &__stat-card {
+    background: #121215;
+    border: 1px solid #222227;
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  &__stat-label {
+    color: #84848B;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  &__stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #F2F2F4;
+    margin-top: 7px;
+
+    &--positive { color: #4FAE85; }
+  }
+
+  &__stat-meta {
+    font-size: 11.5px;
+    color: #6C6C73;
+    margin-top: 2px;
+  }
+
+  // ── Shared card ──────────────────────────────────────────────────────────
+  &__card {
+    background: #121215;
+    border: 1px solid #222227;
+    border-radius: 16px;
+  }
+
+  &__empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: #6C6C73;
+    font-size: 13.5px;
+  }
+
+  // ── Goal grid ────────────────────────────────────────────────────────────
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  &__goal-card {
+    padding: 22px 24px;
+  }
+
+  &__goal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  &__goal-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  &__icon-tile {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+  }
+
+  &__goal-title-block { line-height: 1.3; }
+
+  &__goal-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #F2F2F4;
+  }
+
+  &__goal-target-date {
+    font-size: 11.5px;
+    color: #6C6C73;
+    margin-top: 1px;
+  }
+
+  &__menu-wrap { position: relative; }
+
+  &__menu-trigger {
+    color: #6C6C73;
+    font-size: 18px;
+    cursor: pointer;
+
+    &:hover { color: #A8A8AE; }
+  }
+
+  &__menu {
+    position: absolute;
+    top: 24px;
+    right: 0;
+    background: #17171B;
+    border: 1px solid #242429;
+    border-radius: 10px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 132px;
+    z-index: 5;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  &__menu-item {
+    background: transparent;
+    border: none;
+    text-align: left;
+    padding: 7px 9px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #C8C8CD;
+    cursor: pointer;
+    font-family: inherit;
+
+    &:hover { background: #1A1A1E; }
+
+    &--danger {
+      color: #D2796F;
+      &:hover { background: #241413; }
+    }
+  }
+
+  &__goal-body {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  &__ring-wrap {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    flex: none;
+  }
+
+  &__ring-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 800;
+    color: #F2F2F4;
+  }
+
+  &__goal-amounts { flex: 1; min-width: 0; }
+
+  &__goal-current {
+    font-size: 22px;
+    font-weight: 800;
+    color: #F2F2F4;
+  }
+
+  &__goal-target {
+    font-size: 12.5px;
+    color: #6C6C73;
+    margin-bottom: 14px;
+  }
+
+  &__goal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #16271F;
+    color: #4FAE85;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 7px;
+  }
+
+  &__add-funds-btn {
+    width: 100%;
+    margin-top: 18px;
+    background: #0C0C0F;
+    border: 1px solid #242429;
+    border-radius: 10px;
+    padding: 10px;
+    color: #C8C8CD;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s;
+
+    &:hover { background: #1A1A1E; }
+  }
+
+  // ── Modal forms ──────────────────────────────────────────────────────────
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  &__form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #84848B;
+    }
+
+    input {
+      background: #0C0C0F;
+      border: 1px solid #242429;
+      border-radius: 9px;
+      padding: 9px 12px;
+      font-size: 13.5px;
+      color: #ECECEE;
+      font-family: inherit;
+
+      &::placeholder { color: #55555C; }
+      &:focus { outline: none; border-color: #6E8FD6; }
+    }
+  }
+}

@@ -8,16 +8,20 @@
       </header>
 
       <div class="app-modal__body">
-        <ng-content />
+        @if (modalState!.config!.bodyTemplate) {
+          <ng-container [ngTemplateOutlet]="modalState!.config!.bodyTemplate!" />
+        } @else {
+          <ng-content />
+        }
       </div>
 
       <footer class="app-modal__footer">
-        <app-button variant="text" (clicked)="modalService.cancel()">
+        <button type="button" class="app-modal__btn app-modal__btn--cancel" (click)="modalService.cancel()">
           {{ modalState!.config!.cancelLabel ?? 'Cancel' }}
-        </app-button>
-        <app-button variant="primary" (clicked)="modalService.confirm()">
+        </button>
+        <button type="button" class="app-modal__btn app-modal__btn--confirm" (click)="modalService.confirm()">
           {{ modalState!.config!.confirmLabel ?? 'Confirm' }}
-        </app-button>
+        </button>
       </footer>
     </div>
   </div>
