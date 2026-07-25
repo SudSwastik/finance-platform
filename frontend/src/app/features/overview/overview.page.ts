@@ -7,6 +7,7 @@ import { RecurringWidgetComponent } from './recurring-widget/recurring-widget.co
 import { RecentTransactionsWidgetComponent } from './recent-transactions-widget/recent-transactions-widget.component';
 import { MonthlySummaryWidgetComponent } from './monthly-summary-widget/monthly-summary-widget.component';
 import { NetWorthWidgetComponent } from './net-worth-widget/net-worth-widget.component';
+import { GoalsWidgetComponent } from './goals-widget/goals-widget.component';
 
 @Component({
   selector: 'app-overview-page',
@@ -20,6 +21,7 @@ import { NetWorthWidgetComponent } from './net-worth-widget/net-worth-widget.com
     RecentTransactionsWidgetComponent,
     MonthlySummaryWidgetComponent,
     NetWorthWidgetComponent,
+    GoalsWidgetComponent,
   ],
   templateUrl: './overview.page.html',
   styleUrl: './overview.page.scss',

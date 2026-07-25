@@ -53,12 +53,15 @@
         <app-recurring-widget [bills]="data.recurring" />
       </div>
 
-      <!-- Row 3: recent transactions + top holdings -->
+      <!-- Row 3: recent transactions + top holdings/goals stack -->
       <div class="overview-page__cell overview-page__cell--span8">
         <app-recent-transactions-widget [transactions]="data.recentTransactions" />
       </div>
-      <div class="overview-page__cell overview-page__cell--span4">
+      <div class="overview-page__cell overview-page__cell--span4 overview-page__cell--stack">
         <app-investments-widget [holdings]="data.holdings" />
+        @if (facade.goals$ | async; as goals) {
+          <app-goals-widget [goals]="goals" />
+        }
       </div>
 
     </div>

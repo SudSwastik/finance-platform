@@ -109,6 +109,12 @@
     &--span4  { grid-column: span 4; }
     &--span8  { grid-column: span 8; }
     &--span12 { grid-column: span 12; }
+
+    &--stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-grid-gap);
+    }
   }
 
   &--loading, &--error {
