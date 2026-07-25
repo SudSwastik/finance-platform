@@ -12,6 +12,12 @@ module.exports = [
     changeOrigin: true,
   },
   {
+    context: ['/api/v1/goals'],
+    target: 'http://localhost:8083',
+    secure: false,
+    changeOrigin: true,
+  },
+  {
     context: ['/api'],
     target: 'http://localhost:8081',
     secure: false,
