@@ -1,0 +1,30 @@
+<app-dashboard-card>
+  <div class="goals-widget">
+
+    <div class="goals-widget__header">
+      <h2 class="text-card-title">Goals</h2>
+      <a class="goals-widget__view-all" routerLink="/goals">View all</a>
+    </div>
+
+    <div class="goals-widget__list">
+      @for (goal of goals; track goal.id) {
+        <div class="goals-widget__row">
+          <div class="goals-widget__row-top">
+            <span class="goals-widget__name">{{ goal.name }}</span>
+            <span class="goals-widget__pct text-meta">{{ goal.percent }}%</span>
+          </div>
+          <div class="goals-widget__progress-bar">
+            <div class="goals-widget__progress-fill" [style.width]="clampedPercent(goal.percent) + '%'"></div>
+          </div>
+          <div class="goals-widget__amounts text-meta text-secondary">
+            {{ fmtAmount(goal.current) }} of {{ fmtAmount(goal.target) }}
+          </div>
+        </div>
+      }
+      @if (goals.length === 0) {
+        <div class="goals-widget__empty text-meta text-secondary">No goals yet.</div>
+      }
+    </div>
+
+  </div>
+</app-dashboard-card>
