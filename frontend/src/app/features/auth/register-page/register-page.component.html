@@ -90,7 +90,13 @@
           </div>
         </div>
 
-        <button class="register-page__submit" type="submit">Sign Up</button>
+        @if (errorMessage) {
+          <p class="text-negative register-page__error">{{ errorMessage }}</p>
+        }
+
+        <button class="register-page__submit" type="submit" [disabled]="submitting">
+          {{ submitting ? 'Signing up…' : 'Sign Up' }}
+        </button>
 
         <p class="register-page__terms">
           By clicking Register, you agree to accept <strong>LOGO Financial's</strong> Terms and Condition

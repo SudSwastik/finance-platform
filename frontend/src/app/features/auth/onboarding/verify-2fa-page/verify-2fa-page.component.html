@@ -25,6 +25,9 @@
         />
       }
     </div>
+    @if (errorMessage) {
+      <p class="text-negative verify-2fa-page__error">{{ errorMessage }}</p>
+    }
   </div>
 
   <a slot="secondary" class="verify-2fa-page__resend" href="#" (click)="$event.preventDefault()">

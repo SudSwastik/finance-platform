@@ -16,6 +16,12 @@
     align-self: flex-start;
   }
 
+  &__error {
+    font-size: var(--font-size-meta);
+    margin: 0;
+    text-align: center;
+  }
+
   &__otp {
     display: flex;
     gap: 8px;

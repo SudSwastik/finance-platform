@@ -1,13 +1,38 @@
 <app-auth-shell>
   <app-auth-card
-    title="To login, check your email"
-    subtitle="For security, we've sent you an email. Simply click the link in the email and you'll be set."
-    primaryLabel="Send it again"
+    title="Check your email"
+    subtitle="We've sent a 6-digit code to your email — enter it below to verify your account."
+    primaryLabel="Verify email"
     iconVariant="green"
     iconBadge="check"
-    (primaryClick)="onResend()">
+    (primaryClick)="onVerify()">
     <svg slot="icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
       <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
     </svg>
+
+    <div class="check-email-page__body">
+      <div class="check-email-page__otp">
+        @for (digit of digits; track $index; let i = $index) {
+          <input
+            #digitInput
+            class="check-email-page__otp-box"
+            type="text"
+            inputmode="numeric"
+            maxlength="1"
+            [value]="digit"
+            (input)="onDigitInput(i, $event)"
+            (keydown)="onDigitKeydown(i, $event)"
+            autocomplete="one-time-code"
+          />
+        }
+      </div>
+      @if (errorMessage) {
+        <p class="text-negative check-email-page__error">{{ errorMessage }}</p>
+      }
+    </div>
+
+    <a slot="secondary" class="check-email-page__resend" href="#" (click)="$event.preventDefault(); onResend()">
+      Didn't get a code? Send it again
+    </a>
   </app-auth-card>
 </app-auth-shell>

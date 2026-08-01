@@ -25,6 +25,31 @@ paths:
           description: Not authenticated
         "404":
           description: User not found in identity store
+    post:
+      operationId: provisionMyProfile
+      summary: >
+        Create the authenticated user's tenant + profile if they don't already exist.
+        Idempotent — calling this again for an already-provisioned sub returns the
+        existing profile unchanged rather than erroring or creating a duplicate.
+      security:
+        - devUserSub: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProvisionProfileRequestDto"
+      responses:
+        "200":
+          description: Profile (just created, or already existed for this sub)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfileDto"
+        "400":
+          description: Validation error
+        "401":
+          description: Not authenticated
 
 components:
   securitySchemes:
@@ -48,3 +73,17 @@ components:
           type: string
         email:
           type: string
+
+    ProvisionProfileRequestDto:
+      type: object
+      required: [name, email, accountType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          format: email
+        accountType:
+          type: string
+          enum: [personal, business]

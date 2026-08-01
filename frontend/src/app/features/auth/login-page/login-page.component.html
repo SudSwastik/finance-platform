@@ -70,7 +70,13 @@
           <a class="login-page__forgot" routerLink="/forgot-password">Forgot Password?</a>
         </div>
 
-        <button class="login-page__submit" type="submit">Sign In</button>
+        @if (errorMessage) {
+          <p class="text-negative login-page__error">{{ errorMessage }}</p>
+        }
+
+        <button class="login-page__submit" type="submit" [disabled]="submitting">
+          {{ submitting ? 'Signing in…' : 'Sign In' }}
+        </button>
       </form>
 
     </div>

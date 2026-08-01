@@ -1,5 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthFacade } from '../auth.facade';
 import { AuthShellComponent } from '../auth-shell/auth-shell.component';
 
@@ -12,11 +13,14 @@ import { AuthShellComponent } from '../auth-shell/auth-shell.component';
 })
 export class RegisterPageComponent {
   private readonly facade = inject(AuthFacade);
+  private readonly router = inject(Router);
 
   name = '';
   email = '';
   readonly password = signal('');
   showPassword = false;
+  submitting = false;
+  errorMessage = '';
 
   readonly strength = computed(() => {
     const p = this.password();
@@ -38,7 +42,16 @@ export class RegisterPageComponent {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit(): void {
-    this.facade.register({ name: this.name, email: this.email, password: this.password() });
+  async onSubmit(): Promise<void> {
+    this.errorMessage = '';
+    this.submitting = true;
+    try {
+      await this.facade.register({ name: this.name, email: this.email, password: this.password() });
+      this.router.navigate(['/register/check-email']);
+    } catch (err) {
+      this.errorMessage = err instanceof Error ? err.message : 'Registration failed. Please try again.';
+    } finally {
+      this.submitting = false;
+    }
   }
 }
