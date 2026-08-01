@@ -3,6 +3,7 @@ package com.finance.platform.goals.web;
 import com.finance.platform.common.api.ErrorEnvelope;
 import com.finance.platform.goals.domain.GoalNotFoundException;
 import com.finance.platform.goals.domain.InvalidGoalOperationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,12 @@ class GoalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ErrorEnvelope handleGoalNotFound(GoalNotFoundException ex) {
         return ErrorEnvelope.of("NOT_FOUND", ex.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    ErrorEnvelope handleConflict(OptimisticLockingFailureException ex) {
+        return ErrorEnvelope.of("CONFLICT", "This goal was modified by another request. Reload and try again.");
     }
 
     @ExceptionHandler(InvalidGoalOperationException.class)

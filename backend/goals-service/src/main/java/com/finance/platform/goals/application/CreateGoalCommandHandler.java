@@ -39,7 +39,8 @@ public class CreateGoalCommandHandler {
                 colorToken,
                 Money.zero(),
                 command.target(),
-                command.targetDate());
+                command.targetDate(),
+                0L);
         return repository.save(goal);
     }
 }
