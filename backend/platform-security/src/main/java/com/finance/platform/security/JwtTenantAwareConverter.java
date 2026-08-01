@@ -10,32 +10,43 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import java.util.List;
 
 /**
- * Converts a validated Cognito JWT into a PlatformUserPrincipal and populates TenantContext.
- * Used when platform.security.dev-user-sub-enabled=false (docker / production profile).
+ * Converts a validated Cognito JWT into a PlatformUserPrincipal. tenant_id/role come from
+ * identity.users (via DbUserContextResolver), not JWT claims — used when
+ * platform.security.dev-user-sub-enabled=false.
  */
 public class JwtTenantAwareConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+
+    private final DbUserContextResolver userContextResolver;
+
+    /**
+     * @param userContextResolver null when this service has no DataSource (e.g. dashboard-bff,
+     *                             which only needs the sub, never QueryContext) — falls back to
+     *                             OWN scope with no tenant lookup.
+     */
+    public JwtTenantAwareConverter(DbUserContextResolver userContextResolver) {
+        this.userContextResolver = userContextResolver;
+    }
 
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         String sub = jwt.getSubject();
-        String tenantId = jwt.getClaimAsString("tenant_id");
-        List<String> groups = jwt.getClaimAsStringList("cognito:groups");
-        if (groups == null) {
-            groups = List.of("USER");
-        }
         TenantContext.set(sub);
-        QueryContext.set(resolveScope(sub, tenantId, groups));
+        QueryContext.set(resolveScope(sub));
+
+        List<String> groups = QueryContext.require().scope() == QueryContext.Scope.PLATFORM
+                ? List.of("ADMIN")
+                : List.of("USER");
         PlatformUserPrincipal principal = new PlatformUserPrincipal(UserId.of(sub), groups);
         return new UsernamePasswordAuthenticationToken(principal, jwt, principal.getAuthorities());
     }
 
-    private QueryContext resolveScope(String sub, String tenantId, List<String> groups) {
-        if (groups.contains("admin")) {
-            return QueryContext.platform(sub);
+    private QueryContext resolveScope(String sub) {
+        if (userContextResolver == null) {
+            return QueryContext.own(sub);
         }
-        if (tenantId != null && !tenantId.isBlank()) {
-            return QueryContext.tenant(sub, tenantId);
-        }
-        return QueryContext.own(sub);
+        return userContextResolver.resolve(sub)
+                .filter(ctx -> "ADMIN".equals(ctx.role()))
+                .<QueryContext>map(ctx -> QueryContext.platform(sub))
+                .orElseGet(() -> QueryContext.own(sub));
     }
 }
