@@ -20,15 +20,20 @@ public class UserJpaEntity {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false, length = 16)
+    private String role;
+
     protected UserJpaEntity() {}
 
     public UUID getId()       { return id; }
     public UUID getTenantId() { return tenantId; }
     public String getUserSub() { return userSub; }
     public String getEmail()  { return email; }
+    public String getRole()   { return role; }
 
     public void setId(UUID id)              { this.id = id; }
     public void setTenantId(UUID tenantId)  { this.tenantId = tenantId; }
     public void setUserSub(String userSub)  { this.userSub = userSub; }
     public void setEmail(String email)      { this.email = email; }
+    public void setRole(String role)        { this.role = role; }
 }

@@ -2,6 +2,7 @@ import { Component, ElementRef, inject, QueryList, ViewChildren } from '@angular
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthCardComponent } from '../../../../shared/ui/auth-card/auth-card.component';
+import { AuthFacade } from '../../auth.facade';
 
 @Component({
   selector: 'app-verify-2fa-page',
@@ -12,10 +13,14 @@ import { AuthCardComponent } from '../../../../shared/ui/auth-card/auth-card.com
 })
 export class Verify2faPageComponent {
   private readonly router = inject(Router);
+  private readonly facade = inject(AuthFacade);
 
   @ViewChildren('digitInput') digitInputs!: QueryList<ElementRef<HTMLInputElement>>;
 
+  // Real phone/SMS verification is deferred — this step is currently a UI placeholder.
   digits = ['', '', '', '', '', ''];
+  submitting = false;
+  errorMessage = '';
 
   onDigitInput(index: number, event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -33,7 +38,16 @@ export class Verify2faPageComponent {
     }
   }
 
-  onContinue(): void {
-    this.router.navigate(['/overview']);
+  async onContinue(): Promise<void> {
+    this.errorMessage = '';
+    this.submitting = true;
+    try {
+      await this.facade.finishOnboarding();
+      this.router.navigate(['/overview']);
+    } catch (err) {
+      this.errorMessage = err instanceof Error ? err.message : 'Could not finish setting up your account.';
+    } finally {
+      this.submitting = false;
+    }
   }
 }

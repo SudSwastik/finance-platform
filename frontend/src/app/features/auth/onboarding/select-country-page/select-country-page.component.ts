@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthCardComponent } from '../../../../shared/ui/auth-card/auth-card.component';
+import { AuthFacade } from '../../auth.facade';
 
 @Component({
   selector: 'app-select-country-page',
@@ -12,6 +13,7 @@ import { AuthCardComponent } from '../../../../shared/ui/auth-card/auth-card.com
 })
 export class SelectCountryPageComponent {
   private readonly router = inject(Router);
+  private readonly facade = inject(AuthFacade);
 
   country = 'US';
 
@@ -30,6 +32,7 @@ export class SelectCountryPageComponent {
   }
 
   onContinue(): void {
+    this.facade.submitCountry(this.country);
     this.router.navigate(['/register/onboarding/phone']);
   }
 }

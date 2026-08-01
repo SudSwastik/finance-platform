@@ -118,6 +118,12 @@
     &:focus { border-color: #9CA3AF; }
   }
 
+  &__error {
+    font-size: var(--font-size-meta);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+
   &__row {
     display: flex;
     justify-content: space-between;

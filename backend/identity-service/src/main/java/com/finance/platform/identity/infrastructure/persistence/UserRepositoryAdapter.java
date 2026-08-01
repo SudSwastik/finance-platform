@@ -26,7 +26,7 @@ class UserRepositoryAdapter implements UserRepository {
     }
 
     private User toDomain(UserJpaEntity e) {
-        return new User(e.getId(), e.getTenantId(), e.getUserSub(), e.getEmail());
+        return new User(e.getId(), e.getTenantId(), e.getUserSub(), e.getEmail(), e.getRole());
     }
 
     private UserJpaEntity toEntity(User u) {
@@ -35,6 +35,7 @@ class UserRepositoryAdapter implements UserRepository {
         e.setTenantId(u.tenantId());
         e.setUserSub(u.userSub());
         e.setEmail(u.email());
+        e.setRole(u.role());
         return e;
     }
 }
