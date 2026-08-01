@@ -1,0 +1,39 @@
+# Override for docker-compose.yml: run every service against the real AWS Cognito
+# user pool instead of the X-Dev-User-Sub header. Local-dev defaults in
+# docker-compose.yml are untouched — this file only flips what's needed.
+#
+# Usage:
+#   docker compose -f infra/local/docker-compose.yml -f infra/local/docker-compose.cognito.yml up -d
+#
+# Requires infra/local/.env (copy infra/local/.env.example) with COGNITO_ISSUER_URI set.
+
+services:
+  identity-service:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
+
+  budget-service:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
+
+  finance-service:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
+
+  portfolio-service:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
+
+  goals-service:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
+
+  dashboard-bff:
+    environment:
+      PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI}
