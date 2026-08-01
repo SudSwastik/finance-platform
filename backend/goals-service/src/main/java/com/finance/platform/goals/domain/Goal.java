@@ -17,8 +17,9 @@ public final class Goal {
     private final Money current;
     private final Money target;
     private final LocalDate targetDate;
+    private final long version;
 
-    public Goal(UUID id, String userSub, String name, String colorToken, Money current, Money target, LocalDate targetDate) {
+    public Goal(UUID id, String userSub, String name, String colorToken, Money current, Money target, LocalDate targetDate, long version) {
         this.id = Objects.requireNonNull(id);
         this.userSub = Objects.requireNonNull(userSub);
         this.name = Objects.requireNonNull(name);
@@ -26,6 +27,7 @@ public final class Goal {
         this.current = Objects.requireNonNull(current);
         this.target = Objects.requireNonNull(target);
         this.targetDate = Objects.requireNonNull(targetDate);
+        this.version = version;
     }
 
     public UUID id() {
@@ -56,6 +58,11 @@ public final class Goal {
         return targetDate;
     }
 
+    /** Optimistic-lock token; must round-trip unchanged from the value this Goal was loaded with. */
+    public long version() {
+        return version;
+    }
+
     public BigDecimal percent() {
         if (target.amount().signum() == 0) {
             return BigDecimal.ZERO;
@@ -66,18 +73,18 @@ public final class Goal {
     }
 
     public Goal withContribution(Money amount) {
-        return new Goal(id, userSub, name, colorToken, current.add(amount), target, targetDate);
+        return new Goal(id, userSub, name, colorToken, current.add(amount), target, targetDate, version);
     }
 
     public Goal withName(String newName) {
-        return new Goal(id, userSub, newName, colorToken, current, target, targetDate);
+        return new Goal(id, userSub, newName, colorToken, current, target, targetDate, version);
     }
 
     public Goal withTarget(Money newTarget) {
-        return new Goal(id, userSub, name, colorToken, current, newTarget, targetDate);
+        return new Goal(id, userSub, name, colorToken, current, newTarget, targetDate, version);
     }
 
     public Goal withTargetDate(LocalDate newTargetDate) {
-        return new Goal(id, userSub, name, colorToken, current, target, newTargetDate);
+        return new Goal(id, userSub, name, colorToken, current, target, newTargetDate, version);
     }
 }

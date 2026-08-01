@@ -38,7 +38,7 @@ class ContributeToGoalCommandHandlerTest {
     void handle_addsAmountToGoalCurrentAndRecordsContribution() {
         var goalId = UUID.randomUUID();
         var goal = new Goal(goalId, "seed-user-alice", "Emergency Fund", "goal.positive",
-                Money.of("15600"), Money.of("20000"), LocalDate.of(2026, 12, 15));
+                Money.of("15600"), Money.of("20000"), LocalDate.of(2026, 12, 15), 0L);
 
         when(goalRepository.findById(goalId)).thenReturn(Optional.of(goal));
         when(contributionRepository.save(any(GoalContribution.class))).thenAnswer(inv -> inv.getArgument(0));

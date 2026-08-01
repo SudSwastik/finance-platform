@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @EnabledIfDockerAvailable
@@ -66,13 +68,29 @@ class GoalRepositoryAdapterIntegrationTest {
     void save_persistsNewGoalAndFindByIdReturnsIt() {
         TenantContext.set("seed-user-alice");
         var goal = new Goal(UUID.randomUUID(), "seed-user-alice", "New Car", "goal.warning",
-                Money.zero(), Money.of("30000"), LocalDate.of(2027, 1, 1));
+                Money.zero(), Money.of("30000"), LocalDate.of(2027, 1, 1), 0L);
 
         var saved = repository.save(goal);
         var found = repository.findById(saved.id());
 
         assertTrue(found.isPresent());
         assertEquals("New Car", found.get().name());
+    }
+
+    @Test
+    void save_withStaleVersion_throwsOptimisticLockingFailure() {
+        TenantContext.set("seed-user-alice");
+        var created = repository.save(new Goal(UUID.randomUUID(), "seed-user-alice", "Bike", "goal.warning",
+                Money.zero(), Money.of("2000"), LocalDate.of(2027, 6, 1), 0L));
+
+        var staleCopy = repository.findById(created.id()).orElseThrow();
+
+        // First writer succeeds and bumps the version.
+        repository.save(staleCopy.withName("Bike (renamed)"));
+
+        // Second writer still holds the pre-update version -> must be rejected, not silently overwritten.
+        assertThrows(OptimisticLockingFailureException.class,
+                () -> repository.save(staleCopy.withName("Bike (conflicting rename)")));
     }
 
     @Test

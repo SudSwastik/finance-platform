@@ -43,7 +43,8 @@ public class GoalRepositoryAdapter implements GoalRepository {
                 goal.colorToken(),
                 goal.current().amount(),
                 goal.target().amount(),
-                goal.targetDate());
+                goal.targetDate(),
+                goal.version());
         return toDomain(jpaRepository.save(entity));
     }
 
@@ -61,6 +62,7 @@ public class GoalRepositoryAdapter implements GoalRepository {
                 entity.getColorToken(),
                 Money.of(entity.getCurrent()),
                 Money.of(entity.getTarget()),
-                entity.getTargetDate());
+                entity.getTargetDate(),
+                entity.getVersion());
     }
 }

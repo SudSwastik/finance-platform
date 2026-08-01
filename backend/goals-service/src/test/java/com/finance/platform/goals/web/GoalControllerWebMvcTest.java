@@ -65,7 +65,7 @@ class GoalControllerWebMvcTest {
     @Test
     void listGoals_withDevHeader_returns200() throws Exception {
         var goal = new Goal(UUID.fromString("c1000001-0000-4000-8000-000000000001"), "seed-user-alice",
-                "Emergency Fund", "goal.positive", Money.of("15600"), Money.of("20000"), LocalDate.of(2026, 12, 15));
+                "Emergency Fund", "goal.positive", Money.of("15600"), Money.of("20000"), LocalDate.of(2026, 12, 15), 0L);
         when(listGoalsQueryHandler.handle(any(ListGoalsQuery.class))).thenReturn(List.of(goal));
 
         mockMvc.perform(get("/api/v1/goals").header("X-Dev-User-Sub", "seed-user-alice"))
@@ -87,7 +87,7 @@ class GoalControllerWebMvcTest {
     @Test
     void createGoal_withValidBody_returns201() throws Exception {
         var goal = new Goal(UUID.randomUUID(), "seed-user-alice", "New Car", "goal.warning",
-                Money.zero(), Money.of("30000"), LocalDate.of(2027, 1, 1));
+                Money.zero(), Money.of("30000"), LocalDate.of(2027, 1, 1), 0L);
         when(createGoalCommandHandler.handle(any(CreateGoalCommand.class))).thenReturn(goal);
 
         mockMvc.perform(post("/api/v1/goals")

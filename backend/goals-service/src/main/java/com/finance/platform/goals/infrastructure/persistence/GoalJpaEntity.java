@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,11 +38,15 @@ public class GoalJpaEntity {
     @Column(name = "target_date", nullable = false)
     private LocalDate targetDate;
 
+    @Version
+    @Column(nullable = false)
+    private long version;
+
     protected GoalJpaEntity() {
     }
 
     public GoalJpaEntity(UUID id, UUID tenantId, String userSub, String name, String colorToken,
-                          BigDecimal current, BigDecimal target, LocalDate targetDate) {
+                          BigDecimal current, BigDecimal target, LocalDate targetDate, long version) {
         this.id = id;
         this.tenantId = tenantId;
         this.userSub = userSub;
@@ -50,6 +55,7 @@ public class GoalJpaEntity {
         this.current = current;
         this.target = target;
         this.targetDate = targetDate;
+        this.version = version;
     }
 
     public UUID getId() {
@@ -82,5 +88,9 @@ public class GoalJpaEntity {
 
     public LocalDate getTargetDate() {
         return targetDate;
+    }
+
+    public long getVersion() {
+        return version;
     }
 }
