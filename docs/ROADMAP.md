@@ -57,17 +57,19 @@ Overview page: `total-budgets`, `investments-widget`, `recurring-widget`. Nav: O
 
 ---
 
-### Phase 7 — Cognito auth + multi-tenant
+### Phase 7 — Cognito auth + multi-tenant ✅
 | Deliverable | Notes |
 |-------------|-------|
+| `DbUserContextResolver` + `JwtTenantAwareConverter` | Tenant/role resolved from `identity.users` (DB), not JWT custom claims — avoids a Pre-Token-Generation Lambda |
+| `docker-compose.cognito.yml` | Override file: real `issuer-uri` + `dev-user-sub-enabled: false`, env-driven, no code change |
+| `POST /api/v1/identity/me` | Idempotent signup provisioning (creates Tenant + User row for a confirmed Cognito sub) |
+| `AuthFacade` real impl | Direct Cognito calls (`SignUp`/`ConfirmSignUp`/`InitiateAuth`) via `@aws-sdk/client-cognito-identity-provider` against the existing custom-branded auth UI — not Hosted UI/OAuth redirect, not PKCE |
 | `authGuard` real impl | Redirects unauthenticated to `/login` |
-| `authInterceptor` | Attaches Bearer token; handles token refresh |
-| `AuthFacade` real impl | Cognito PKCE via `angular-oauth2-oidc` |
-| Spring config swap | `issuer-uri` → real Cognito endpoint (env var only, no code change) |
-| Remove `X-Dev-User-Sub` | Strip from prod security config |
-| JWT claims | `tenant_id`, `user_sub`, `scope` in token |
+| `authInterceptor` | Attaches Bearer token to same-origin `/api/` calls; refreshes via `REFRESH_TOKEN_AUTH` when expired |
 
-**Exit criteria:** Real user signs up → verifies email → logs in → sees seeded data; 401 without token; two users isolated.
+**Completed 2026-08-01.** Deviates from this table's original plan (which assumed Hosted UI + PKCE + JWT custom claims): keeping the existing branded UI meant calling Cognito directly instead of an OAuth redirect, and resolving tenant/role from the DB avoided needing a Pre-Token-Generation Lambda to inject custom claims into the token.
+
+**Exit criteria:** Real user signs up → verifies email → logs in → sees seeded data; 401 without token; two users isolated. — **met** (verified end-to-end against a real Cognito pool through the Docker/Postgres stack).
 
 ---
 

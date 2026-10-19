@@ -42,6 +42,12 @@
     transition: background 0.12s;
 
     &:hover { background: #82A0E0; }
+
+    &:disabled {
+      background: #1C1C21;
+      color: #84848B;
+      cursor: not-allowed;
+    }
   }
 
   // ── Stats strip ──────────────────────────────────────────────────────────
@@ -334,5 +340,36 @@
     text-align: center;
     color: #6C6C73;
     font-size: 13.5px;
+  }
+
+  &__empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    text-align: center;
+
+    h2 { margin: 18px 0 8px; font-size: 18px; color: #F2F2F4; }
+    p { margin: 4px 0; max-width: 460px; font-size: 13.5px; line-height: 1.6; color: #84848B; }
+  }
+
+  &__empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: #1C1C21;
+    color: #8FAAE0;
+    font-size: 24px;
+  }
+
+  @media (max-width: 1000px) {
+    &__list-card, &__detail { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 600px) {
+    &__stats { grid-template-columns: 1fr; }
   }
 }

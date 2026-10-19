@@ -10,6 +10,7 @@ export class AuthCardComponent {
   @Input({ required: true }) title!: string;
   @Input() subtitle?: string;
   @Input() primaryLabel?: string;
+  @Input() primaryDisabled = false;
   @Input() iconVariant: 'default' | 'green' | 'green-filled' | 'dark' = 'default';
   @Input() iconBadge: 'check' | null = null;
   @Output() primaryClick = new EventEmitter<void>();
