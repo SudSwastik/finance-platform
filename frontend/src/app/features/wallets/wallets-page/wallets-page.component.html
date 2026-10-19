@@ -6,7 +6,7 @@
       <h1 class="wallets-page__title">Wallets &amp; Banks</h1>
       <p class="wallets-page__subtitle">All your linked accounts and cards in one place.</p>
     </div>
-    <button class="wallets-page__link-btn">
+    <button class="wallets-page__link-btn" type="button" disabled title="Bank account linking is not available yet">
       <i class="ph ph-link-simple" style="font-size:15px;"></i>
       Link account
     </button>
@@ -38,6 +38,15 @@
     </div>
   }
 
+  @if (accounts$ | async; as accounts) {
+  @if (accounts.length === 0) {
+    <section class="wallets-page__card wallets-page__empty-state" aria-labelledby="wallets-empty-title">
+      <div class="wallets-page__empty-icon" aria-hidden="true"><i class="ph ph-wallet"></i></div>
+      <h2 id="wallets-empty-title">No accounts yet</h2>
+      <p>Your account has no banks, cards, or wallets to display.</p>
+      <p>Bank account linking is not available yet. Your balances and activity will appear here once accounts are added.</p>
+    </section>
+  } @else {
   <div class="wallets-page__grid">
 
     <!-- Accounts list -->
@@ -148,4 +157,8 @@
     </div>
 
   </div>
+  }
+  } @else {
+    <div class="wallets-page__card wallets-page__empty" role="status">Loading accounts…</div>
+  }
 </div>

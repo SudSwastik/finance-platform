@@ -17,9 +17,24 @@ export class ForgotPasswordPageComponent {
   private readonly facade = inject(AuthFacade);
 
   email = '';
+  submitting = false;
+  errorMessage = '';
 
-  onSend(): void {
-    this.facade.forgotPassword(this.email);
-    this.router.navigate(['/forgot-password/success']);
+  async onSend(): Promise<void> {
+    if (this.submitting) return;
+    this.errorMessage = '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.email.trim())) {
+      this.errorMessage = 'Enter a valid email address.';
+      return;
+    }
+    this.submitting = true;
+    try {
+      await this.facade.forgotPassword(this.email.trim());
+      await this.router.navigate(['/forgot-password/success']);
+    } catch (err) {
+      this.errorMessage = err instanceof Error ? err.message : 'Could not send a reset code. Please try again.';
+    } finally {
+      this.submitting = false;
+    }
   }
 }

@@ -3,8 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   CognitoIdentityProviderClient,
+  ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
+  ForgotPasswordCommand,
   InitiateAuthCommand,
+  NotAuthorizedException,
   ResendConfirmationCodeCommand,
   SignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -91,8 +94,57 @@ export class AuthFacade {
     this.tokenStore.setTokens(auth.AccessToken, auth.IdToken, auth.RefreshToken, auth.ExpiresIn);
   }
 
-  forgotPassword(email: string): void {
-    console.log('[AuthFacade] forgotPassword stub', email);
+  /** Called by authInterceptor when the access token is expired or about to be.
+   *  Clears the session on refresh failure (refresh token expired/revoked) rather
+   *  than throwing, so the interceptor can fall through to an unauthenticated request. */
+  async refreshSession(): Promise<boolean> {
+    const refreshToken = this.tokenStore.getRefreshToken();
+    if (!refreshToken) return false;
+
+    try {
+      const result = await this.cognito.send(new InitiateAuthCommand({
+        ClientId: environment.cognito.clientId,
+        AuthFlow: 'REFRESH_TOKEN_AUTH',
+        AuthParameters: { REFRESH_TOKEN: refreshToken },
+      }));
+
+      const auth = result.AuthenticationResult;
+      if (!auth?.AccessToken || !auth.IdToken || !auth.ExpiresIn) {
+        return false;
+      }
+      this.tokenStore.setAccessToken(auth.AccessToken, auth.IdToken, auth.ExpiresIn);
+      return true;
+    } catch (err) {
+      if (err instanceof NotAuthorizedException) {
+        this.tokenStore.clear();
+      }
+      return false;
+    }
+  }
+
+  logout(): void {
+    this.tokenStore.clear();
+  }
+
+  passwordResetEmail = '';
+
+  async forgotPassword(email: string): Promise<void> {
+    const username = email.trim();
+    await this.cognito.send(new ForgotPasswordCommand({
+      ClientId: environment.cognito.clientId,
+      Username: username,
+    }));
+    this.passwordResetEmail = username;
+  }
+
+  async confirmForgotPassword(email: string, code: string, password: string): Promise<void> {
+    await this.cognito.send(new ConfirmForgotPasswordCommand({
+      ClientId: environment.cognito.clientId,
+      Username: email.trim(),
+      ConfirmationCode: code.trim(),
+      Password: password,
+    }));
+    this.passwordResetEmail = '';
   }
 
   submitAccountType(type: 'personal' | 'business'): void {

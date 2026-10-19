@@ -23,7 +23,7 @@
   </div>
 
   @if (primaryLabel) {
-    <button class="auth-card__cta" type="button" (click)="primaryClick.emit()">
+    <button class="auth-card__cta" type="button" [disabled]="primaryDisabled" (click)="primaryClick.emit()">
       {{ primaryLabel }}
     </button>
   }

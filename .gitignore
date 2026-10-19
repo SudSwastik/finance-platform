@@ -31,7 +31,9 @@ coverage/
 design/
 
 # Agent
+/AGENTS.md
 .claude/
 .cursor/
+.codegraph/
 
 
