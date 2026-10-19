@@ -1,4 +1,4 @@
-# Standalone production stack. Host Nginx serves Angular and proxies loopback ports.
+# Standalone production stack. Host Nginx proxies frontend and API loopback ports.
 x-security: &security
   PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
   SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI:?Set COGNITO_ISSUER_URI}
@@ -41,7 +41,10 @@ services:
 
   identity-service:
     <<: *domain-service
-    build: ../../backend/identity-service
+    build:
+      context: ../../backend
+      args:
+        SERVICE: identity-service
     environment:
       <<: *database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=identity
@@ -49,7 +52,10 @@ services:
 
   goals-service:
     <<: *domain-service
-    build: ../../backend/goals-service
+    build:
+      context: ../../backend
+      args:
+        SERVICE: goals-service
     environment:
       <<: *database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=goals
@@ -57,7 +63,10 @@ services:
 
   budget-service:
     <<: *domain-service
-    build: ../../backend/budget-service
+    build:
+      context: ../../backend
+      args:
+        SERVICE: budget-service
     environment:
       <<: *database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=budget
@@ -65,7 +74,10 @@ services:
 
   finance-service:
     <<: *domain-service
-    build: ../../backend/finance-service
+    build:
+      context: ../../backend
+      args:
+        SERVICE: finance-service
     environment:
       <<: *database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=finance
@@ -73,7 +85,10 @@ services:
 
   portfolio-service:
     <<: *domain-service
-    build: ../../backend/portfolio-service
+    build:
+      context: ../../backend
+      args:
+        SERVICE: portfolio-service
     environment:
       <<: *database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=portfolio
@@ -81,7 +96,10 @@ services:
 
   dashboard-bff:
     <<: *service
-    build: ../../backend/dashboard-bff
+    build:
+      context: ../../backend
+      args:
+        SERVICE: dashboard-bff
     environment:
       <<: *security
       PLATFORM_SERVICES_BUDGET: http://budget-service:8084
@@ -94,6 +112,16 @@ services:
       - budget-service
       - finance-service
       - portfolio-service
+
+  frontend:
+    <<: *service
+    build: ../../frontend
+    ports: ["127.0.0.1:8090:80"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres-data:

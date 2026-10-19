@@ -50,3 +50,16 @@ mvn -pl finance-service spring-boot:run    # :8085
 # Frontend (from frontend/)
 npm install && ng serve
 ```
+
+## Deploy on EC2
+
+See [`infra/prod/README.md`](infra/prod/README.md) for Ubuntu, host Nginx, and HTTPS setup.
+Production Docker images build Java and Angular from source; EC2 does not need
+Java, Maven, or Node installed. After configuring `infra/prod/.env`, start the stack:
+
+```bash
+docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml up -d --build
+```
+
+Host Nginx proxies the frontend on `127.0.0.1:8090` and API services on
+`127.0.0.1:8081–8086`. PostgreSQL is not published to a host port.
