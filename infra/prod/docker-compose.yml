@@ -1,0 +1,99 @@
+# Standalone production stack. Host Nginx serves Angular and proxies loopback ports.
+x-security: &security
+  PLATFORM_SECURITY_DEV_USER_SUB_ENABLED: "false"
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: ${COGNITO_ISSUER_URI:?Set COGNITO_ISSUER_URI}
+
+x-database: &database
+  <<: *security
+  SPRING_DATASOURCE_USERNAME: finance
+  SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+
+x-service: &service
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+x-domain-service: &domain-service
+  <<: *service
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    <<: *service
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: finance_dashboard
+      POSTGRES_USER: finance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ../local/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U finance -d finance_dashboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  identity-service:
+    <<: *domain-service
+    build: ../../backend/identity-service
+    environment:
+      <<: *database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=identity
+    ports: ["127.0.0.1:8082:8082"]
+
+  goals-service:
+    <<: *domain-service
+    build: ../../backend/goals-service
+    environment:
+      <<: *database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=goals
+    ports: ["127.0.0.1:8083:8083"]
+
+  budget-service:
+    <<: *domain-service
+    build: ../../backend/budget-service
+    environment:
+      <<: *database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=budget
+    ports: ["127.0.0.1:8084:8084"]
+
+  finance-service:
+    <<: *domain-service
+    build: ../../backend/finance-service
+    environment:
+      <<: *database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=finance
+    ports: ["127.0.0.1:8085:8085"]
+
+  portfolio-service:
+    <<: *domain-service
+    build: ../../backend/portfolio-service
+    environment:
+      <<: *database
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/finance_dashboard?currentSchema=portfolio
+    ports: ["127.0.0.1:8086:8086"]
+
+  dashboard-bff:
+    <<: *service
+    build: ../../backend/dashboard-bff
+    environment:
+      <<: *security
+      PLATFORM_SERVICES_BUDGET: http://budget-service:8084
+      PLATFORM_SERVICES_IDENTITY: http://identity-service:8082
+      PLATFORM_SERVICES_FINANCE: http://finance-service:8085
+      PLATFORM_SERVICES_PORTFOLIO: http://portfolio-service:8086
+    ports: ["127.0.0.1:8081:8081"]
+    depends_on:
+      - identity-service
+      - budget-service
+      - finance-service
+      - portfolio-service
+
+volumes:
+  postgres-data:
