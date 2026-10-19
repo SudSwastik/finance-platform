@@ -32,6 +32,7 @@ design/
 
 # Agent
 /AGENTS.md
+/CLAUDE.md
 .claude/
 .cursor/
 .codegraph/

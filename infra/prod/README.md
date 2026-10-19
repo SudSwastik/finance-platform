@@ -12,18 +12,20 @@ export PROJECT_DIR="/your-project-folder"
 
 Commands below use `$PROJECT_DIR`. Set it again when opening a new SSH session.
 
-The browser connects to Nginx on HTTPS. Nginx serves the Angular build and proxies
-API calls to Docker services bound to localhost. PostgreSQL is private to Docker;
-LocalStack is excluded. Cognito runs in AWS.
+The browser connects to host Nginx on HTTPS. Nginx proxies the frontend container
+on localhost:8090 and API services on localhost:8081–8086. Docker builds Java and
+Angular from source; Java, Maven, and Node are not needed on EC2. PostgreSQL is
+private to Docker; LocalStack is excluded. Cognito runs in AWS.
 
 ## 1. Prerequisites
 
-Install Git, Java 21 JDK, Maven 3.9+, Node.js 22 with npm, Docker Engine with the
-Compose plugin, Nginx, and Certbot with its Nginx plugin. Ensure Docker starts on
-boot. Commands below assume your deployment user can run Docker.
+Install Git, Docker Engine with the Compose plugin, Nginx, and Certbot with its
+Nginx plugin. Ensure Docker starts on boot. Commands below assume your deployment
+user can run Docker. Docker downloads Maven/Java 21 and Node.js 22 build images.
+The first build needs internet access and takes longer while dependencies download.
 
 Use [Docker's Ubuntu installation instructions](https://docs.docker.com/engine/install/ubuntu/).
-If Java, Maven, and Node are already available, Ubuntu's Nginx/Certbot packages are:
+After Docker is installed, install Ubuntu's Nginx/Certbot packages:
 
 ```bash
 sudo apt update
@@ -32,7 +34,7 @@ sudo systemctl enable --now nginx docker
 ```
 
 In the EC2 security group, allow inbound 80/443 for the website and restrict SSH
-22 to your IP. Leave 5432, 4566, 4200, and 8081–8086 closed to the internet.
+22 to your IP. Leave 5432, 4566, 4200, 8090, and 8081–8086 closed to the internet.
 Point the project's DNS A record to the instance's Elastic IP. Ensure the instance
 has outbound internet access for image downloads, dependencies, and Cognito.
 
@@ -58,25 +60,19 @@ Changing `.env` alone does not change the frontend Cognito configuration.
 
 ## 3. Build and start
 
-The existing service Dockerfiles copy prebuilt JARs, so build the backend first:
+Run from the repository root. No manual Maven or npm build is required:
 
 ```bash
-cd "$PROJECT_DIR/backend"
-mvn clean package
-
-cd "$PROJECT_DIR/frontend"
-npm ci
-npm run build
-
 cd "$PROJECT_DIR"
 docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml config --quiet
 docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml up -d --build
 docker compose --env-file infra/prod/.env -f infra/prod/docker-compose.yml ps
 curl --fail http://127.0.0.1:8081/api/v1/health
+curl --fail --head http://127.0.0.1:8090/wallets
 ```
 
 Check for port conflicts with other projects before starting. This stack uses
-host loopback ports 8081–8086. If those are occupied, change the host side of the
+host loopback ports 8081–8086 and 8090. If those are occupied, change the host side of the
 production Compose port mappings and the matching Nginx `proxy_pass` targets.
 Container ports and internal service URLs can stay unchanged.
 
@@ -90,22 +86,28 @@ in `.env` does not change a password in an already-initialized database.
 ## 4. Add this project's Nginx site
 
 ```bash
-sudo cp "$PROJECT_DIR/infra/prod/nginx.conf" /etc/nginx/sites-available/finance-platform
+sudo cp -n "$PROJECT_DIR/infra/prod/nginx.conf" /etc/nginx/sites-available/finance-platform
 sudo nano /etc/nginx/sites-available/finance-platform
 ```
 
-Replace `finance.example.com` with your domain. Set the Nginx `root` to the actual
-absolute path of your frontend build, for example:
+Replace `finance.example.com` with your domain. The Nginx configuration no longer
+needs a project folder path: `location /` proxies to the frontend container on
+`127.0.0.1:8090`. Angular's direct routes are handled inside that container.
+The `finance-platform` Nginx site filename is just a label and can stay the same
+regardless of the repository folder name.
+
+If you previously configured this site to serve a host build directory, update
+its `location /` to the following and remove its old `root`, `index`, and
+`location = /index.html` directives. Keep existing Certbot certificate settings:
 
 ```nginx
-root /srv/your-project-folder/frontend/dist/frontend/browser;
+location / {
+    proxy_pass http://127.0.0.1:8090;
+}
 ```
 
-Nginx does not expand the shell variable `$PROJECT_DIR`; enter the actual path.
-The `finance-platform` Nginx site filename is just a label and can stay the same
-regardless of the repository folder name. Give Nginx's `www-data` user read/traverse access to the frontend
-build and its parent directories; keep `.env` private. Do not change permissions
-recursively across `/srv`, because it contains other projects.
+Keep the API locations from `nginx.conf`; they route directly to their services.
+Host Nginx does not need access to repository files or `.env`.
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/finance-platform /etc/nginx/sites-enabled/finance-platform
@@ -114,16 +116,17 @@ sudo systemctl reload nginx
 sudo certbot --nginx -d finance.example.com
 ```
 
-Replace the domain in the Certbot command too. Keep existing project sites enabled.
-Do not run `ng serve` on EC2: Nginx serves
-`frontend/dist/frontend/browser/index.html` and supports direct Angular routes such
-as `/wallets`. API routes preserve the full `/api/v1/...` path and forward bearer
+Skip the symlink command if the site is already enabled. Replace the domain in the
+Certbot command too; only request a certificate if the site does not already have
+one. Keep existing project sites enabled.
+Do not run `ng serve` on EC2: the frontend container serves the production build
+and supports direct Angular routes such as `/wallets`. API routes preserve the full `/api/v1/...` path and forward bearer
 tokens. Open the HTTPS domain, register/sign in, then check Overview and Wallets.
 
 ## Updates and troubleshooting
 
-After pulling a reviewed commit, repeat the backend/frontend builds and Compose
-`up -d --build` command. Nginx reload is only needed when its configuration changes.
+After pulling a reviewed commit, repeat the Compose `up -d --build` command.
+Docker rebuilds changed source and reuses cached dependencies. Nginx reload is only needed when its configuration changes.
 Schedule a brief maintenance window for this simple in-place deployment; it does
 not provide atomic releases or zero downtime.
 
@@ -137,3 +140,19 @@ curl --fail https://finance.example.com/api/v1/health
 An unauthenticated call to `/api/v1/dashboard/overview` should return 401.
 Never run Compose `down -v` to update the app: it deletes this stack's database
 volume. Automatic container restarts use `unless-stopped`.
+
+## Optional backend tests in Docker
+
+Production image builds compile and package all Maven modules with tests skipped.
+Run the unit/API test suite separately without installing Java or Maven on EC2:
+
+```bash
+cd "$PROJECT_DIR"
+docker build --target test -f backend/Dockerfile backend
+```
+
+Testcontainers integration tests require a Docker-enabled test environment and
+are skipped inside this build because the Docker socket is not mounted. Run
+`mvn test` in a development/CI environment with Docker available for database tests.
+The module-level Dockerfiles under `backend/*/` are retained for the existing local
+workflow; production Compose uses the shared `backend/Dockerfile` instead.
